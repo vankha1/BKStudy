@@ -1,2 +1,2 @@
 # BKStudy
-Long test committing
+This is our Programming Intergration Project about learning platforms named BKStudy.
