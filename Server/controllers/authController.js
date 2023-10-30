@@ -17,6 +17,7 @@ const signup = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const role = req.body.userType;
+  const joinedDate = new Date();
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -24,6 +25,7 @@ const signup = async (req, res, next) => {
       username,
       email,
       password: hashedPassword,
+      joinedDate,
       role
     });
 
@@ -51,7 +53,7 @@ const login = async (req, res, next) => {
     error.statusCode = 401;
     throw error;
   }
-  
+
   const isEqualPass = await bcrypt.compare(password, user.password)
 
   if (!isEqualPass) {
@@ -61,16 +63,16 @@ const login = async (req, res, next) => {
   }
 
   const token = jwt.sign({
-    email : email,
-    userId : user._id.toString(),
-  }, process.env.TOKEN_SECRET_KEY , {expiresIn : "1h"})
+    email: email,
+    userId: user._id.toString(),
+  }, process.env.TOKEN_SECRET_KEY, { expiresIn: "1h" })
 
-  res.status(200).json( { token, userId : user._id.toString() } ) 
+  res.status(200).json({ token, userId: user._id.toString() })
 };
 
 
 const test = (req, res, next) => {
-    res.json("van kha dep trai")
+  res.json("van kha dep trai")
 }
 
 module.exports = {
