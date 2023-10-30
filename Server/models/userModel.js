@@ -43,6 +43,10 @@ const userSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "Course",
           },
+          enrolledDate: {
+            type: Date,
+            require: true
+          },
         },
       ],
       required: true,
