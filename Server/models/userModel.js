@@ -11,7 +11,7 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: true,
-      unique : true
+      unique: true
     },
     password: {
       type: String,
@@ -20,9 +20,16 @@ const userSchema = new Schema(
     avatar: {
       type: String,
     },
-    userType : {
-      type : String,
-      enum : ['LECTURER', 'STUDENT'],
+    background: {
+      type: String,
+    },
+    userType: {
+      type: String,
+      enum: ['LECTURER', 'STUDENT'],
+      required: true
+    },
+    joinedDate: {
+      type: Date,
       required: true
     },
     courses: {

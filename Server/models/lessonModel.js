@@ -19,13 +19,15 @@ const lessonSchema = new Schema(
       type: Object,
       required: true,
     },
-    url : {
-        type : String,
-        required: true
+    url: {
+      type: String
     },
-    courseId : {
-        type : Schema.Types.ObjectId,
-        ref : 'Course'
+    noteContents: {
+      type: String
+    },
+    courseId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Course'
     }
   },
   { timestamps: true }
