@@ -28,4 +28,4 @@ const messageSchema = new Schema(
     }
 )
 
-module.exports = mongoose.model('Admin', adminSchema)
+module.exports = mongoose.model('Message', messageSchema)
