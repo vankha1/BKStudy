@@ -10,10 +10,10 @@ const courseSchema = new Schema(
     },
     description: {
       type: String,
-      required: true,
     },
     rating: {
       type: Number,
+      enum: [1, 2, 3, 4, 5],
     },
     numberOfStudent: {
       type: Number,

@@ -7,6 +7,10 @@ const userSchema = new Schema(
     username: {
       type: String,
       required: true,
+      unique: true
+    },
+    fullname: {
+      type: String,
     },
     email: {
       type: String,
@@ -38,6 +42,10 @@ const userSchema = new Schema(
           courseId: {
             type: Schema.Types.ObjectId,
             ref: "Course",
+          },
+          enrolledDate: {
+            type: Date,
+            require: true
           },
         },
       ],
