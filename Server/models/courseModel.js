@@ -8,6 +8,10 @@ const courseSchema = new Schema(
       type: String,
       required: true,
     },
+    imageUrl : {
+      type : String, 
+      required: true,
+    },
     description: {
       type: String,
     },
@@ -16,8 +20,7 @@ const courseSchema = new Schema(
       enum: [1, 2, 3, 4, 5],
     },
     numberOfStudent: {
-      type: Number,
-      required: true,
+      type: Number
     },
     chapters: {
       type: [
@@ -32,8 +35,7 @@ const courseSchema = new Schema(
             },
           ],
         },
-      ],
-      required: true,
+      ]
     },
     price: {
       type: Number,
@@ -50,6 +52,11 @@ const courseSchema = new Schema(
       ref: "User",
       required: true,
     },
+    isApproved : {
+      type: Boolean,
+      default: false,
+      required: true,
+    }
   },
   { timestamps: true }
 );

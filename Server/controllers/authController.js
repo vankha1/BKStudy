@@ -16,8 +16,9 @@ const signup = async (req, res, next) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
-  const role = req.body.userType;
+  const userType = req.body.userType;
   const joinedDate = new Date();
+  const isAdmin = false;
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -26,7 +27,8 @@ const signup = async (req, res, next) => {
       email,
       password: hashedPassword,
       joinedDate,
-      role
+      userType,
+      isAdmin
     });
 
     const result = await user.save();
@@ -61,22 +63,18 @@ const login = async (req, res, next) => {
     error.statusCode = 401;
     throw error;
   }
-
+  // attach token and send to client
   const token = jwt.sign({
     email: email,
     userId: user._id.toString(),
+    userType: user.userType
   }, process.env.TOKEN_SECRET_KEY, { expiresIn: "1h" })
 
   res.status(200).json({ token, userId: user._id.toString() })
 };
 
 
-const test = (req, res, next) => {
-  res.json("van kha dep trai")
-}
-
 module.exports = {
   signup,
   login,
-  test
 };

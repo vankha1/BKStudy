@@ -32,6 +32,10 @@ const userSchema = new Schema(
       enum: ['LECTURER', 'STUDENT'],
       required: true
     },
+    isAdmin : {
+      type : Boolean,
+      default: false
+    },
     joinedDate: {
       type: Date,
       required: true

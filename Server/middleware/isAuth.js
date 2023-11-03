@@ -1,11 +1,14 @@
 const jwt = require('jsonwebtoken')
 
+const User = require('../models/userModel')
 
-const authRoles = (permissions) => {
-    return (req, res, next) => {
-        const userType = req.body.userType;
-        console.log(userType);
-        if (permissions.includes(userType)) {
+const authRoles =  (permissions) => {
+    return async (req, res, next) => {
+        const userId = req.userId;
+
+        const user = await User.findById(userId)
+        
+        if (permissions.includes(user?.userType)) {
             next()
         }
         else{
@@ -26,19 +29,20 @@ const authToken = (req, res, next) => {
     // console.log(token);
     let decodedPayload;
     try {
+        // decode token 
         decodedPayload = jwt.verify(token, process.env.TOKEN_SECRET_KEY)
     }
     catch (err) {
         err.statusCode = 500;
         throw err
     }
-
     if (!decodedPayload) {
         const error = new Error('Not authenticated')
         error.statusCode = 401
         throw error
     }
-    req.userId = decodedPayload.userId; // attach userId to token
+    // console.log(decodedPayload.userId);
+    req.userId = decodedPayload.createdBy; // attach userId to token
     next()
 }
 
