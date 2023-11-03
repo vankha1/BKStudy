@@ -40,7 +40,6 @@ const createCourse = async (req, res, next) => {
   const imageUrl = req.file.path.replace("\\", "/");
   const description = req.body.description;
   const price = req.body.price;
-  let createdBy;
 
   const course = new Course({
     title,
