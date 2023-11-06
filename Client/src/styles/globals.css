@@ -18,6 +18,10 @@
   @apply flex justify-between items-center;
 }
 
+.flex-around {
+  @apply flex justify-around items-center;
+}
+
 .app {
   @apply relative z-10 flex justify-center items-center flex-col max-w-7xl mx-auto sm:px-16 px-6 bg-background;
 }
@@ -32,4 +36,8 @@
 
 .big-white-button {
   @apply w-full border border-black px-2 py-3 rounded-md font-semibold hover:bg-blue-50/80 hover:text-blue-600
+}
+
+.transfrom-action {
+  @apply transform transition-transform hover:scale-110;
 }
