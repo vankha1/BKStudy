@@ -25,3 +25,7 @@
 .app {
   @apply relative z-10 flex justify-center items-center flex-col mx-auto;
 }
+
+.transfrom-action {
+  @apply transform transition-transform hover:scale-110;
+}
