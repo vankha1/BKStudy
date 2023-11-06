@@ -85,7 +85,7 @@ const Profile = () => {
           <div className='w-40 h-40 rounded-full flex-center bg-white'>
             <Image
               className=""
-              src="/avatar.svg"
+              src="/assets/images/avatar.svg"
               alt="Profile Picture"
               width={130}
               height={130}
@@ -99,7 +99,7 @@ const Profile = () => {
         <div className='absolute bottom-12 right-20 flex-between cursor-pointer'>
           <Image
             className=""
-            src="/upload.svg"
+            src='/assets/icons/upload.svg'
             alt="Profile Picture"
             width={30}
             height={30}
