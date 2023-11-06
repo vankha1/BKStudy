@@ -28,22 +28,26 @@ const USER_INFO = {
     {
       course_name: 'Cấu trúc dữ liệu và giải thuật',
       description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/course_image.jpg'
+      image: '/course_image.jpg',
+      href: '/dsa'
     },
     {
       course_name: 'Cấu trúc dữ liệu và giải thuật',
       description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/course_image.jpg'
+      image: '/course_image.jpg',
+      href: '/dsa'
     },
     {
       course_name: 'Cấu trúc dữ liệu và giải thuật',
       description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/course_image.jpg'
+      image: '/course_image.jpg',
+      href: '/dsa'
     },
     {
       course_name: 'Cấu trúc dữ liệu và giải thuật',
       description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/course_image.jpg'
+      image: '/course_image.jpg',
+      href: '/dsa'
     }
   ]
 }
@@ -75,9 +79,9 @@ const Profile = () => {
   return (
     <div className='w-full'>
       <div className='relative w-full h-80 mt-4'>
-        <div className='h-72 mx-52 rounded-3xl bg-blue-300'>
+        <div className='h-72 mx-8 rounded-3xl bg-blue-300'>
         </div>
-        <div className='absolute bottom-0 left-80 flex justify-between'>
+        <div className='absolute bottom-0 left-40 flex justify-between'>
           <div className='w-40 h-40 rounded-full flex-center bg-white'>
             <Image
               className=""
@@ -92,7 +96,7 @@ const Profile = () => {
             {USER_INFO.info.find((item) => item.title =='Họ tên').data.toUpperCase()}
           </h2>
         </div>
-        <div className='absolute bottom-12 right-60 flex-between cursor-pointer'>
+        <div className='absolute bottom-12 right-20 flex-between cursor-pointer'>
           <Image
             className=""
             src="/upload.svg"
@@ -111,13 +115,13 @@ const Profile = () => {
           />
         </div>
       </div>
-      <div className='flex justify-between mx-56'>
+      <div className='flex justify-between mx-16'>
         <div className='relative flex-col pt-8'>
-          <div className='px-16 py-4 rounded-lg shadow-lg mb-8 transfrom-action'>
+          <div className='px-16 py-4 rounded-lg shadow-lg mb-8'>
             <h3 className='text-xl font-medium mb-3 border-b border-solid border-black'>Quyền truy cập</h3>
             <p className='text-base font-normal'>{USER_INFO.info.find((item) => item.title =='Quyền truy cập').data}</p>
           </div>
-          <div className='w-full px-16 py-4 rounded-lg shadow-lg mb-8 transfrom-action'>
+          <div className='w-full px-16 py-4 rounded-lg shadow-lg mb-8'>
             <h3 className='w-52 text-xl font-medium mb-3 border-b border-solid border-black'>Thông tin tài khoản</h3>
             <EditData infos={USER_INFO.info} />
           </div>
@@ -125,7 +129,7 @@ const Profile = () => {
         <div className='w-3/5 flex-col px-8 py-4'>
           <h4 className='w-72 text-2xl font-medium mb-3 border-b border-solid border-black'>Các khóa học đang học</h4>
           {USER_INFO.courses.map((course, index) => (
-            <div className='flex-between px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action'>
+            <Link href={course.href} className='flex-between px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action'>
               <Image
                 className="rounded-2xl py-2"
                 src={course.image}
@@ -138,7 +142,7 @@ const Profile = () => {
                 <h3 className='text-xl font-medium mb-2'>{course.course_name}</h3>
                 <p className='text-base font-normal'>{course.description}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -32,7 +32,12 @@ function EditData({ infos }) {
                 onChange={(e) => handleInputChange(e.target.value, index)}
               />
             ) : (
-              <p className='text-base font-normal'>{info.data}</p>
+              <input
+                type="text"
+                className='text-base font-normal p-[0.3125rem] bg-white'
+                value={info.data}
+                disabled
+              />
             )}
           </div>
         ) : (
