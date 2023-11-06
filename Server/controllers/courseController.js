@@ -22,35 +22,35 @@ const getAllCourses = async (req, res, next) => {
 };
 
 const createCourse = async (req, res, next) => {
-  const errors = validationResult(req);
-  // console.log(errors);
-  if (!errors.isEmpty()) {
-    const error = new Error("Validation failed, entered data is incorrect");
-    error.statusCode = 422;
-    throw error;
-  }
-  // console.log(req);
-  if (!req.file) {
-    const error = new Error("No image provided");
-    error.statusCode = 422;
-    throw error;
-  }
-
-  const title = req.body.title;
-  const imageUrl = req.file.path.replace("\\", "/");
-  const description = req.body.description;
-  const price = req.body.price;
-
-  const course = new Course({
-    title,
-    imageUrl,
-    description,
-    price,
-    createdBy: req.userId,
-    isApproved: false,
-  });
-
   try {
+    const errors = validationResult(req);
+    // console.log(errors);
+    if (!errors.isEmpty()) {
+      const error = new Error("Validation failed, entered data is incorrect");
+      error.statusCode = 422;
+      throw error;
+    }
+    // console.log(req);
+    if (!req.file) {
+      const error = new Error("No image provided");
+      error.statusCode = 422;
+      throw error;
+    }
+
+    const title = req.body.title;
+    const imageUrl = req.file.path.replace("\\", "/");
+    const description = req.body.description;
+    const price = req.body.price;
+
+    const course = new Course({
+      title,
+      imageUrl,
+      description,
+      price,
+      createdBy: req.userId,
+      isApproved: false,
+    });
+
     await course.save();
 
     // Waiting for the approval of admin
@@ -128,9 +128,8 @@ const updateCourse = async (req, res, next) => {
 };
  */
 const deleteCourse = async (req, res, next) => {
-  const courseId = req.params.courseId;
-
   try {
+    const courseId = req.params.courseId;
     const course = await Course.findById(courseId);
 
     if (!course) {
@@ -144,7 +143,7 @@ const deleteCourse = async (req, res, next) => {
       throw error;
     }
     clearImage(course.imageUrl);
-    
+
     await Course.findByIdAndRemove(courseId);
     const user = await User.findById(req.userId);
     user.courses.pull(postId);
@@ -172,5 +171,5 @@ const clearImage = (filePath) => {
 module.exports = {
   getAllCourses,
   createCourse,
-  deleteCourse
+  deleteCourse,
 };
