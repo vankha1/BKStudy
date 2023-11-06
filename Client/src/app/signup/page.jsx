@@ -1,16 +1,43 @@
+"use client"
+
 import Image from "next/image"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import axios from "axios"
 
 const SignUpPage = () => {
+  const router = useRouter()
+
+  const [submitting, setSubmitting] = useState(false);
+  const [account, setAccount] = useState({
+    username: "",
+    email: "",
+    password: "",
+    userType: ""
+  })
+
+  const signUp = async (e) => {
+    e.preventDefault()
+    setSubmitting(true)
+
+    axios.put('http://localhost:8080/api/v1/auth/signup', account).then((response) => {
+      if (response.ok) router.push('/profile-form')
+      else console.log(response)
+    }).catch((error) => {alert(error)}).finally(() => {setSubmitting(false)})
+  }
+
   return (
     <section className='flex-center flex-col drop-shadow-md mt-3 px-8 py-5 bg-white rounded-md'>
       <h1 className='text-3xl font-bold'>Đăng ký</h1>
-      <form className="flex-center flex-col w-full">
+      <form onSubmit={signUp} className="flex-center flex-col w-full">
         <div className="w-full flex-start flex-col mt-5 mb-3">
           <label className="text-xs font-semibold mb-1">USERNAME</label>
           <input 
-            type="email" 
-            name="email" 
-            id="email" 
+            type="username" 
+            name="username" 
+            id="username" 
+            value={account.username}
+            onChange={(e) => {setAccount({...account, username: e.target.value})}}
             className="input min-w-[20rem]"
             placeholder="abc123@gmail.com"
           />
@@ -21,6 +48,8 @@ const SignUpPage = () => {
             type="email" 
             name="email" 
             id="email" 
+            value={account.email}
+            onChange={(e) => {setAccount({...account, email: e.target.value})}}
             className="input min-w-[20rem]"
             placeholder="abc123@gmail.com"
           />
@@ -28,23 +57,25 @@ const SignUpPage = () => {
         <div className="w-full flex-start flex-col mt-1 mb-3">
           <label className="text-xs font-semibold mb-1">PASSWORD</label>
           <input 
-            type="email" 
-            name="email" 
-            id="email" 
+            type="password" 
+            name="password" 
+            id="password" 
+            value={account.password}
+            onChange={(e) => {setAccount({...account, password: e.target.value})}}
             className="input min-w-[20rem]"
             placeholder="••••••••"
           />
         </div>
         <div className="w-full flex-start flex-col mt-1 mb-3">
           <label className="text-xs font-semibold mb-1">Vai trò</label>
-          <select id="role" className="input min-w-[20rem] text-sm text-slate-500">
-            <option selected>Chọn vai trò của bạn</option>
-            <option>Sinh viên</option>
-            <option>Giáo viên</option>
+          <select id="role" onChange={(e) => {setAccount({...account, userType: e.target.value})}} className="input min-w-[20rem] text-sm text-slate-500">
+            <option>Chọn vai trò của bạn</option>
+            <option value="STUDENT">Sinh viên</option>
+            <option value="LECTURER">Giáo viên</option>
           </select>
         </div>
+        <button type="submit" disabled={submitting} className="big-blue-button mt-6">Đăng ký</button>
       </form>
-      <button type="submit" className="big-blue-button mt-6">Đăng ký</button>
       <div className="w-full flex-center flex-row py-4">
         <span className="w-full border bg-slate-400" />
         <div className="text-slate-400 text-xs px-2">or</div>
