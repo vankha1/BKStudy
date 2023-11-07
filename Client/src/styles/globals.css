@@ -49,8 +49,24 @@
   @apply w-full bg-primary text-white font-semibold px-2 py-3 rounded-md hover:bg-blue-800
 }
 
+.medium-blue-button {
+  @apply w-36 bg-primary text-white font-semibold py-2 rounded-md hover:bg-blue-800
+}
+
+.small-blue-button {
+  @apply w-32 bg-primary text-white font-semibold py-[5px] rounded-md hover:bg-blue-800
+}
+
 .big-white-button {
   @apply w-full border border-black px-2 py-3 rounded-md font-semibold hover:bg-blue-50/80 hover:text-blue-600
+}
+
+.small-gray-button {
+  @apply w-32 bg-gray-300 text-black font-semibold py-[5px] rounded-md hover:bg-gray-400
+}
+
+.small-light-blue-button {
+  @apply w-32 bg-blue-200 text-white font-semibold py-[5px] rounded-md hover:bg-blue-300
 }
 
 .transfrom-action {
