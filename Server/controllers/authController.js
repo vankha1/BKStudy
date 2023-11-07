@@ -1,6 +1,6 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
 const User = require("../models/userModel");
 
@@ -16,6 +16,7 @@ const signup = async (req, res, next) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
+  const origin = 'LOCAL'
   const userType = req.body.userType;
   const joinedDate = new Date();
   const isAdmin = false;
@@ -26,6 +27,7 @@ const signup = async (req, res, next) => {
       username,
       email,
       password: hashedPassword,
+      userOrigin: origin,
       joinedDate,
       userType,
       isAdmin
@@ -72,7 +74,6 @@ const login = async (req, res, next) => {
 
   res.status(200).json({ token, userId: user._id.toString() })
 };
-
 
 module.exports = {
   signup,

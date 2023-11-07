@@ -8,19 +8,23 @@ const lessonSchema = new Schema(
       type: String,
       required: true,
     },
-    description: {
+    contents: {
       type: String,
       required: true,
     },
-    duration: {
-      type: Number,
+    videoURL: {
+      type: String,
     },
-    contents: {
-      type: Object,
-      required: true,
+    lastChanged: {
+      type: Date,
     },
-    url: {
-      type: String
+    attachedFiles: {
+      type: [
+        {
+          filename: String,
+          filepath: String
+        }
+      ]
     },
     noteContents: {
       type: String

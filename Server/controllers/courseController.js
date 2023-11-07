@@ -37,7 +37,7 @@ const createCourse = async (req, res, next) => {
   }
 
   const title = req.body.title;
-  const imageUrl = req.file.path.replace("\\", "/");
+  const imageUrl = req.file.path.replace(/\\/g, "/");
   const description = req.body.description;
   const price = req.body.price;
 
@@ -144,7 +144,7 @@ const deleteCourse = async (req, res, next) => {
       throw error;
     }
     clearImage(course.imageUrl);
-    
+
     await Course.findByIdAndRemove(courseId);
     const user = await User.findById(req.userId);
     user.courses.pull(postId);
