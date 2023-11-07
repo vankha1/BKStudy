@@ -36,7 +36,7 @@ const AddActions = ({ infos }) => {
                                             value={info.data}
                                             disabled
                                         />
-                                        <UploadImage title='Tải ảnh lên' className='py-2 px-4 ml-8 small-blue-button' />
+                                        <UploadImage title={info.button_title} className='py-2 px-4 ml-8 small-blue-button' />
                                     </div>
                                 ) : (
                                     <textarea
@@ -61,7 +61,7 @@ const AddActions = ({ infos }) => {
                                             value={info.data}
                                             disabled
                                         />
-                                        <UploadImage title='Tải ảnh lên' className='py-2 px-4 ml-8 small-blue-button' />
+                                        <UploadImage title={info.button_title} className='py-2 px-4 ml-8 small-blue-button' />
                                     </div>
                                 ) : (
                                     <textarea
