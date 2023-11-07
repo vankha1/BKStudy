@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 const HomePage = () => {
   return (
-    <div className="min-h-[535px]">
+    <div className="homepage min-h-[535px]">
       <div className="welcome w-[1000px] h-[200px] bg-[#9ccaff] rounded-[15px] px-[60px] py-[20px] mt-[20px]">
         <h1 className="text-3xl font-bold pb-[50px]">Chào mừng đến với BKStudy</h1>
         <p className="w-[400px]">BKStudy là trang web cung cấp khóa học phù hợp dành riêng cho sinh viên Đại học Bách Khoa Thành phố Hồ Chí Minh</p>
@@ -13,12 +13,12 @@ const HomePage = () => {
       <div>
         <h2 className="text-2xl font-semibold mt-[40px] px-[60px]">Khóa học hàng đầu</h2>
         <div className="w-[1000px] flex justify-around px-[5px]">
-          <Link href="/" className="mt-[20px]">
+          <Link href="/coursepage" className="mt-[20px]">
             <div className="course">
             <Image src="/assets/course_avt.jpg" alt="Course" width={200} height={200} className="w-[220px] rounded-[10px] border border-[#cacaca]" />
               <div  className="flex justify-between px-[10px] my-[5px]">
                 <div>
-                  <h3 className="font-semibold">Giải tích 1</h3>
+                  <h3 className="font-semibold">DSA</h3>
                   <h2>500.000đ</h2>
                 </div>
                 <div>
