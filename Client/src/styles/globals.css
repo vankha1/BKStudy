@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #3c57ba;
+  --secondary-color: #c6e7ff;
+}
+
+.flex-center {
+  @apply flex justify-center items-center;
+}
+
+.flex-start {
+  @apply flex justify-start items-start;
+}
+
+.flex-end {
+  @apply flex justify-end items-center;
+}
+
+.flex-between {
+  @apply flex justify-between items-center;
+}
+
+.app {
+  @apply relative z-0 flex justify-center items-center flex-col max-w-7xl mx-auto sm:px-16 px-6;
+}
+
+.primary-button {
+  @apply text-white;
+  background-color: var(--primary-color);
+}
+
+.secondary-button {
+  @apply text-black;
+  background-color: var(--secondary-color);
+}
