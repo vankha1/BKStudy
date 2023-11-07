@@ -11,11 +11,10 @@ const RootLayout = ({ children }) => {
   return (
     <html lang="vi">
       <body>
-        <Nav />
+        <Nav/>
         <main className="app">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   );
