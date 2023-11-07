@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary-color: #3c57ba;
+  --secondary-color: #c6e7ff;
+}
+
 .flex-center {
   @apply flex justify-center items-center;
 }
@@ -16,6 +21,16 @@
 
 .flex-between {
   @apply flex justify-between items-center;
+}
+
+.primary-button {
+  @apply text-white;
+  background-color: var(--primary-color);
+}
+
+.secondary-button {
+  @apply text-black;
+  background-color: var(--secondary-color);
 }
 
 .flex-around {

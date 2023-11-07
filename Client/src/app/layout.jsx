@@ -1,6 +1,6 @@
-import "@styles/globals.css";
-import Nav from "@components/Nav";
-import Footer from "@components/Footer";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
+import "@/styles/globals.css"
 
 export const metadata = {
   title: "BKStudy",
@@ -11,10 +11,11 @@ const RootLayout = ({ children }) => {
   return (
     <html lang="vi">
       <body>
-        <Nav/>
+        <Navbar></Navbar>
         <main className="app">
           {children}
         </main>
+        <Footer></Footer>
       </body>
     </html>
   );
