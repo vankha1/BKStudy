@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get("/", courseController.getAllCourses);
 
+router.get("/course-detail/:courseId", courseController.getCourse)
 // routes for lecturers
 router.post(
   "/create",

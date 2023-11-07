@@ -23,6 +23,13 @@ const userSchema = new Schema(
     },
     avatar: {
       type: String,
+      default: ""
+    },
+    phoneNumber : {
+      type: String,
+    },
+    dateOfBirth : {
+      type: String,
     },
     background: {
       type: String,
