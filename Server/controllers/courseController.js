@@ -21,6 +21,27 @@ const getAllCourses = async (req, res, next) => {
   }
 };
 
+const getCourse = async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+    
+    const course = await Course.findById(courseId);
+    if (!course) {
+      const error = new Error("No course found !!!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({ course })
+  }
+  catch(err){
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
+
 const createCourse = async (req, res, next) => {
   try {
     const errors = validationResult(req);
@@ -54,9 +75,9 @@ const createCourse = async (req, res, next) => {
     await course.save();
 
     // Waiting for the approval of admin
-    // const user = await User.findById(req.userId);
-    // user.courses.push(course)
-    // await user.save()
+    const user = await User.findById(req.userId);
+    user.courses.push(course)
+    await user.save()
 
     res.status(200).json({
       message: "Course is sent to admin",
@@ -170,6 +191,7 @@ const clearImage = (filePath) => {
 
 module.exports = {
   getAllCourses,
+  getCourse,
   createCourse,
   deleteCourse,
 };
