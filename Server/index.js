@@ -12,6 +12,7 @@ const errorHandlingMiddleware = require('./middleware/errorHandling')
 const dbConnect = require('./config/db')
 const auth = require('./routes/auth')
 const course = require('./routes/course')
+<<<<<<< HEAD
 const lesson = require('./routes/lesson')
 const lessonFileMulter = require('./middleware/lessonFileMulter')
 
@@ -19,6 +20,9 @@ const lessonFileMulter = require('./middleware/lessonFileMulter')
 //const authMedia2 = require('./controllers/authMediaController')
 
 //authMedia2.configGoogleAuth()
+=======
+const user = require('./routes/user')
+>>>>>>> 2d932b9842ca7e7532377e8b170662dc0453f5d8
 
 dbConnect()
 
@@ -43,8 +47,12 @@ app.get('/', (req, res) => {
 })
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/course', course);
+<<<<<<< HEAD
 //app.use('/google', authMedia1);
 app.use('/api/v1/lesson', lesson);
+=======
+app.use('/api/v1/user', user);
+>>>>>>> 2d932b9842ca7e7532377e8b170662dc0453f5d8
 
 app.use(errorHandlingMiddleware)
 

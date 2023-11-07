@@ -21,6 +21,7 @@ const getAllCourses = async (req, res, next) => {
   }
 };
 
+<<<<<<< HEAD
 const createCourse = async (req, res, next) => {
   const errors = validationResult(req);
   // console.log(errors);
@@ -50,13 +51,65 @@ const createCourse = async (req, res, next) => {
     isApproved: false,
   });
 
+=======
+const getCourse = async (req, res, next) => {
+>>>>>>> 2d932b9842ca7e7532377e8b170662dc0453f5d8
   try {
+    const courseId = req.params.courseId;
+    
+    const course = await Course.findById(courseId);
+    if (!course) {
+      const error = new Error("No course found !!!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({ course })
+  }
+  catch(err){
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
+
+const createCourse = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    // console.log(errors);
+    if (!errors.isEmpty()) {
+      const error = new Error("Validation failed, entered data is incorrect");
+      error.statusCode = 422;
+      throw error;
+    }
+    // console.log(req);
+    if (!req.file) {
+      const error = new Error("No image provided");
+      error.statusCode = 422;
+      throw error;
+    }
+
+    const title = req.body.title;
+    const imageUrl = req.file.path.replace("\\", "/");
+    const description = req.body.description;
+    const price = req.body.price;
+
+    const course = new Course({
+      title,
+      imageUrl,
+      description,
+      price,
+      createdBy: req.userId,
+      isApproved: false,
+    });
+
     await course.save();
 
     // Waiting for the approval of admin
-    // const user = await User.findById(req.userId);
-    // user.courses.push(course)
-    // await user.save()
+    const user = await User.findById(req.userId);
+    user.courses.push(course)
+    await user.save()
 
     res.status(200).json({
       message: "Course is sent to admin",
@@ -128,9 +181,8 @@ const updateCourse = async (req, res, next) => {
 };
  */
 const deleteCourse = async (req, res, next) => {
-  const courseId = req.params.courseId;
-
   try {
+    const courseId = req.params.courseId;
     const course = await Course.findById(courseId);
 
     if (!course) {
@@ -171,6 +223,7 @@ const clearImage = (filePath) => {
 
 module.exports = {
   getAllCourses,
+  getCourse,
   createCourse,
-  deleteCourse
+  deleteCourse,
 };
