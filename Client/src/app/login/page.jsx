@@ -19,8 +19,11 @@ const LogInPage = () => {
     setSubmitting(true)
 
     axios.post('http://localhost:8080/api/v1/auth/login', account).then((response) => {
-      if (response) router.push('/')
-      else console.log(response)
+      if (response.statusText == 'OK') {
+        if (response.data.message == "Wrong password") alert("Wrong password")
+        else router.push('/')
+      }
+      else alert("Something wrong is happening")
     }).catch((error) => {alert(error)}).finally(() => {setSubmitting(false)})
   }
 
