@@ -1,9 +1,10 @@
-"use client"; // This is a client component
+'use client';
+import { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRef } from 'react';
 
 import EditData from '../../components/EditInfoUser';
+import UploadImage from '@components/UploadFile';
 
 const USER_INFO = {
   info: [
@@ -12,12 +13,16 @@ const USER_INFO = {
       data: 'Giáo viên'
     },
     {
+      title: 'Email',
+      data: 'nguyenvana@gmail.com'
+    },
+    {
       title: 'Họ tên',
       data: 'Nguyễn Văn A'
     },
     {
-      title: 'Email',
-      data: 'nguyenvana@gmail.com'
+      title: 'Ngày tháng năm sinh',
+      data: '20/12/2000'
     },
     {
       title: 'Số điện thoại',
@@ -28,53 +33,31 @@ const USER_INFO = {
     {
       course_name: 'Cấu trúc dữ liệu và giải thuật',
       description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/course_image.jpg',
+      image: '/assets/images/course_image.jpg',
       href: '/dsa'
     },
     {
       course_name: 'Cấu trúc dữ liệu và giải thuật',
       description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/course_image.jpg',
+      image: '/assets/images/course_image.jpg',
       href: '/dsa'
     },
     {
       course_name: 'Cấu trúc dữ liệu và giải thuật',
       description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/course_image.jpg',
+      image: '/assets/images/course_image.jpg',
       href: '/dsa'
     },
     {
       course_name: 'Cấu trúc dữ liệu và giải thuật',
       description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/course_image.jpg',
+      image: '/assets/images/course_image.jpg',
       href: '/dsa'
     }
   ]
 }
 
 const Profile = () => {
-
-  const fileInputRef = useRef(null);
-
-  const handleFileUpload = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleFileSelected = (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageUrl = e.target.result;
-        const imageElement = document.createElement('img');
-        imageElement.src = imageUrl;
-        document.body.appendChild(imageElement);
-
-        // Call API in here
-      };
-      reader.readAsDataURL(selectedFile);
-    }
-  };
 
   return (
     <div className='w-full'>
@@ -93,7 +76,7 @@ const Profile = () => {
             />
           </div>
           <h2 className='pl-8 mt-20 text-3xl font-medium'>
-            {USER_INFO.info.find((item) => item.title =='Họ tên').data.toUpperCase()}
+            {USER_INFO.info.find((item) => item.title == 'Họ tên').data.toUpperCase()}
           </h2>
         </div>
         <div className='absolute bottom-12 right-20 flex-between cursor-pointer'>
@@ -105,24 +88,26 @@ const Profile = () => {
             height={30}
             priority
           />
-          <button className='text-xl ml-2 font-normal' onClick={handleFileUpload}>Đổi ảnh bìa</button>
-          <input
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            ref={fileInputRef}
-            onChange={handleFileSelected}
-          />
+          <UploadImage title='Đổi ảnh bìa' className='text-xl ml-2 font-normal' />
         </div>
       </div>
       <div className='flex justify-between mx-16'>
         <div className='relative flex-col pt-8'>
           <div className='px-16 py-4 rounded-lg shadow-lg mb-8'>
             <h3 className='text-xl font-medium mb-3 border-b border-solid border-black'>Quyền truy cập</h3>
-            <p className='text-base font-normal'>{USER_INFO.info.find((item) => item.title =='Quyền truy cập').data}</p>
+            <p className='text-base font-normal'>{USER_INFO.info.find((item) => item.title == 'Quyền truy cập').data}</p>
           </div>
           <div className='w-full px-16 py-4 rounded-lg shadow-lg mb-8'>
             <h3 className='w-52 text-xl font-medium mb-3 border-b border-solid border-black'>Thông tin tài khoản</h3>
+            <div className='mb-4'>
+              <h4 className='text-lg font-medium mb-1'>{USER_INFO.info.find((item) => item.title == 'Email').title}</h4>
+              <input
+                type="text"
+                className='text-base font-normal p-[0.3125rem] bg-white'
+                value={USER_INFO.info.find((item) => item.title == 'Email').data}
+                disabled
+              />
+            </div>
             <EditData infos={USER_INFO.info} />
           </div>
         </div>
@@ -147,7 +132,7 @@ const Profile = () => {
         </div>
       </div>
     </div>
-    
+
   )
 }
 

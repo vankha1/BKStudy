@@ -35,7 +35,7 @@ const ManageCourses = () => {
     return (
         <div className='relative w-full mt-4'>
             <div className='w-full flex flex-col'>
-                <div className='text-xl font-medium top-0 left-0 mb-2'>KHÓA HỌC ĐANG GIẢNG DẠY</div>
+                <div className='text-xl font-bold top-0 left-0 mb-2'>KHÓA HỌC ĐANG GIẢNG DẠY</div>
                 <FilterSearch />
                 <Link href='add-course' className='w-full relative mt-4'>
                     <button className='medium-blue-button float-right'>Thêm khóa học</button>
