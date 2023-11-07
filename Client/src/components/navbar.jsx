@@ -22,16 +22,20 @@ const Navbar = () => {
         </button>
     </div>
 
-    <div className="log hidden">
-        <button className="primary-button w-[110px] h-[35px] rounded-[20px] mt-[25px] mx-[10px]">
-            Đăng nhập
-        </button>
-        <button className="secondary-button w-[110px] h-[35px] rounded-[20px] mt-[25px] mx-[10px]">
-            Đăng ký
-        </button>
+    <div className="log">
+        <Link href="/signin">
+            <button className="primary-button w-[110px] h-[35px] rounded-[20px] mx-[10px]">
+                Đăng nhập
+            </button>
+        </Link>
+        <Link href="/signup">
+            <button className="secondary-button w-[110px] h-[35px] rounded-[20px] mx-[10px]">
+                Đăng ký
+            </button>
+        </Link>
     </div>
 
-    <div className="user-choice flex mt-[30px]">
+    <div className="user-choice flex mt-[30px] hidden">
         <div>
             <Link href="/" className="block mx-2 my-[-4px]">
                 <Image src="/assets/course.png" alt="Course" width={48} height={48} className="w-[30px] cursor-pointer" />
