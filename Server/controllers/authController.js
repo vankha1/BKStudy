@@ -1,32 +1,10 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-<<<<<<< HEAD
-const jwt = require('jsonwebtoken');
-=======
 const jwt = require("jsonwebtoken");
->>>>>>> 2d932b9842ca7e7532377e8b170662dc0453f5d8
 
 const User = require("../models/userModel");
 
 const signup = async (req, res, next) => {
-<<<<<<< HEAD
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    const error = new Error("Validation failed");
-    error.statusCode = 422;
-    error.data = errors.array();
-    throw error;
-  }
-  const username = req.body.username;
-  const email = req.body.email;
-  const password = req.body.password;
-  const origin = 'LOCAL'
-  const userType = req.body.userType;
-  const joinedDate = new Date();
-  const isAdmin = false;
-=======
->>>>>>> 2d932b9842ca7e7532377e8b170662dc0453f5d8
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
