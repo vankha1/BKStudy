@@ -40,8 +40,7 @@ const AddCourse = () => {
     return (
         <div className='relative w-full mt-4'>
             <div className='w-full flex flex-col'>
-                <div className='text-xl font-bold top-0 left-0 mb-2'>KHÓA HỌC ĐANG GIẢNG DẠY</div>
-                <FilterSearch />
+                <FilterSearch title="KHÓA HỌC ĐANG GIẢNG DẠY"/>
             </div>
             <div className='mx-32 mt-10'>
                 <h2 className='text-xl font-medium'>Thêm khóa học</h2>

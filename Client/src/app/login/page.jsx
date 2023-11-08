@@ -18,25 +18,14 @@ const LogInPage = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    axios
-      .post("http://localhost:8080/api/v1/auth/login", account)
-      .then((response) => {
-        if (response){
-          const token = response.data.token;
-          if (token){
-            localStorage.setItem("jsonwebtoken", token);
-            router.push('/');
-          }
-        }
-        else console.log(response);
-      })
-      .catch((error) => {
-        alert(error);
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
-  };
+    axios.post('http://localhost:8080/api/v1/auth/login', account).then((response) => {
+      if (response.statusText == 'OK') {
+        if (response.data.message == "Wrong password") alert("Wrong password")
+        else router.push('/')
+      }
+      else alert("Something wrong is happening")
+    }).catch((error) => {alert(error)}).finally(() => {setSubmitting(false)})
+  }
 
   return (
     <section className="flex-center flex-col drop-shadow-md mt-3 px-8 py-5 bg-white rounded-md">
