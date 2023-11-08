@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Course = require("../models/courseModel");
 
 const getProfile = async (req, res, next) => {
   try {
@@ -21,9 +22,18 @@ const getProfile = async (req, res, next) => {
   }
 };
 
+
 const addProfile = async (req, res, next) => {
   try {
     const userId = req.userId;
+
+    if (!req.file) {
+      const error = new Error("No image provided");
+      error.statusCode = 422;
+      throw error;
+    }
+    const imageUrl = req.file.path.replace("\\", "/");
+    console.log(imageUrl);
 
     const { fullname, dateOfBirth, phoneNumber } = req.body;
 
@@ -33,7 +43,8 @@ const addProfile = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
+    
+    user.avatar = imageUrl;
     user.fullname = fullname;
     user.dateOfBirth = dateOfBirth;
     user.phoneNumber = phoneNumber;
@@ -90,8 +101,69 @@ const updateProfile = async (req, res, next) => {
   }
 };
 
+const registerCourse = async ( req, res, next ) => {
+  try {
+    const courseId = req.params.courseId;
+    const userId = req.userId;
+    const course = await Course.findById( courseId );
+    if (!course){
+      const error = new Error("Course not found !!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const user = await User.findById( userId );
+    if (!user){
+      const error = new Error("User not found !!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    user.courses.push({
+      courseId: course._id,
+      enrolledDate: new Date()
+    });
+    await user.save();
+
+    res.status(200).json({
+      message : "Register course successfully !!!"
+    })
+  }
+  catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500; // Server error
+    }
+    next(err);
+  }
+}
+
+const getCourses = async (req, res, next) => {
+  try{
+    const userId = req.userId;
+
+    const user = await User.findById(userId).populate('courses.courseId').exec();
+
+    if (!user){
+      const error = new Error("User not found !!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({ courses: user.courses });
+
+  }
+  catch(err){
+    if (!err.statusCode) {
+      err.statusCode = 500; // Server error
+    }
+    next(err);
+  }
+}
+
 module.exports = {
   getProfile,
   addProfile,
   updateProfile,
+  registerCourse,
+  getCourses
 };
