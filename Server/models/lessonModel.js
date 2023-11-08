@@ -19,7 +19,15 @@ const lessonSchema = new Schema(
       type: Object,
       required: true,
     },
-    url: {
+    attachedFiles: {
+      type: [
+        {
+          filename: String,
+          filepath: String,
+        }
+      ],
+    },
+    videoURL: {
       type: String
     },
     noteContents: {

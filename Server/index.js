@@ -13,6 +13,7 @@ const dbConnect = require('./config/db')
 const auth = require('./routes/auth')
 const course = require('./routes/course')
 const user = require('./routes/user')
+const lesson = require('./routes/lesson')
 
 dbConnect()
 
@@ -32,29 +33,30 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, 'images'); // folder we want to store 
-    },
-    filename: function(req, file, cb) {
-        cb(null, uuidv4() + '-' + file.originalname)
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, 'images'); // folder we want to store 
+//     },
+//     filename: function(req, file, cb) {
+//         cb(null, uuidv4() + '-' + file.originalname)
+//     }
+// });
 
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
-        cb(null, true)
-    }
-    else{
-        cb(null, false)
-    }
-}
-//.single(fieldname) : Accept a single file with the name fieldname. The single file will be stored in req.file.
-app.use(multer({ storage : storage , fileFilter: fileFilter}).single('image'))
+// const fileFilter = (req, file, cb) => {
+//     if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
+//         cb(null, true)
+//     }
+//     else{
+//         cb(null, false)
+//     }
+// }
+// //.single(fieldname) : Accept a single file with the name fieldname. The single file will be stored in req.file.
+// app.use(multer({ storage : storage , fileFilter: fileFilter}).single('image'))
 
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/course', course);
 app.use('/api/v1/user', user);
+app.use('/api/v1/lesson', lesson);
 
 app.use(errorHandlingMiddleware)
 
