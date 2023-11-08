@@ -1,41 +1,37 @@
 "use client"; // This is a client component
 import { useRef } from 'react';
 
-const UploadFile = ({ title, className }) => {
-    const fileInputRef = useRef(null);
+const UploadFile = ({ title, className, fileType, onFileSelected }) => {
+  const fileInputRef = useRef(null);
 
-    const handleFileUpload = () => {
-      fileInputRef.current.click();
+  const handleFileUpload = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileSelected = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const fileUrl = e.target.result;
+        onFileSelected(fileUrl);
+      };
+      reader.readAsDataURL(selectedFile);
     };
-  
-    const handleFileSelected = (event) => {
-      const selectedFile = event.target.files[0];
-      if (selectedFile) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const imageUrl = e.target.result;
-          const imageElement = document.createElement('img');
-          imageElement.src = imageUrl;
-          document.body.appendChild(imageElement);
-  
-          // Call API in here
-        };
-        reader.readAsDataURL(selectedFile);
-      }
-    };
+  };
 
     return (
-        <>
-            <button className={className} onClick={handleFileUpload}>{title}</button>
-            <input
-                type="file"
-                accept="image/*"
-                style={{ display: 'none' }}
-                ref={fileInputRef}
-                onChange={handleFileSelected}
-            />
-        </>
+      <>
+        <button className={className} onClick={handleFileUpload}>{title}</button>
+        <input
+          type="file"
+          accept={`${fileType}/*`}
+          style={{ display: 'none' }}
+          ref={fileInputRef}
+          onChange={handleFileSelected}
+        />
+      </>
     )
-}
+  }
 
-export default UploadFile
+  export default UploadFile
