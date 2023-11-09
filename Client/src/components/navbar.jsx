@@ -23,7 +23,7 @@ const Navbar = () => {
     </div>
 
     <div className="log">
-        <Link href="/signin">
+        <Link href="/login">
             <button className="primary-button w-[110px] h-[35px] rounded-[20px] mx-[10px]">
                 Đăng nhập
             </button>

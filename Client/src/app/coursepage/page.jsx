@@ -30,15 +30,17 @@ const CoursePage = () => {
                 </div>
             </div>
 
-            <div className="video absolute bg-white h-[480px] w-[350px] right-[80px] top-4 border border-[#cacaca] rounded-[20px] text-black">
+            <div className="video absolute bg-white h-[480px] w-[350px] right-[40px] top-4 border border-[#cacaca] rounded-[20px] text-black">
                 <iframe width="560" height="315" src="https://www.youtube.com/embed/T9DSBhBR_I4?si=VGLFIMLh8zU5A4wo" title="YouTube video player" frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen 
                 className="w-[340px] h-[180px] m-auto mt-1 mb-[10px] rounded-[18px] border border-[#cacaca]"></iframe>
                 <h1 className="font-bold text-center text-3xl mb-[10px]">500.000đ</h1>
                 <div className="flex mb-[30px]">
-                    <button className="primary-button w-[150px] h-[50px] m-auto text-xl font-semibold rounded-[30px]">
-                        Đăng ký học
-                    </button>
+                    <Link href="/" className="m-auto">
+                        <button className="primary-button w-[150px] h-[50px] text-xl font-semibold rounded-[30px]">
+                            Đăng ký học
+                        </button>
+                    </Link>
                 </div>
                 <div className="ml-[70px]">
                     <div className="flex mb-2">
