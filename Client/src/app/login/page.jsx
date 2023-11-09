@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import Image from "next/image";
 import { useState } from "react";
@@ -21,7 +21,10 @@ const LogInPage = () => {
     axios.post('http://localhost:8080/api/v1/auth/login', account).then((response) => {
       if (response.statusText == 'OK') {
         if (response.data.message == "Wrong password") alert("Wrong password")
-        else router.push('/')
+        else {
+          localStorage.setItem("JWT", response.data.token)
+          router.push('/')
+        }
       }
       else alert("Something wrong is happening")
     }).catch((error) => {alert(error)}).finally(() => {setSubmitting(false)})
