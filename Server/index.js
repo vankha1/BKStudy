@@ -22,7 +22,6 @@ const lessonFileMulter = require('./middleware/lessonFileMulter')
 //authMedia2.configGoogleAuth()
 
 const user = require('./routes/user')
-const lesson = require('./routes/lesson')
 
 dbConnect()
 

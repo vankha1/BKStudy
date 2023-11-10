@@ -15,8 +15,9 @@ const lessonSchema = new Schema(
     videoURL: {
       type: String,
     },
-    lastChanged: {
-      type: Date,
+    attachedFileCount: {
+      type: Number,
+      required: true
     },
     attachedFiles: {
       type: [
