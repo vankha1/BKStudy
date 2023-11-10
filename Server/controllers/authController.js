@@ -27,6 +27,7 @@ const signup = async (req, res, next) => {
       username,
       email,
       password: hashedPassword,
+      userOrigin: origin,
       joinedDate,
       userType,
       isAdmin,

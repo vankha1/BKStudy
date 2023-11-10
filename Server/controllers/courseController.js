@@ -24,7 +24,7 @@ const getAllCourses = async (req, res, next) => {
 const getCourse = async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
-    
+
     const course = await Course.findById(courseId);
     if (!course) {
       const error = new Error("No course found !!!");
@@ -34,7 +34,7 @@ const getCourse = async (req, res, next) => {
 
     res.status(200).json({ course })
   }
-  catch(err){
+  catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
