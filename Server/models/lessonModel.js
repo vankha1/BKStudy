@@ -27,9 +27,6 @@ const lessonSchema = new Schema(
         }
       ]
     },
-    noteContents: {
-      type: String
-    },
     courseId: {
       type: Schema.Types.ObjectId,
       ref: 'Course'
