@@ -5,21 +5,6 @@ function EditData({ infos }) {
   const [isEditing, setIsEditing] = useState(false);
   const [newData, setNewData] = useState([infos]);
 
-  const USER_INFO = [
-    {
-      title: 'Họ tên',
-      data: 'Nguyễn Văn A'
-    },
-    {
-      title: 'Ngày tháng năm sinh',
-      data: '20/12/2000'
-    },
-    {
-      title: 'Số điện thoại',
-      data: '0123456789'
-    }
-  ]
-
   const handleEditClick = () => {
     setIsEditing(true);
   };
@@ -36,16 +21,38 @@ function EditData({ infos }) {
 
   return (
     <div>
-      {USER_INFO.map((info, index) => (
+      {infos.map((info, index) => (
         <div key={index} className='mb-4'>
           <h4 className='text-lg font-medium mb-1'>{info.title}</h4>
           {isEditing ? (
-            <input
-              type='text'
-              className='text-base font-normal border border-solid border-gray-300 p-1'
-              value={info.data}
-              onChange={(e) => handleInputChange(e.target.value, index)}
-            />
+            <>
+              {
+                info.title === 'Quyền truy cập' || info.title === 'Email' ? (
+                  <div>
+                    {
+                      info.title === 'Quyền truy cập' ? (
+                    <>
+                    </>
+                    ) : (
+                    <input
+                      type="text"
+                      className='text-base font-normal p-[0.3125rem] bg-white'
+                      value={info.data}
+                      disabled
+                    />
+                    )
+                    }
+                  </div>
+                ) : (
+                  <input
+                    type='text'
+                    className='text-base font-normal border border-solid border-gray-300 p-1'
+                    value={info.data}
+                    onChange={(e) => handleInputChange(e.target.value, index)}
+                  />
+                )
+              }
+            </>
           ) : (
             <input
               type="text"
