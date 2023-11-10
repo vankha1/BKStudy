@@ -24,7 +24,8 @@ const AddCourse = () => {
             title: 'Hình ảnh kèm theo',
             value: '',
             placeholders: 'Đường dẫn hình ảnh',
-            button_title: 'Tải lên hình ảnh',
+            button_title: 'Tải lên',
+            fileType: 'image',
             className: 'mb-4 w-full',
             input_className: 'w-4/5 h-[36px] text-base font-normal border border-solid p-1'
         },
