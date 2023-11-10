@@ -71,7 +71,6 @@ const loginMedia = async (origin, dataRaw) => {
 }
 
 module.exports = {
-    "passport": passport,
-    "configGoogleAuth": configGoogleAuth,
-
+    configGoogleAuth,
+    loginMedia
 }
