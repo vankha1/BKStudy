@@ -23,61 +23,85 @@ function EditData({ infos }) {
     <div>
       {infos.map((info, index) => (
         <div key={index} className='mb-4'>
-          <h4 className='text-lg font-medium mb-1'>{info.title}</h4>
-          {isEditing ? (
-            <>
-              {
-                info.title === 'Quyền truy cập' || info.title === 'Email' ? (
-                  <div>
-                    {
-                      info.title === 'Quyền truy cập' ? (
-                    <>
-                    </>
-                    ) : (
+          <>
+            {
+              info.title === 'Quyền truy cập' ? (
+                <>
+                </>
+              ) : (
+                <h4 className='text-lg font-medium mb-1'>{info.title}</h4>
+              )
+            }
+          </>
+          {
+            isEditing ? (
+              <>
+                {
+                  info.title === 'Quyền truy cập' || info.title === 'Email' ? (
+                    <div>
+                      {
+                        info.title === 'Quyền truy cập' ? (
+                          <>
+                          </>
+                        ) : (
+                          <input
+                            type="text"
+                            className='text-base font-normal p-[0.3125rem] bg-white'
+                            value={info.data}
+                            disabled
+                          />
+                        )
+                      }
+                    </div>
+                  ) : (
                     <input
-                      type="text"
-                      className='text-base font-normal p-[0.3125rem] bg-white'
+                      type='text'
+                      className='text-base font-normal border border-solid border-gray-300 p-1'
                       value={info.data}
-                      disabled
+                      onChange={(e) => handleInputChange(e.target.value, index)}
                     />
+                  )
+                }
+              </>
+            ) : (
+              <>
+                <div>
+                  {
+                    info.title === 'Quyền truy cập' ? (
+                      <>
+                      </>
+                    ) : (
+                      <input
+                        type="text"
+                        className='text-base font-normal p-[0.3125rem] bg-white'
+                        value={info.data}
+                        disabled
+                      />
                     )
-                    }
-                  </div>
-                ) : (
-                  <input
-                    type='text'
-                    className='text-base font-normal border border-solid border-gray-300 p-1'
-                    value={info.data}
-                    onChange={(e) => handleInputChange(e.target.value, index)}
-                  />
-                )
-              }
-            </>
-          ) : (
-            <input
-              type="text"
-              className='text-base font-normal p-[0.3125rem] bg-white'
-              value={info.data}
-              disabled
-            />
-          )}
-        </div>
+                  }
+                </div>
+              </>
+            )
+          }
+        </div >
       ))}
-      {isEditing ? (
-        <button
-          className='w-44 px-4 py-2 rounded-3xl border border-solid border-gray-300'
-          onClick={handleSaveClick}
-        >
-          Lưu
-        </button>
-      ) : (
-        <button
-          className='w-44 px-4 py-2 rounded-3xl border border-solid border-gray-300'
-          onClick={handleEditClick}
-        >
-          Chỉnh sửa thông tin
-        </button>
-      )}
+          {
+            isEditing ? (
+              <button
+                className='w-44 px-4 py-2 rounded-3xl border border-solid border-gray-300'
+                onClick={handleSaveClick}
+              >
+                Lưu
+              </button>
+            ) : (
+              <button
+                className='w-44 px-4 py-2 rounded-3xl border border-solid border-gray-300'
+                onClick={handleEditClick}
+              >
+                Chỉnh sửa thông tin
+              </button>
+            )
+          }
     </div>
   );
 }

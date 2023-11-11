@@ -7,6 +7,7 @@ import React from 'react'
 
 import RenderLessons from "@components/RenderLessons";
 import RenderAccount from "@components/RenderAccount";
+import RatingCourses from "@components/RatingCourses";
 
 
 const COURSE_INFO = {
@@ -213,6 +214,42 @@ const LIST_ACCOUNT = [
     },
 ]
 
+const USERS_RATING = {
+    ratingavg: '5',
+    ratings: [
+        {
+            name: 'Nguyễn Văn A',
+            content: 'Khóa học này rất bổ ích, mọi người hãy đăng kí học thật nhiều nhá!. Giá rẻ mà cam đoan 10. Giải tích 1 nữa thì còn gì bằng!!!',
+            rating: '4',
+        },
+        {
+            name: 'Nguyễn Văn A',
+            content: 'Khóa học này rất bổ ích, mọi người hãy đăng kí học thật nhiều nhá!. Giá rẻ mà cam đoan 10. Giải tích 1 nữa thì còn gì bằng!!!',
+            rating: '4',
+        },
+        {
+            name: 'Nguyễn Văn A',
+            content: 'Khóa học này rất bổ ích, mọi người hãy đăng kí học thật nhiều nhá!. Giá rẻ mà cam đoan 10. Giải tích 1 nữa thì còn gì bằng!!!',
+            rating: '4',
+        },
+        {
+            name: 'Nguyễn Văn A',
+            content: 'Khóa học này rất bổ ích, mọi người hãy đăng kí học thật nhiều nhá!. Giá rẻ mà cam đoan 10. Giải tích 1 nữa thì còn gì bằng!!!',
+            rating: '4',
+        },
+        {
+            name: 'Nguyễn Văn A',
+            content: 'Khóa học này rất bổ ích, mọi người hãy đăng kí học thật nhiều nhá!. Giá rẻ mà cam đoan 10. Giải tích 1 nữa thì còn gì bằng!!!',
+            rating: '4',
+        },
+        {
+            name: 'Nguyễn Văn A',
+            content: 'Khóa học này rất bổ ích, mọi người hãy đăng kí học thật nhiều nhá!. Giá rẻ mà cam đoan 10. Giải tích 1 nữa thì còn gì bằng!!!',
+            rating: '4',
+        }
+    ]
+}
+
 const EditCourse = () => {
   return (
     <div className='w-full'>
@@ -233,7 +270,8 @@ const EditCourse = () => {
         </div>
         <div className='w-full mt-8'>
             {/* <RenderLessons course={COURSE_INFO.course} /> */}
-            <RenderAccount accounts={LIST_ACCOUNT} />
+            {/* <RenderAccount accounts={LIST_ACCOUNT} /> */}
+            <RatingCourses users={USERS_RATING} />
         </div>
     </div>
   )
