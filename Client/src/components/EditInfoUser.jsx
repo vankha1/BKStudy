@@ -29,7 +29,7 @@ function EditData({ infos }) {
                 <>
                 </>
               ) : (
-                <h4 h4 className='text-lg font-medium mb-1'>{info.title}</h4>
+                <h4 className='text-lg font-medium mb-1'>{info.title}</h4>
               )
             }
           </>
