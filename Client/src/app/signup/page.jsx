@@ -21,7 +21,7 @@ const SignUpPage = () => {
     setSubmitting(true)
 
     axios.put('http://localhost:8080/api/v1/auth/signup', account).then((response) => {
-      if (response.ok) router.push('/profile-form')
+      if (response.statusText === 'OK') router.push('/add-profile')
       else console.log(response)
     }).catch((error) => {alert(error)}).finally(() => {setSubmitting(false)})
   }

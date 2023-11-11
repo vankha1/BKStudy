@@ -12,16 +12,24 @@ const errorHandlingMiddleware = require('./middleware/errorHandling')
 const dbConnect = require('./config/db')
 const auth = require('./routes/auth')
 const course = require('./routes/course')
-const user = require('./routes/user')
+
 const lesson = require('./routes/lesson')
+const lessonFileMulter = require('./middleware/lessonFileMulter')
+
+//const authMedia1 = require('./routes/authMedia')
+//const authMedia2 = require('./controllers/authMediaController')
+
+//authMedia2.configGoogleAuth()
+
+const user = require('./routes/user')
 
 dbConnect()
 
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, PATCH, DELETE"
+        "Access-Control-Allow-Methods",
+        "GET, POST, PUT, PATCH, DELETE"
     );
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     next();
@@ -55,9 +63,12 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/course', course);
-app.use('/api/v1/user', user);
+
+//app.use('/google', authMedia1);
 app.use('/api/v1/lesson', lesson);
+app.use('/api/v1/user', user);
+
 
 app.use(errorHandlingMiddleware)
 
-app.listen(PORT, () => console.log( `Server listening at http://localhost:${PORT}`))
+app.listen(PORT, () => console.log(`Server listening at http://localhost:${PORT}`))

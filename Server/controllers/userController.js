@@ -1,5 +1,7 @@
 const User = require("../models/userModel");
 const Course = require("../models/courseModel");
+const Lesson = require("../models/lessonModel");
+const Note = require("../models/noteModel");
 
 const getProfile = async (req, res, next) => {
   try {
@@ -32,8 +34,8 @@ const addProfile = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    const imageUrl = req.file.path.replace("\\", "/");
-    console.log(imageUrl);
+    const temp = req.file.path.replace(/\\/g, "/").split("images")
+    const imageUrl = "images" + temp[1]
 
     const { fullname, dateOfBirth, phoneNumber } = req.body;
 
@@ -43,7 +45,7 @@ const addProfile = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    
+
     user.avatar = imageUrl;
     user.fullname = fullname;
     user.dateOfBirth = dateOfBirth;
@@ -51,7 +53,7 @@ const addProfile = async (req, res, next) => {
 
     await user.save();
     res.status(200).json({
-      message : "User sign in successfully !!!",
+      message: "User sign in successfully !!!",
       user
     })
   } catch (err) {
@@ -74,7 +76,7 @@ const updateProfile = async (req, res, next) => {
     }
     const user = await User.findById(userId);
 
-    if (!user){
+    if (!user) {
       const error = new Error("User not found !!");
       error.statusCode = 404;
       throw error;
@@ -89,7 +91,7 @@ const updateProfile = async (req, res, next) => {
     await user.save();
 
     res.status(200).json({
-      message : "Update user successfully !!!",
+      message: "Update user successfully !!!",
       user
     })
   }
@@ -101,23 +103,39 @@ const updateProfile = async (req, res, next) => {
   }
 };
 
-const registerCourse = async ( req, res, next ) => {
+const registerCourse = async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
     const userId = req.userId;
-    const course = await Course.findById( courseId );
-    if (!course){
+    const course = await Course.findById(courseId);
+    if (!course) {
       const error = new Error("Course not found !!");
       error.statusCode = 404;
       throw error;
     }
 
-    const user = await User.findById( userId );
-    if (!user){
+    const user = await User.findById(userId);
+    if (!user) {
       const error = new Error("User not found !!");
       error.statusCode = 404;
       throw error;
     }
+
+    //handle create note for each lesson in course
+    for (let chapter of course.chapters) {
+      for (let lesson of chapter.lessons) {
+        let lessonId = lesson.lessonId;
+
+        const note = await new Note({
+          lessonId: lessonId,
+          userId: user._id,
+          contents: " ",
+        });
+
+        await note.save();
+      }
+    }
+    //
 
     user.courses.push({
       courseId: course._id,
@@ -126,7 +144,7 @@ const registerCourse = async ( req, res, next ) => {
     await user.save();
 
     res.status(200).json({
-      message : "Register course successfully !!!"
+      message: "Register course successfully !!!"
     })
   }
   catch (err) {
@@ -138,12 +156,12 @@ const registerCourse = async ( req, res, next ) => {
 }
 
 const getCourses = async (req, res, next) => {
-  try{
+  try {
     const userId = req.userId;
 
     const user = await User.findById(userId).populate('courses.courseId').exec();
 
-    if (!user){
+    if (!user) {
       const error = new Error("User not found !!");
       error.statusCode = 404;
       throw error;
@@ -152,7 +170,7 @@ const getCourses = async (req, res, next) => {
     res.status(200).json({ courses: user.courses });
 
   }
-  catch(err){
+  catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500; // Server error
     }
