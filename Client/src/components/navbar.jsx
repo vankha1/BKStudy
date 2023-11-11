@@ -10,9 +10,24 @@ const Navbar = () => {
   const [userInfo, setUserInfo] = useState({});
   const [token, setToken] = useState("");
 
+  // useEffect(() => {
+  //   setUserInfo(JSON.parse(localStorage.getItem("userInfo")));
+  //   setToken(localStorage.getItem("JWT"));
+  // }, []);
   useEffect(() => {
-    setUserInfo(JSON.parse(localStorage.getItem("userInfo")));
-    setToken(localStorage.getItem("JWT"));
+    const storedUserInfo = localStorage.getItem("userInfo");
+    if (storedUserInfo) {
+      try {
+        const parsedUserInfo = JSON.parse(storedUserInfo);
+        setUserInfo(parsedUserInfo);
+      } catch (error) {
+        console.error("Error parsing userInfo:", error);
+      }
+    }
+    const storedToken = localStorage.getItem("JWT");
+    if (storedToken) {
+      setToken(storedToken);
+    }
   }, []);
 
   return (
@@ -45,7 +60,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      {(token) ? (
+      {userInfo ? (
         <div className="flex mt-[30px]">
           <div>
             <Link href="/" className="block mx-2 my-[-4px]">
