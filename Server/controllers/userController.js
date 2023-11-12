@@ -122,18 +122,16 @@ const registerCourse = async (req, res, next) => {
     }
 
     //handle create note for each lesson in course
-    for (let chapter of course.chapters) {
-      for (let lesson of chapter.lessons) {
-        let lessonId = lesson.lessonId;
+    for (let lesson of chapter.lessons) {
+      let lessonId = lesson.lessonId;
 
-        const note = await new Note({
-          lessonId: lessonId,
-          userId: user._id,
-          contents: " ",
-        });
+      const note = await new Note({
+        lessonId: lessonId,
+        userId: user._id,
+        contents: " ",
+      });
 
-        await note.save();
-      }
+      await note.save();
     }
     //
 

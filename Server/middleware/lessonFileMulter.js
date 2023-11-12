@@ -3,7 +3,7 @@ const path = require('path');
 
 const lessonFileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        console.log("use filepath:", path.join(__dirname, '../files'));
+        //console.log("use filepath:", path.join(__dirname, '../files'));
         cb(null, path.join(__dirname, '../files'));
     },
     filename: (req, file, cb) => {
