@@ -8,22 +8,24 @@ const lessonSchema = new Schema(
       type: String,
       required: true,
     },
-    description: {
+    contents: {
       type: String,
       required: true,
     },
-    duration: {
+    videoURL: {
+      type: String,
+    },
+    attachedFileCount: {
       type: Number,
+      required: true
     },
-    contents: {
-      type: Object,
-      required: true,
-    },
-    url: {
-      type: String
-    },
-    noteContents: {
-      type: String
+    attachedFiles: {
+      type: [
+        {
+          filename: String,
+          filepath: String
+        }
+      ]
     },
     courseId: {
       type: Schema.Types.ObjectId,
