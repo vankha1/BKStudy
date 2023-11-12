@@ -62,7 +62,8 @@ const createCourse = async (req, res, next) => {
     }
 
     const title = req.body.title;
-    const imageUrl = req.file.path.replace("\\", "/");
+    const temp = req.file.path.replace(/\\/g, "/").split("images")
+    const imageUrl = "images" + temp[1]
     const description = req.body.description;
     const price = req.body.price;
 
