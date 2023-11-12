@@ -76,7 +76,7 @@ const login = async (req, res, next) => {
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ token, userId: user._id.toString() });
+    res.status(200).json({ token, userInfo: user });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
