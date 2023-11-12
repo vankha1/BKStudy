@@ -1,7 +1,7 @@
-const User = require('../models/userModel');
-const Course = require('../models/courseModel');
-const Lesson = require('../models/lessonModel');
-const Note = require('../models/noteModel');
+const User = require("../models/userModel");
+const Course = require("../models/courseModel");
+const Lesson = require("../models/lessonModel");
+const Note = require("../models/noteModel");
 
 // all priviledge
 const getLessons = async (req, res, next) => {
@@ -17,8 +17,8 @@ const getLessons = async (req, res, next) => {
     }
 
     res.status(200).json({
-      lessons: course.chapters.lessons
-    })
+      lessons: course.chapters.lessons,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -33,8 +33,7 @@ const getLessonsByIdTeacher = async (req, res, next) => {
   res.send("teacher get lesson from controller");
   try {
     //const { userId } = req.params.userId;
-    const { courseId } = req.params.courseId;
-    const { lessonId } = req.params.lessonId;
+    const { courseId, lessonId } = req.params;
 
     //const user = await User.findById(userId).populate('courses.courseId').exec();
     const course = await Course.findById(courseId);
@@ -63,16 +62,14 @@ const getLessonsByIdTeacher = async (req, res, next) => {
       message: "get lesson successfully",
       course: course,
       lesson: lesson,
-    })
-
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-
-}
+};
 
 const createLesson = async (req, res, next) => {
   try {
@@ -97,8 +94,7 @@ const createLesson = async (req, res, next) => {
     //append file
     if (!req.files) {
       attachedFileCount = 0;
-    }
-    else {
+    } else {
       let count = 0;
       for (let prop in req.files) {
         count++;
@@ -132,7 +128,7 @@ const createLesson = async (req, res, next) => {
 
     res.status(200).json({
       message: "Lesson is added",
-      lesson: lesson
+      lesson: lesson,
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -167,8 +163,7 @@ const updateLesson = async (req, res, next) => {
 
     if (!req.files) {
       attachedFileCount = 0;
-    }
-    else {
+    } else {
       let count = 0;
       for (let prop in req.files) {
         count++;
@@ -194,8 +189,8 @@ const updateLesson = async (req, res, next) => {
     await lesson.save();
     res.status(200).json({
       message: "Change lesson successfully",
-      lesson: lesson
-    })
+      lesson: lesson,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -212,9 +207,9 @@ const getLessonsByIdStudent = async (req, res, next) => {
   // if user is the owner of the course, move to edit mode
   // if user is enrolling in this course, move to normal mode
   try {
-    const { userId } = req.params.userId;
-    const { courseId } = req.params.courseId; // use course to render side bar
-    const { lessonId } = req.params.lessonId; // use lesson to render main content
+    const { userId, courseId, lessonId } = req.params;
+    // use course to render side bar
+    // use lesson to render main content
 
     const user = await User.findById(userId);
     const course = await Course.findById(courseId);
@@ -251,17 +246,16 @@ const getLessonsByIdStudent = async (req, res, next) => {
       chapter: course.chapters,
       lesson: lesson,
       note: note,
-    })
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-}
+};
 
 const updateNote = async (req, res, next) => {
-  res.send("update note from controller");
   try {
     const { userId } = req.params.userId;
     const { lessonId } = req.params.lessonId;
@@ -280,15 +274,15 @@ const updateNote = async (req, res, next) => {
 
     res.status(200).json({
       message: "change note successfully",
-      note
-    })
+      note,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-}
+};
 
 module.exports = {
   getLessons,
