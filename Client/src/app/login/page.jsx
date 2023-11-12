@@ -23,6 +23,7 @@ const LogInPage = () => {
         if (response.data.message == "Wrong password") alert("Wrong password")
         else {
           localStorage.setItem("JWT", response.data.token)
+          localStorage.setItem("userInfo", JSON.stringify(response.data.userInfo))
           router.push('/')
         }
       }
