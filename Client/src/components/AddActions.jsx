@@ -29,7 +29,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
         for (let [key, value] of Object.entries(updatedInfoCourse)) {
             updatedInfoCourse[key] = infos[index++].data || value;
         }
-        hanleCourse(JSON.stringify(updatedInfoCourse))
+        hanleCourse(updatedInfoCourse)
     }
     
 
@@ -104,7 +104,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
                 <button
                     className='small-blue-button'
                     onClick={() => {
-                        handleSaveClick();
+                        // handleSaveClick();
                         handleValueObj();
                     }}
                 >

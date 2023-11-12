@@ -19,11 +19,11 @@ router.post(
   "/create",
   isAuth.authToken,
   isAuth.authRoles(["LECTURER"]),
+  imageMulterMiddleware,
   [
     body("title").trim().isLength({ min: 5 }),
     body("description").trim().isLength({ min: 5 }),
   ],
-  imageMulterMiddleware,
   courseController.createCourse
 );
 

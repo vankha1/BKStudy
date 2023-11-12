@@ -269,9 +269,9 @@ const EditCourse = () => {
             <button className='px-4 font-medium'>Đánh giá</button>
         </div>
         <div className='w-full mt-8'>
-            {/* <RenderLessons course={COURSE_INFO.course} /> */}
+            <RenderLessons course={COURSE_INFO.course} />
             {/* <RenderAccount accounts={LIST_ACCOUNT} /> */}
-            <RatingCourses users={USERS_RATING} />
+            {/* <RatingCourses users={USERS_RATING} /> */}
         </div>
     </div>
   )

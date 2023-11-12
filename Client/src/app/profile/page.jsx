@@ -65,7 +65,7 @@ const Profile = () => {
   const [imageSelected, setImageSelected] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem("jsonwebtoken");
+    const token = localStorage.getItem("JWT");
     console.log(token);
     axios
       .get("http://localhost:8080/api/v1/user/profile", {
@@ -73,6 +73,7 @@ const Profile = () => {
       })
       .then((data) => {
         let user = data.data.user;
+        console.log(user)
         setUserProfile(user)
       });
   }, []);

@@ -1,5 +1,5 @@
 "use client"; // This is a client component
-import { useState, useRoutes } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 import FilterSearch from '@components/FilterSearch';
@@ -48,20 +48,34 @@ const AddCourse = () => {
         description: '',
     })
 
+
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
-        axios.post(`http://localhost:8080/api/v1/course/create`, data, {
+        const formData = new FormData()
+
+        formData.append("title", data.title)
+        formData.append("price", data.price)
+        formData.append("avatar", data.avatar, data.avatar.name)
+        formData.append("description", data.description)
+
+        console.log(data, token);
+        axios.post(`http://localhost:8080/api/v1/course/create`, formData, {
             headers: {
-              'Authorization': `Bearer ${token}`,
-              "Content-Type": `multipart/form-data`
+                'Authorization': `Bearer ${token}`,
+                "Content-Type": `multipart/form-data`,
             }
         }).then((response) => {
             if (response.statusText === 'OK') {
-              console.log(response)
-            //   router.push('/')
+                console.log(response)
             }
             else console.log(response)
-          }).catch((error) => {alert(error)})
+        }).catch((error) => {
+            if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
+                console.log('JWT expired. Redirecting to login.');
+            } else {
+                console.error('Error creating course:', error);
+            }
+        })
     }
 
     return (
