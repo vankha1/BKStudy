@@ -36,9 +36,9 @@ const Navbar = () => {
         <Image
           alt="logo"
           src="/assets/logo.png"
-          width={48}
-          height={48}
-          className="w-[30px] h-[30px] relative top-1"
+          width={50}
+          height={50}
+          className="w-8 h-8 relative top-1"
         />
         <h2 className="font-semibold text-2xl leading-10">BKStudy</h2>
       </Link>

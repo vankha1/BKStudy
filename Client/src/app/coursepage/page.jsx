@@ -2,115 +2,192 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
+const course =
+    {
+        title: 'Cấu trúc dữ liệu và giải thuật',
+        description: 'Tìm hiểu về các cấu trúc dữ liệu cơ bản và những giải thuật liên quan',
+        number_register: '10000',
+        price: '500.000đ',
+        image: '/assets/images/course_image.jpg',
+        href: '/coursepage',
+        rate: '4.5',
+        lecturer: 'Nguyễn Văn A',
+        update_time: '9/2023',
+        videoURL: 'https://www.youtube.com/embed/T9DSBhBR_I4?si=VGLFIMLh8zU5A4wo'
+    }
+
+const COURSES = [
+    {
+        course_name: 'CTDL & Giải thuật',
+        number_register: '1000',
+        image: '/assets/images/course_image.jpg',
+        href: '/coursepage',
+        price: '500.000đ',
+        rate: '4.5'
+    },
+    {
+        course_name: 'CTDL & Giải thuật',
+        number_register: '1000',
+        image: '/assets/images/course_image.jpg',
+        href: '/coursepage',
+        price: '500.000đ',
+        rate: '4.5'
+    },
+    {
+        course_name: 'CTDL & Giải thuật',
+        number_register: '1000',
+        image: '/assets/images/course_image.jpg',
+        href: '/coursepage',
+        price: '500.000đ',
+        rate: '4.5'
+    }
+]
+
 const CoursePage = () => {
   return (
     <div className="coursepage">
-        <div className="w-screen h-[200px] bg-[#001453] text-white px-[100px] py-[12px]">
-            <div className="description w-[600px]">
-                <h1 className="text-3xl font-bold mb-[10px]">Cấu trúc dữ liệu & giải thuật</h1>
-                <p className="text-xs font-light mb-[20px]">Tìm hiểu về các cấu trúc dữ liệu cơ bản và những giải thuật liên quan</p>
-                <div className="flex mb-[5px]">
-                    <span className="mr-[100px]">
+        <div className="w-screen h-48 bg-footer text-white px-32 py-3">
+            <div className="description w-3/5">
+                <h1 className="text-3xl font-bold mb-3">{course.title}</h1>
+                <p className="text-xs font-light mb-5">{course.description}</p>
+                <div className="flex mb-1">
+                    <span className="mr-28">
                         <span className="font-medium">Đánh giá: </span>
-                        <span className="font-semibold text-yellow-500">4,5</span>
+                        <span className="font-semibold text-yellow-500">{course.rate}</span>
                         <span>/5</span>
                     </span>
                     <span>
                         <span className="font-medium">Đã tham gia: </span>
-                        <span>10.000</span>
+                        <span>{course.number_register}</span>
                     </span>
                 </div>
-                <div className="mb-[5px]">
+                <div className="mb-1">
                     <span className="font-light">Giáo viên: </span>
-                    <Link href="\" className="font-semibold underline ">Nguyễn Văn A</Link>
+                    <Link href="\" className="font-semibold underline ">{course.lecturer}</Link>
                 </div>
                 <div className="font-light">
                     <span>Cập nhật lần cuối vào </span>
-                    <span>9/2023</span>
+                    <span>{course.update_time}</span>
                 </div>
             </div>
 
-            <div className="video absolute bg-white h-[480px] w-[350px] right-[80px] top-4 border border-[#cacaca] rounded-[20px] text-black">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/T9DSBhBR_I4?si=VGLFIMLh8zU5A4wo" title="YouTube video player" frameborder="0" 
+            <div className="video absolute bg-white right-10 top-4 shadow-lg border border-border rounded-2xl text-black">
+                <iframe width="560" height="315" src={course.videoURL} title="YouTube video player" frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen 
-                className="w-[340px] h-[180px] m-auto mt-1 mb-[10px] rounded-[18px] border border-[#cacaca]"></iframe>
-                <h1 className="font-bold text-center text-3xl mb-[10px]">500.000đ</h1>
-                <div className="flex mb-[30px]">
-                    <button className="primary-button w-[150px] h-[50px] m-auto text-xl font-semibold rounded-[30px]">
-                        Đăng ký học
-                    </button>
+                className="w-80 h-44 m-auto mb-3 rounded-2xl border border-border"></iframe>
+                <h1 className="font-bold text-center text-3xl mb-3">{course.price}</h1>
+                <div className="flex mb-8">
+                    <Link href="/" className="m-auto">
+                        <button className="small-primary-button rounded-full w-40 h-12 text-xl">
+                            Đăng ký học
+                        </button>
+                    </Link>
                 </div>
-                <div className="ml-[70px]">
+                <div className="ml-14 pb-5">
                     <div className="flex mb-2">
-                        <Image src="/assets/document.png" alt="" width={48} height={48} className="w-[25px] h-[25px] mr-4"></Image>
+                        <Image src="/assets/document.png" alt="" width={48} height={48} className="w-6 h-6 mr-4"></Image>
                         Tổng số 
                         <span className="font-semibold mx-1">31</span>
                         khóa học
                     </div>
                     <div className="flex mb-2">
-                        <Image src="/assets/video.png" alt="" width={48} height={48} className="w-[25px] h-[25px] mr-4"></Image>
+                        <Image src="/assets/video.png" alt="" width={48} height={48} className="w-6 h-6 mr-4"></Image>
                         Bao gồm
                         <span className="font-semibold mx-1"> 20 </span>
                         video
                     </div>
                     <div className="flex mb-2">
-                        <Image src="/assets/clock.png" alt="" width={20} height={20} className="w-[25px] h-[25px] mr-4"></Image>
+                        <Image src="/assets/clock.png" alt="" width={20} height={20} className="w-6 h-6 mr-4"></Image>
                         Thời lượng hơn 
                         <span className="font-semibold mx-1"> 30 </span>
                         giờ
                     </div>
                     <div className="flex mb-2">
-                        <Image src="/assets/cup.png" alt="" width={48} height={48} className="w-[25px] h-[25px] mr-4"></Image>
+                        <Image src="/assets/cup.png" alt="" width={48} height={48} className="w-6 h-6 mr-4"></Image>
                         Giấy chứng nhận hoàn thành
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div className="outcome mt-[80px] w-[600px] h-[240px] px-8 py-5 text-black border border-[#cacaca] rounded-[20px]">
-                <h2 className="text-2xl font-semibold mb-5">Kết thúc khóa học</h2>
-                <div className="flex">
-                    <div   className="mr-[50px]">
-                        <div className="flex mb-2">
-                            <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
-                            <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
-                        </div>
-                        <div className="flex mb-2">
-                            <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
-                            <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
-                        </div>
-                        <div className="flex mb-2">
-                            <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
-                            <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
-                        </div>
-                        <div className="flex mb-2">
-                            <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
-                            <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
-                        </div>
+        <div className="outcome mt-16 ml-32 w-2/5 px-8 py-5 text-black border border-border shadow-lg rounded-2xl">
+            <h2 className="text-2xl font-semibold mb-5">Kết thúc khóa học</h2>
+            <div className="flex">
+                <div className="mr-12">
+                    <div className="flex mb-2">
+                        <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
+                        <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
                     </div>
+                    <div className="flex mb-2">
+                        <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
+                        <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
+                    </div>
+                    <div className="flex mb-2">
+                        <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
+                        <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
+                    </div>
+                    <div className="flex mb-2">
+                        <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
+                        <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
+                    </div>
+                </div>
 
-                    <div>
-                        <div className="flex mb-2">
-                            <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
-                            <p className="ml-2">Biết về giải thuật ...</p>
-                        </div>
-                        <div className="flex mb-2">
-                            <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
-                            <p className="ml-2">Biết về giải thuật ...</p>
-                        </div>
-                        <div className="flex mb-2">
-                            <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
-                            <p className="ml-2">Biết về giải thuật ...</p>
-                        </div>
-                        <div className="flex mb-2">
-                            <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
-                            <p className="ml-2">Biết về giải thuật ...</p>
-                        </div>
+                <div>
+                    <div className="flex mb-2">
+                        <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
+                        <p className="ml-2">Biết về giải thuật ...</p>
+                    </div>
+                    <div className="flex mb-2">
+                        <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
+                        <p className="ml-2">Biết về giải thuật ...</p>
+                    </div>
+                    <div className="flex mb-2">
+                        <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
+                        <p className="ml-2">Biết về giải thuật ...</p>
+                    </div>
+                    <div className="flex mb-2">
+                        <Image src="/assets/check.png" alt="" width={25} height={20}></Image>
+                        <p className="ml-2">Biết về giải thuật ...</p>
                     </div>
                 </div>
             </div>
-            <div className="coursecontent text-black px-8 mt-[40px]">
-                <h2 className="text-2xl font-semibold">Nội dung khóa học</h2>
+        </div>
+
+        <div className="coursecontent text-black mt-16 ml-32">
+            <h2 className="text-2xl font-semibold mb-5">Nội dung khóa học</h2>
+            <div className="contentTable w-2/5 bg-secondary border border-border rounded-2xl overflow-hidden shadow-lg">
+                <ul>
+                    <li className="h-10 border-b border-border py-2 pl-8 font-semibold">Chương 1: Giới thiệu về ...</li>
+                    <li className="h-10 border-b border-border py-2 pl-8 font-semibold">Chương 2: Giới thiệu về ...</li>
+                    <li className="h-10 border-b border-border py-2 pl-8 font-semibold">Chương 3: Giới thiệu về ...</li>
+                    <li className="h-10 border-b border-border py-2 pl-8 font-semibold">Chương 4: Giới thiệu về ...</li>
+                    <li className="h-10 border-b border-border py-2 pl-8 font-semibold">Chương 5: Giới thiệu về ...</li>
+                </ul>
             </div>
+        </div>
+
+        <div className="othercourse w-1/3 text-black mt-16 ml-32">
+            <h2 className="text-2xl font-semibold mb-5">Các khóa học khác</h2>
+            <div className="w-11/12 flex flex-col justify-around">
+          {COURSES.map((course, index) => (
+            <Link href={course.href} className="mb-5 transfrom-action">
+              <div className="flex course rounded-2xl">
+                <Image src={course.image} alt="Course" width={200} height={200} className="w-32 mr-5 rounded-xl border border-border"/>
+                  <div  className="flex justify-between w-72">
+                    <div>
+                      <h3 className="font-semibold mb-4">{course.course_name}</h3>
+                      <h2>{course.price}</h2>
+                    </div>
+                    <div>
+                      <span className="text-yellow-500 font-bold">{course.rate}</span>
+                      /
+                      <span>5</span>
+                    </div>
+                  </div>
+                </div>
+            </Link>
+          ))}
+        </div>
         </div>
     </div>
   )

@@ -5,6 +5,33 @@ import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
 
+const COURSES = [
+  {
+      course_name: 'CTDL & Giải thuật',
+      number_register: '1000',
+      image: '/assets/images/course_image.jpg',
+      href: '/coursepage',
+      price: '500.000đ',
+      rate: '4.5'
+  },
+  {
+      course_name: 'CTDL & Giải thuật',
+      number_register: '1000',
+      image: '/assets/images/course_image.jpg',
+      href: '/coursepage',
+      price: '500.000đ',
+      rate: '4.5'
+  },
+  {
+      course_name: 'CTDL & Giải thuật',
+      number_register: '1000',
+      image: '/assets/images/course_image.jpg',
+      href: '/coursepage',
+      price: '500.000đ',
+      rate: '4.5'
+  }
+]
+
 const HomePage = () => {
   return (
     <div className="homepage min-h-[535px]">
