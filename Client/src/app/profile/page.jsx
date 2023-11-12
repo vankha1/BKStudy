@@ -1,7 +1,8 @@
 'use client';
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import axios from 'axios';
 
 import EditData from '../../components/EditInfoUser';
 import UploadImage from '@components/UploadFile';
@@ -10,11 +11,11 @@ const USER_INFO = {
   info: [
     {
       title: 'Quyền truy cập',
-      data: 'Giáo viên'
+      data: 'Giáo viên',
     },
     {
       title: 'Email',
-      data: 'nguyenvana@gmail.com'
+      data: 'nguyenvana@gmail.com',
     },
     {
       title: 'Họ tên',
@@ -59,6 +60,27 @@ const USER_INFO = {
 
 const Profile = () => {
 
+  const fileInputRef = useRef(null);
+  const [userProfile, setUserProfile] = useState({})
+  const [imageSelected, setImageSelected] = useState('');
+
+  useEffect(() => {
+    const token = localStorage.getItem("jsonwebtoken");
+    console.log(token);
+    axios
+      .get("http://localhost:8080/api/v1/user/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((data) => {
+        let user = data.data.user;
+        setUserProfile(user)
+      });
+  }, []);
+  
+  const handleImageSelected = (imageURL) => {
+    setImageSelected(imageURL);
+  }
+
   return (
     <div className='w-full'>
       <div className='relative w-full h-80 mt-4'>
@@ -88,7 +110,7 @@ const Profile = () => {
             height={30}
             priority
           />
-          <UploadImage title='Đổi ảnh bìa' className='text-xl ml-2 font-normal' />
+          <UploadImage title='Đổi ảnh bìa' className='text-xl ml-2 font-normal' fileType='image' />
         </div>
       </div>
       <div className='flex justify-between mx-16'>
@@ -99,22 +121,13 @@ const Profile = () => {
           </div>
           <div className='w-full px-16 py-4 rounded-lg shadow-lg mb-8'>
             <h3 className='w-52 text-xl font-medium mb-3 border-b border-solid border-black'>Thông tin tài khoản</h3>
-            <div className='mb-4'>
-              <h4 className='text-lg font-medium mb-1'>{USER_INFO.info.find((item) => item.title == 'Email').title}</h4>
-              <input
-                type="text"
-                className='text-base font-normal p-[0.3125rem] bg-white'
-                value={USER_INFO.info.find((item) => item.title == 'Email').data}
-                disabled
-              />
-            </div>
             <EditData infos={USER_INFO.info} />
           </div>
         </div>
         <div className='w-3/5 flex-col px-8 py-4'>
           <h4 className='w-72 text-2xl font-medium mb-3 border-b border-solid border-black'>Các khóa học đang học</h4>
           {USER_INFO.courses.map((course, index) => (
-            <Link href={course.href} className='flex-between px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action'>
+            <Link href={course.href} key={index} className='flex-between px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action'>
               <Image
                 className="rounded-2xl py-2"
                 src={course.image}

@@ -34,8 +34,8 @@ const addProfile = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    const imageUrl = req.file.path.replace("\\", "/");
-    console.log(imageUrl);
+    const temp = req.file.path.replace(/\\/g, "/").split("images")
+    const imageUrl = "images" + temp[1]
 
     const { fullname, dateOfBirth, phoneNumber } = req.body;
 

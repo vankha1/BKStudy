@@ -1,34 +1,38 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
 
+const COURSES = [
+  {
+      course_name: 'CTDL & Giải thuật',
+      number_register: '1000',
+      image: '/assets/images/course_image.jpg',
+      href: '/coursepage',
+      price: '500.000đ',
+      rate: '4.5'
+  },
+  {
+      course_name: 'CTDL & Giải thuật',
+      number_register: '1000',
+      image: '/assets/images/course_image.jpg',
+      href: '/coursepage',
+      price: '500.000đ',
+      rate: '4.5'
+  },
+  {
+      course_name: 'CTDL & Giải thuật',
+      number_register: '1000',
+      image: '/assets/images/course_image.jpg',
+      href: '/coursepage',
+      price: '500.000đ',
+      rate: '4.5'
+  }
+]
 
 const HomePage = () => {
-  const [userInfo, setUserInfo] = useState({});
-
-  useEffect(() => {
-    const token = localStorage.getItem("JWT")
-      axios
-        .get("http://localhost:8080/api/v1/user/profile",{
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
-        .then(async (response) => {
-          if (response.statusText == "OK") {
-            console.log(response);
-            localStorage.setItem("userInfo", JSON.stringify(response.data.user))
-            console.log(JSON.parse(localStorage.getItem("userInfo")));
-          }
-        })
-        .catch((error) => {
-          alert(error);
-        });
-  }, []);
-
   return (
     <div className="homepage min-h-[535px]">
       <div className="welcome w-[1000px] h-[200px] bg-[#9ccaff] rounded-[15px] px-[60px] py-[20px] mt-[20px]">
