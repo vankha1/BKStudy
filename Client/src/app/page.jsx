@@ -50,7 +50,7 @@ const HomePage = () => {
           Khóa học hàng đầu
         </h2>
         <div className="w-[1000px] flex justify-around px-[5px]">
-          <Link href="/coursepage" className="mt-[20px]">
+          <Link href="/coursepage/1" className="mt-[20px]">
             <div className="course">
               <Image
                 src="/assets/course_avt.jpg"
@@ -72,7 +72,7 @@ const HomePage = () => {
             </div>
           </Link>
 
-          <Link href="/" className="mt-[20px]">
+          <Link href="/coursepage/2" className="mt-[20px]">
             <div className="course">
               <Image
                 src="/assets/course_avt.jpg"
@@ -94,7 +94,7 @@ const HomePage = () => {
             </div>
           </Link>
 
-          <Link href="/" className="mt-[20px]">
+          <Link href="/coursepage/3" className="mt-[20px]">
             <div className="course">
               <Image
                 src="/assets/course_avt.jpg"
