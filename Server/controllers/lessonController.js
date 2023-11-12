@@ -1,3 +1,4 @@
+
 const fs = require('fs');
 
 const User = require('../models/userModel');
@@ -44,9 +45,11 @@ const getAllLessons = async (req, res, next) => {
     }
 
     res.status(200).json({
+
       course: course,
       lessons: course.lessons,
     })
+
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -58,9 +61,11 @@ const getAllLessons = async (req, res, next) => {
 const getLesson = async (req, res, next) => {
   //res.send("get specific lesson from controller");
   try {
+
     const userId = req.body.id;
     const courseId = req.params.courseId;
     const lessonId = req.params.lessonId;
+
 
     const user = await User.findById(userId);
     const course = await Course.findById(courseId);
@@ -81,6 +86,7 @@ const getLesson = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
+
 
     //validate lesson in course
     let courseflag = false, lessonflag = false;
@@ -116,6 +122,7 @@ const getLesson = async (req, res, next) => {
         note: note,
       })
     }
+
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -123,6 +130,7 @@ const getLesson = async (req, res, next) => {
     next(err);
   }
 };
+
 
 // teacher's priviledge
 
@@ -170,8 +178,7 @@ const createLesson = async (req, res, next) => {
     //append file
     if (!req.files) {
       attachedFileCount = 0;
-    }
-    else {
+    } else {
       let count = 0;
       for (let prop in req.files) {
         count++;
@@ -202,6 +209,7 @@ const createLesson = async (req, res, next) => {
     course.lessons.push({ lessonId: lesson._id });
     //if (lesson.videoURL) course.numberOfVideo += 1;
     await course.save();
+
 
     res.status(201).json({
       course: course,
@@ -278,8 +286,7 @@ const updateLesson = async (req, res, next) => {
 
     if (!req.files) {
       attachedFileCount = 0;
-    }
-    else {
+    } else {
       let count = 0;
       for (let prop in req.files) {
         count++;
@@ -325,6 +332,7 @@ const deleteLesson = async (req, res, next) => {
     const courseId = req.params.courseId;
     const lessonId = req.params.lessonId;
 
+
     const course = await Course.findById(courseId);
     const lesson = await Lesson.findById(lessonId);
 
@@ -364,6 +372,7 @@ const deleteLesson = async (req, res, next) => {
       throw error;
     }
 
+
     //clear files in file system
     for (file of lesson.attachedFiles) {
       await fs.unlink(file.filepath, (err) => {
@@ -386,18 +395,18 @@ const deleteLesson = async (req, res, next) => {
     await course.save();
 
     res.status(200).json({});
+
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-}
+};
 
 // student's priviledge
 
 const updateNote = async (req, res, next) => {
-  res.send("update note from controller");
   try {
     const userId = req.body.userId
     const lessonId = req.params.lessonId;
@@ -414,6 +423,7 @@ const updateNote = async (req, res, next) => {
 
     await note.save();
 
+
     res.status(201).json({
       message: "Change note successfully",
       note
@@ -424,7 +434,7 @@ const updateNote = async (req, res, next) => {
     }
     next(err);
   }
-}
+};
 
 const downloadFile = async (req, res, next) => {
   try {
