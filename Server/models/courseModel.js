@@ -8,8 +8,8 @@ const courseSchema = new Schema(
       type: String,
       required: true,
     },
-    imageUrl : {
-      type : String, 
+    imageUrl: {
+      type: String,
       required: true,
     },
     description: {
@@ -22,19 +22,14 @@ const courseSchema = new Schema(
     numberOfStudent: {
       type: Number
     },
-    chapters: {
+    lessons: {
       type: [
         {
-          name: String,
-          lessons: [
-            {
-              lessonId: {
-                type: Schema.Types.ObjectId,
-                ref: "Lesson",
-              },
-            },
-          ],
-        },
+          lessonId: {
+            type: Schema.Types.ObjectId,
+            ref: "Lesson",
+          }
+        }
       ]
     },
     price: {
@@ -52,7 +47,7 @@ const courseSchema = new Schema(
       ref: "User",
       required: true,
     },
-    isApproved : {
+    isApproved: {
       type: Boolean,
       default: false,
       required: true,
