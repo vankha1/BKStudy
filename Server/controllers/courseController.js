@@ -78,9 +78,11 @@ const createCourse = async (req, res, next) => {
 
     await course.save();
 
-    // Waiting for the approval of admin
     const user = await User.findById(req.userId);
-    user.courses.push(course)
+    user.courses.push({
+      courseId: course._id,
+      enrolledDate: new Date()
+    })
     await user.save()
 
     res.status(200).json({
