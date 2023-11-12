@@ -5,6 +5,7 @@ const { validationResult } = require("express-validator");
 const Course = require("../models/courseModel");
 const User = require("../models/userModel");
 
+// GET /
 const getAllCourses = async (req, res, next) => {
   try {
     const courses = await Course.find();
@@ -21,6 +22,7 @@ const getAllCourses = async (req, res, next) => {
   }
 };
 
+// GET /course-detail/:courseId
 const getCourse = async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
@@ -42,6 +44,7 @@ const getCourse = async (req, res, next) => {
   }
 }
 
+// POST /create
 const createCourse = async (req, res, next) => {
   try {
     const errors = validationResult(req);
@@ -148,6 +151,8 @@ const updateCourse = async (req, res, next) => {
   }
 };
  */
+
+// DELETE /:courseId
 const deleteCourse = async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
