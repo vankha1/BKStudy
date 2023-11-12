@@ -7,77 +7,92 @@ import Link from "next/link";
 const Navbar = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-  const [userInfo, setUserInfo] = useState({});
-  const [token, setToken] = useState("");
+  const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
+  const [isLogin, setIsLogin] = useState(false)
 
   useEffect(() => {
-    setUserInfo(JSON.parse(localStorage.getItem("userInfo")));
-    setToken(localStorage.getItem("JWT"));
-  }, []);
+    const token = localStorage.getItem("JWT");
+    if (token) {
+      setIsLogin(true);
+      setUserInfo(JSON.parse(localStorage.getItem("userInfo")))
+    }
+  }, [isLogin])
+
+  const handleLogout = () => {
+    localStorage.removeItem("JWT");
+    localStorage.removeItem("userInfo");
+    setIsLogin(false);
+  }
 
   return (
-    <div className="mb-5 flex justify-around items-center content-center border border-b-[#cacaca] h-[55px]">
-      <Link href="/" className="logo flex w-fit my-[10px] mx-[20px]">
+    <nav className="px-8 py-1 flex-between flex-row border-b border-borderline">
+      <Link href="/" className="flex-center flex-row gap-1">
         <Image
           alt="logo"
-          src="/assets/logo.png"
+          src="/assets/icons/bk_logo.svg"
           width={48}
           height={48}
-          className="w-[30px] h-[30px] relative top-1"
+          className=""
         />
         <h2 className="font-semibold text-2xl leading-10">BKStudy</h2>
       </Link>
 
-      <div className="flex justify-between w-[400px] h-[35px] border rounded-[20px] border-[#cecece] overflow-hidden">
+      <div className="flex-between flex-row justify-between w-[400px] h-[35px] border rounded-3xl border-borderline">
         <input
           type="text"
-          className="ml-5 outline-none"
+          className="w-full ml-5 outline-none"
           placeholder="Search..."
         />
         <button className="mr-5">
           <Image
-            src="/assets/search.png"
+            src="/assets/icons/find_icon.svg"
             alt="Search"
-            width={50}
-            height={50}
-            className="w-6"
+            width={20}
+            height={20}
           />
         </button>
       </div>
 
-      {(token) ? (
-        <div className="flex mt-[30px]">
+      {isLogin ? (
+        <div className="flex-center flex-row gap-3">
           <div>
-            <Link href="/" className="block mx-2 my-[-4px]">
-              <Image
-                src="/assets/course.png"
-                alt="Course"
-                width={48}
-                height={48}
-                className="w-[30px] cursor-pointer"
-              />
-            </Link>
+            {userInfo.userType === "STUDENT" ? (
+              <Link href="/student-courses" className="">
+                <Image
+                  src="/assets/icons/book_icon.svg"
+                  alt="Course"
+                  width={34}
+                  height={34}
+                />
+              </Link>
+            ) : (
+              <Link href="/lecturer-manage" className="">
+                <Image
+                  src="/assets/icons/book_icon.svg"
+                  alt="Course"
+                  width={34}
+                  height={34}
+                />
+              </Link>
+            )}
           </div>
-          <div className="message">
-            <button
-              className="mx-2"
-              onClick={() => setShowMessage(!showMessage)}
-            >
+          <div className="flex-center">
+            <button onClick={() => setShowMessage(!showMessage)}>
               <Image
-                src="/assets/message.png"
+                src="/assets/icons/msg_icon.svg"
                 alt="Message"
-                width={48}
-                height={48}
-                className="w-6 cursor-pointer"
+                width={30}
+                height={30}
               />
             </button>
             {showMessage && (
-              <div className="absolute right-[80px] top-[55px] w-[300px] border border-[#cacaca] rounded-[10px] overflow-hidden z-20 bg-white">
+              <div className="absolute right-[80px] top-[55px] w-[300px] border border-borderline rounded-[10px] overflow-hidden z-20 bg-white">
                 <h2 className="text-[24px] text-center my-[10px] mx-0 font-medium">
                   Tin nhắn
                 </h2>
                 <ul className="navbar__user-message-list">
-                  <li className="flex items-center border-t border-[#cacaca] h-[60px] hover:cursor-pointer hover:bg-[#cacaca]">
+                  <li className="flex items-center border-t border-borderline h-[60px] hover:cursor-pointer hover:bg-[#cacaca]">
                     <div>
                       <Image
                         src="/assets/avatar.png"
@@ -98,17 +113,13 @@ const Navbar = () => {
               </div>
             )}
           </div>
-          <div className="notification">
-            <button
-              className="mx-2"
-              onClick={() => setShowNotification(!showNotification)}
-            >
+          <div className="flex-center">
+            <button onClick={() => setShowNotification(!showNotification)}>
               <Image
-                src="/assets/notification.png"
-                alt="Notification"
-                width={48}
-                height={48}
-                className="w-6 cursor-pointer"
+                src="/assets/icons/noti_icon.svg"
+                alt="Notification icon"
+                width={30}
+                height={30}
               />
             </button>
             {showNotification && (
@@ -145,16 +156,49 @@ const Navbar = () => {
               </div>
             )}
           </div>
-          <div className="user relative top-[-10px] right-[-10px]">
-            <button>
+          <div className="z-50 flex-center relative">
+            <button onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}>
               <Image
                 src={"http://localhost:8080/" + userInfo.avatar}
                 alt="Avatar"
-                width={48}
-                height={48}
-                className="w-[45px] mb-1 ml-2 cursor-pointer rounded-full"
+                width={40}
+                height={40}
+                className="rounded-full"
               />
             </button>
+            {showAvatarDropdown && (
+              <div
+                id="userDropdown"
+                className="z-10 absolute right-0 top-12 bg-white divide-y divide-gray-100 rounded-lg shadow w-40 flex-center flex-col"
+              >
+                <ul className="py-2 text-sm text-gray-700 w-full">
+                  <li>
+                    <a
+                      href="/profile"
+                      className="px-4 py-2 hover:bg-gray-100 block text-center"
+                    >
+                      Trang cá nhân
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="px-4 py-2 hover:bg-gray-100 w-full block text-center"
+                    >
+                      Đổi mật khẩu
+                    </a>
+                  </li>
+                </ul>
+                <div class="py-1 w-full">
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 text-sm hover:bg-gray-100 w-full block text-center"
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       ) : (
@@ -171,7 +215,7 @@ const Navbar = () => {
           </Link>
         </div>
       )}
-    </div>
+    </nav>
   );
 };
 

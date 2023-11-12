@@ -1,14 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
+import CourseCard from "@components/CourseCard";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 const HomePage = () => {
+  const [courses, setCourses] = useState([])
+
+  useEffect(() => {
+    axios.get('http://localhost:8080' + '/api/v1/course').then((response) => {
+      if (response.statusText === 'OK') {setCourses(response.data.courses); console.log(response)}
+    }).catch((error) => {alert(error)})
+  }, [])
+
   return (
-    <div className="homepage min-h-[535px]">
-      <div className="welcome w-[1000px] h-[200px] bg-[#9ccaff] rounded-[15px] px-[60px] py-[20px] mt-[20px]">
+    <div className="min-h-[535px]">
+      <div className="w-[1000px] h-[200px] bg-[#9ccaff] rounded-[15px] px-[60px] py-[20px] mt-[20px]">
         <h1 className="text-3xl font-bold pb-[50px]">
           Chào mừng đến với BKStudy
         </h1>
@@ -18,76 +25,12 @@ const HomePage = () => {
         </p>
       </div>
 
-      <div>
-        <h2 className="text-2xl font-semibold mt-[40px] px-[60px]">
-          Khóa học hàng đầu
-        </h2>
-        <div className="w-[1000px] flex justify-around px-[5px]">
-          <Link href="/coursepage" className="mt-[20px]">
-            <div className="course">
-              <Image
-                src="/assets/course_avt.jpg"
-                alt="Course"
-                width={200}
-                height={200}
-                className="w-[220px] rounded-[10px] border border-[#cacaca]"
-              />
-              <div className="flex justify-between px-[10px] my-[5px]">
-                <div>
-                  <h3 className="font-semibold">DSA</h3>
-                  <h2>500.000đ</h2>
-                </div>
-                <div>
-                  <span className="text-yellow-500 font-bold">4.5</span>/
-                  <span>5</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/" className="mt-[20px]">
-            <div className="course">
-              <Image
-                src="/assets/course_avt.jpg"
-                alt="Course"
-                width={200}
-                height={200}
-                className="w-[220px] rounded-[10px] border border-[#cacaca]"
-              />
-              <div className="flex justify-between px-[10px] my-[5px]">
-                <div>
-                  <h3 className="font-semibold">Giải tích 1</h3>
-                  <h2>500.000đ</h2>
-                </div>
-                <div>
-                  <span className="text-yellow-500 font-bold">4.5</span>/
-                  <span>5</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/" className="mt-[20px]">
-            <div className="course">
-              <Image
-                src="/assets/course_avt.jpg"
-                alt="Course"
-                width={200}
-                height={200}
-                className="w-[220px] rounded-[10px] border border-[#cacaca]"
-              />
-              <div className="flex justify-between px-[10px] my-[5px]">
-                <div>
-                  <h3 className="font-semibold">Giải tích 1</h3>
-                  <h2>500.000đ</h2>
-                </div>
-                <div>
-                  <span className="text-yellow-500 font-bold">4.5</span>/
-                  <span>5</span>
-                </div>
-              </div>
-            </div>
-          </Link>
+      <div className="flex-start flex-col gap-6 mt-16 w-full">
+        <h2 className="text-2xl font-bold">Khóa học hàng đầu</h2>
+        <div className="w-full grid grid-cols-4 grid-flow-row gap-12">
+          {courses.map((course) => (
+            <CourseCard title={course.title} imageUrl={course.imageUrl} price={course.price}/>
+          ))}
         </div>
       </div>
     </div>
