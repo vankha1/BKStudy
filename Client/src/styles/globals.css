@@ -62,6 +62,10 @@
   @apply w-32 bg-blue-200 text-white font-semibold py-[5px] rounded-md hover:bg-blue-300
 }
 
+.medium-red-button {
+  @apply w-36 bg-red-500 text-black font-semibold py-2 rounded-md hover:bg-red-800
+}
+
 .transfrom-action {
-  @apply transform transition-transform hover:scale-110;
+  @apply transform transition-transform hover:scale-105;
 }
