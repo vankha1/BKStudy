@@ -4,6 +4,33 @@ import CourseCard from "@components/CourseCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+const COURSES = [
+  {
+      course_name: 'CTDL & Giải thuật',
+      number_register: '1000',
+      image: '/assets/images/course_image.jpg',
+      href: '/coursepage',
+      price: '500.000đ',
+      rate: '4.5'
+  },
+  {
+      course_name: 'CTDL & Giải thuật',
+      number_register: '1000',
+      image: '/assets/images/course_image.jpg',
+      href: '/coursepage',
+      price: '500.000đ',
+      rate: '4.5'
+  },
+  {
+      course_name: 'CTDL & Giải thuật',
+      number_register: '1000',
+      image: '/assets/images/course_image.jpg',
+      href: '/coursepage',
+      price: '500.000đ',
+      rate: '4.5'
+  }
+]
+
 const HomePage = () => {
   const [courses, setCourses] = useState([])
 

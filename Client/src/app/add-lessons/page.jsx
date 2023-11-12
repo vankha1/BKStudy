@@ -16,17 +16,19 @@ const AddLessons = () => {
             title: 'Thêm video',
             value: '',
             placeholders: 'Đường dẫn video',
-            button_title: 'Tải lên hình ảnh',
+            button_title: 'Tải lên',
+            fileType: 'video',
             className: 'mb-4 w-full',
-            input_className: 'w-4/5 h-[36px] text-base font-normal border border-solid p-1'
+            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
         },
         {
             title: 'Các tập tin kèm theo',
             value: '',
             placeholders: 'Tải lên tập tin kèm theo',
-            button_title: 'Tải lên hình ảnh',
+            button_title: 'Tải lên',
+            fileType: '*',
             className: 'mb-12 w-full',
-            input_className: 'w-4/5 h-[36px] text-base font-normal border border-solid p-1'
+            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
         },
     ]
 

@@ -11,7 +11,9 @@ module.exports = {
         'background': '#FEFBFF',
         'primary': '#3C57BA',
         'secondary': '#c6e7ff',
-        'borderline': '#cacaca'
+        'borderline': '#cacaca',
+        'footer': '#001453',
+        'border': '#cacaca'
       }
     },
   },
