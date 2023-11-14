@@ -22,14 +22,19 @@ const courseSchema = new Schema(
     numberOfStudent: {
       type: Number
     },
-    lessons: {
+    chapters: {
       type: [
         {
-          lessonId: {
-            type: Schema.Types.ObjectId,
-            ref: "Lesson",
-          }
-        }
+          name: String,
+          lessons: [
+            {
+              lessonId: {
+                type: Schema.Types.ObjectId,
+                ref: "Lesson",
+              },
+            },
+          ],
+        },
       ]
     },
     price: {

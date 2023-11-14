@@ -27,7 +27,7 @@ const getCourse = async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
 
-    const course = await Course.findById(courseId);
+    const course = await Course.findById(courseId).populate('lessons.lessonId');
     if (!course) {
       const error = new Error("No course found !!!");
       error.statusCode = 404;
