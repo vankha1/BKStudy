@@ -42,10 +42,10 @@ const AddCourse = () => {
 
 
     const [infoCourse, setInfoCourse] = useState({
-        title: '',
-        price: '',
-        avatar: '',
-        description: '',
+        title: "",
+        price: "",
+        image: "",
+        description: "",
     })
 
 
@@ -54,11 +54,11 @@ const AddCourse = () => {
         const formData = new FormData()
 
         formData.append("title", data.title)
-        formData.append("price", data.price)
-        formData.append("avatar", data.avatar, data.avatar.name)
+        formData.append("price", Number(data.price))
+        formData.append("image", data.image, data.image.name)
         formData.append("description", data.description)
 
-        console.log(data, token);
+        console.log(formData, token);
         axios.post(`http://localhost:8080/api/v1/course/create`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
