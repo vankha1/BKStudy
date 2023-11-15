@@ -74,6 +74,8 @@ const createCourse = async (req, res, next) => {
       description,
       price,
       createdBy: req.userId,
+      numberOfStudent: 0,
+      numberOfVideo: 0,
       isApproved: false,
     });
 
@@ -187,6 +189,7 @@ const deleteCourse = async (req, res, next) => {
     next(err);
   }
 };
+
 
 const clearImage = (filePath) => {
   // we are in controller folder, so we need to jump out of that by using '..'

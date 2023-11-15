@@ -37,9 +37,8 @@ const AddProfile = () => {
       }
     }).then((response) => {
       if (response.statusText === 'OK') {
-        console.log(response)
         localStorage.setItem("userInfo", JSON.stringify(response.data.user));
-        router.push('/')
+        router.push('/login')
       }
       else console.log(response)
     }).catch((error) => {alert(error)}).finally(() => {setSubmitting(false)})
