@@ -27,7 +27,7 @@ const getCourse = async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
 
-    const course = await Course.findById(courseId);
+    const course = await Course.findById(courseId).populate('lessons.lessonId');
     if (!course) {
       const error = new Error("No course found !!!");
       error.statusCode = 404;
@@ -80,9 +80,11 @@ const createCourse = async (req, res, next) => {
 
     await course.save();
 
-    // Waiting for the approval of admin
     const user = await User.findById(req.userId);
-    user.courses.push(course)
+    user.courses.push({
+      courseId: course._id,
+      enrolledDate: new Date()
+    })
     await user.save()
 
     res.status(200).json({
