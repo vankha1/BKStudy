@@ -21,7 +21,7 @@ function EditData({ infos }) {
 
   return (
     <div>
-      {infos.map((info, index) => (
+      {infos && infos.map((info, index) => (
         <div key={index} className='mb-4'>
           <>
             {
