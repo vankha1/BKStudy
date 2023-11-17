@@ -1,23 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuthContext } from "@app/contexts/auth";
 
 const Navbar = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
-  const [isLogin, setIsLogin] = useState(false)
-
-  useEffect(() => {
-    const token = localStorage.getItem("JWT");
-    if (token) {
-      setIsLogin(true);
-      setUserInfo(JSON.parse(localStorage.getItem("userInfo")))
-    }
-  }, [isLogin])
+  const { userInfo, isLogin, setIsLogin } = useAuthContext();
 
   const handleLogout = () => {
     localStorage.removeItem("JWT");

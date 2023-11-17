@@ -4,9 +4,11 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useAuthContext } from "@app/contexts/auth";
 
 const LogInPage = () => {
   const router = useRouter();
+  const { setIsLogin, setUserInfo } = useAuthContext();
 
   const [submitting, setSubmitting] = useState(false);
   const [account, setAccount] = useState({
@@ -24,6 +26,8 @@ const LogInPage = () => {
         else {
           localStorage.setItem("JWT", response.data.token)
           localStorage.setItem("userInfo", JSON.stringify(response.data.userInfo))
+          setIsLogin(true);
+          setUserInfo(response.data.userInfo);
           router.push('/')
         }
       }
