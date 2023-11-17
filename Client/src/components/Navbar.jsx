@@ -189,7 +189,7 @@ const Navbar = () => {
                     </a>
                   </li>
                 </ul>
-                <div class="py-1 w-full">
+                <div className="py-1 w-full">
                   <button
                     onClick={handleLogout}
                     className="px-4 py-2 text-sm hover:bg-gray-100 w-full block text-center"

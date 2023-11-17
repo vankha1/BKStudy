@@ -48,6 +48,8 @@ const HomePage = () => {
     }).catch((error) => {alert(error)})
   }, [])
 
+  console.log(courses)
+
   return (
     <div className="min-h-[535px]">
       <div className="w-[1000px] h-[200px] bg-[#9ccaff] rounded-[15px] px-[60px] py-[20px] mt-[20px]">
