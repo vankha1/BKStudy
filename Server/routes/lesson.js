@@ -9,14 +9,15 @@ const isAuth = require('../middleware/isAuth');
 // all
 
 // user get all lesson from the course
-router.get('/course/:courseId/',
+router.get('/course/:courseId',
     isAuth.authToken,
     isAuth.authRoles(["LECTURER", "STUDENT"]),
     lessonController.getAllLessons
 );
 
+
 // user get a specific lesson from the course
-router.get('/course/:courseId/lesson/:lessonId',
+router.get('/course',
     isAuth.authToken,
     isAuth.authRoles(["LECTURER", "STUDENT"]),
     lessonController.getLesson
@@ -26,7 +27,7 @@ router.get('/course/:courseId/lesson/:lessonId',
 // teacher's priviledge
 
 // teacher create a lesson in the course
-router.post('/course/:courseId/create-lesson',
+router.post('/create/:courseId',
     isAuth.authToken,
     isAuth.authRoles(["LECTURER"]),
     lessonFileMulter.uploadLessonFile.array("files"),
@@ -34,7 +35,7 @@ router.post('/course/:courseId/create-lesson',
 );
 
 // teacher update lesson's information in the course
-router.put('/course/:courseId/lesson/:lessonId/update-lesson',
+router.put('/update',
     isAuth.authToken,
     isAuth.authRoles(["LECTURER"]),
     lessonFileMulter.uploadLessonFile.array("files"),
@@ -42,7 +43,7 @@ router.put('/course/:courseId/lesson/:lessonId/update-lesson',
 );
 
 // teacher delete lesson in the course
-router.delete('/course/:courseId/lesson/:lessonId/delete-lesson',
+router.delete('/delete',
     isAuth.authToken,
     isAuth.authRoles(["LECTURER"]),
     lessonController.deleteLesson
@@ -50,7 +51,7 @@ router.delete('/course/:courseId/lesson/:lessonId/delete-lesson',
 
 // student's priviledge
 
-router.put('/course/:courseId/lesson/:lessonId/update-note',
+router.put('/update-note',
     isAuth.authToken,
     isAuth.authRoles(["STUDENT"]),
     lessonController.updateNote

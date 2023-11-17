@@ -1,8 +1,15 @@
+'use client'
+
+import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import axios from "axios"
 
 const course =
     {
+        id: '1',
         title: 'Cấu trúc dữ liệu và giải thuật',
         description: 'Tìm hiểu về các cấu trúc dữ liệu cơ bản và những giải thuật liên quan',
         number_register: '10000',
@@ -43,7 +50,31 @@ const COURSES = [
 ]
 
 const CoursePage = () => {
-  return (
+    
+    const router = useRouter();
+    
+    const [registering, setRegistering] = useState(false);
+
+    const Register = (e) => {
+        e.preventDefault();
+        setRegistering(true);
+        
+        
+        const token = localStorage.getItem("JWT");
+
+        axios.post(`http://localhost:8080/api/v1/user/register/${course.id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((response) => {
+            if(response.statusText === 'OK') {
+                console.log(response);
+                router.push('/student-courses');
+            } else console.log(response);
+        }).catch((error) => {alert(error)}).finally(() => {setRegistering(false)});
+    }
+  
+    return (
     <div className="coursepage">
         <div className="w-screen h-48 bg-footer text-white px-32 py-3">
             <div className="description w-3/5">
@@ -76,18 +107,19 @@ const CoursePage = () => {
                 className="w-80 h-44 m-auto mb-3 rounded-2xl border border-border"></iframe>
                 <h1 className="font-bold text-center text-3xl mb-3">{course.price}</h1>
                 <div className="flex mb-8">
-                    <Link href="/" className="m-auto">
-                        <button className="small-primary-button rounded-full w-40 h-12 text-xl">
+                    <div className="m-auto">
+                        <button onClick={Register} className="small-primary-button rounded-full w-40 h-12 text-xl">
                             Đăng ký học
                         </button>
-                    </Link>
+                    </div>
+
                 </div>
                 <div className="ml-14 pb-5">
                     <div className="flex mb-2">
                         <Image src="/assets/document.png" alt="" width={48} height={48} className="w-6 h-6 mr-4"></Image>
                         Tổng số 
                         <span className="font-semibold mx-1">31</span>
-                        khóa học
+                        bài học
                     </div>
                     <div className="flex mb-2">
                         <Image src="/assets/video.png" alt="" width={48} height={48} className="w-6 h-6 mr-4"></Image>
@@ -149,19 +181,6 @@ const CoursePage = () => {
                         <p className="ml-2">Biết về giải thuật ...</p>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div className="coursecontent text-black mt-16 ml-32">
-            <h2 className="text-2xl font-semibold mb-5">Nội dung khóa học</h2>
-            <div className="contentTable w-2/5 bg-secondary border border-border rounded-2xl overflow-hidden shadow-lg">
-                <ul>
-                    <li className="h-10 border-b border-border py-2 pl-8 font-semibold">Chương 1: Giới thiệu về ...</li>
-                    <li className="h-10 border-b border-border py-2 pl-8 font-semibold">Chương 2: Giới thiệu về ...</li>
-                    <li className="h-10 border-b border-border py-2 pl-8 font-semibold">Chương 3: Giới thiệu về ...</li>
-                    <li className="h-10 border-b border-border py-2 pl-8 font-semibold">Chương 4: Giới thiệu về ...</li>
-                    <li className="h-10 border-b border-border py-2 pl-8 font-semibold">Chương 5: Giới thiệu về ...</li>
-                </ul>
             </div>
         </div>
 

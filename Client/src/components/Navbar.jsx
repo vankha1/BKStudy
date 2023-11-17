@@ -181,7 +181,7 @@ const Navbar = () => {
                     </a>
                   </li>
                 </ul>
-                <div class="py-1 w-full">
+                <div className="py-1 w-full">
                   <button
                     onClick={handleLogout}
                     className="px-4 py-2 text-sm hover:bg-gray-100 w-full block text-center"
@@ -207,6 +207,20 @@ const Navbar = () => {
           </Link>
         </div>
       )}
+
+      <div className="flex items-center hidden">
+        <Link href="/admin-manage-user" className="font-semibold text-lg mr-5">Người dùng</Link>
+        <Link href="admin-manage-course" className="font-semibold text-lg mr-5">Phê duyệt</Link>
+        <div>
+          <Image
+            src="/assets/avatar.png"
+            alt="Avatar"
+            width={48}
+            height={48}
+            className="w-[40px] my-0 mx-[10px] rounded-full"
+          />
+        </div>
+      </div>
     </nav>
   );
 };

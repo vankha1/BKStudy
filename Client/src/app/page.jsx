@@ -4,6 +4,7 @@ import CourseCard from "@components/CourseCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+
 const HomePage = () => {
   const [courses, setCourses] = useState([])
 
@@ -12,6 +13,8 @@ const HomePage = () => {
       if (response.statusText === 'OK') {setCourses(response.data.courses); console.log(response)}
     }).catch((error) => {alert(error)})
   }, [])
+
+  console.log(courses)
 
   return (
     <div className="min-h-[535px]">

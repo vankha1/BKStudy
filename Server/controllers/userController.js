@@ -7,7 +7,7 @@ const getProfile = async (req, res, next) => {
   try {
     const userId = req.userId;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate('courses.courseId', 'title imageUrl description');
 
     if (!user) {
       const error = new Error("User not found !!");
