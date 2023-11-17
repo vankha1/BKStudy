@@ -215,6 +215,20 @@ const Navbar = () => {
           </Link>
         </div>
       )}
+
+      <div className="flex items-center hidden">
+        <Link href="/admin-manage-user" className="font-semibold text-lg mr-5">Người dùng</Link>
+        <Link href="admin-manage-course" className="font-semibold text-lg mr-5">Phê duyệt</Link>
+        <div>
+          <Image
+            src="/assets/avatar.png"
+            alt="Avatar"
+            width={48}
+            height={48}
+            className="w-[40px] my-0 mx-[10px] rounded-full"
+          />
+        </div>
+      </div>
     </nav>
   );
 };
