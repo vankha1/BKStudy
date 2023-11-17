@@ -57,7 +57,7 @@ const Navbar = () => {
       {isLogin ? (
         <div className="flex-center flex-row gap-3">
           <div>
-            {userInfo?.userType === "STUDENT" ? (
+            {userInfo.userType === "STUDENT" ? (
               <Link href="/student-courses" className="">
                 <Image
                   src="/assets/icons/book_icon.svg"
@@ -159,7 +159,7 @@ const Navbar = () => {
           <div className="z-50 flex-center relative">
             <button onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}>
               <Image
-                src={"http://localhost:8080/" + userInfo?.avatar}
+                src={"http://localhost:8080/" + userInfo.avatar}
                 alt="Avatar"
                 width={40}
                 height={40}
@@ -215,6 +215,20 @@ const Navbar = () => {
           </Link>
         </div>
       )}
+
+      <div className="flex items-center hidden">
+        <Link href="/admin-manage-user" className="font-semibold text-lg mr-5">Người dùng</Link>
+        <Link href="admin-manage-course" className="font-semibold text-lg mr-5">Phê duyệt</Link>
+        <div>
+          <Image
+            src="/assets/avatar.png"
+            alt="Avatar"
+            width={48}
+            height={48}
+            className="w-[40px] my-0 mx-[10px] rounded-full"
+          />
+        </div>
+      </div>
     </nav>
   );
 };

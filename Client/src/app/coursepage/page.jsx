@@ -107,10 +107,11 @@ const CoursePage = () => {
                 className="w-80 h-44 m-auto mb-3 rounded-2xl border border-border"></iframe>
                 <h1 className="font-bold text-center text-3xl mb-3">{course.price}</h1>
                 <div className="flex mb-8">
-                    
+                    <div className="m-auto">
                         <button onClick={Register} className="small-primary-button rounded-full w-40 h-12 text-xl">
                             Đăng ký học
                         </button>
+                    </div>
 
                 </div>
                 <div className="ml-14 pb-5">
