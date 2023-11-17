@@ -6,6 +6,13 @@ import AddCourses from '@components/AddActions';
 const AddLessons = () => {
     const infos = [
         {
+            title: 'Thêm tiêu đề bài giảng',
+            value: '',
+            placeholders: 'Nhập tiêu đề bài giảng vào đây',
+            className: 'mb-4 w-full',
+            input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1'
+        },
+        {
             title: 'Thêm bài đọc',
             value: '',
             placeholders: 'Nhập bài học tại đây',

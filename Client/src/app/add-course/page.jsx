@@ -2,8 +2,10 @@
 import { useState } from 'react';
 import axios from 'axios';
 
+
 import FilterSearch from '@components/FilterSearch';
 import AddCourses from '@components/AddActions';
+import Notification, { errorNotifi, successNotifi, warningNotifi } from '@components/Notification';
 
 const AddCourse = () => {
 
@@ -48,8 +50,8 @@ const AddCourse = () => {
         description: "",
     })
 
-
     const handleCallAPI = (data) => {
+        console.log('Hello mấy em');
         const token = localStorage.getItem("JWT")
         const formData = new FormData()
 
@@ -66,14 +68,16 @@ const AddCourse = () => {
             }
         }).then((response) => {
             if (response.statusText === 'OK') {
-                console.log(response)
+                successNotifi('Đăng kí thành công!.');
             }
-            else console.log(response)
+            else {
+                warningNotifi('Có lỗi xảy ra!.')
+            }
         }).catch((error) => {
             if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
-                console.log('JWT expired. Redirecting to login.');
+                errorNotifi('Vui lòng đăng nhập lại!.');
             } else {
-                console.error('Error creating course:', error);
+                errorNotifi('Đăng kí thất bại!.');
             }
         })
     }
@@ -93,6 +97,7 @@ const AddCourse = () => {
                     </div>
                 </div>
             </div>
+            <Notification />
         </div>
     )
 }

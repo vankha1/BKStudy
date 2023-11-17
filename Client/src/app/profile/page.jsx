@@ -1,62 +1,12 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
 import axios from 'axios';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useState, useEffect, useRef } from 'react';
 
 import EditData from '../../components/EditInfoUser';
 import UploadImage from '@components/UploadFile';
-
-const USER_INFO = {
-  info: [
-    {
-      title: 'Quyền truy cập',
-      data: 'Giáo viên',
-    },
-    {
-      title: 'Email',
-      data: 'nguyenvana@gmail.com',
-    },
-    {
-      title: 'Họ tên',
-      data: 'Nguyễn Văn A'
-    },
-    {
-      title: 'Ngày tháng năm sinh',
-      data: '20/12/2000'
-    },
-    {
-      title: 'Số điện thoại',
-      data: '0123456789'
-    },
-  ],
-  courses: [
-    {
-      course_name: 'Cấu trúc dữ liệu và giải thuật',
-      description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/assets/images/course_image.jpg',
-      href: '/dsa'
-    },
-    {
-      course_name: 'Cấu trúc dữ liệu và giải thuật',
-      description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/assets/images/course_image.jpg',
-      href: '/dsa'
-    },
-    {
-      course_name: 'Cấu trúc dữ liệu và giải thuật',
-      description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/assets/images/course_image.jpg',
-      href: '/dsa'
-    },
-    {
-      course_name: 'Cấu trúc dữ liệu và giải thuật',
-      description: 'Khóa học giúp rèn luyện tư duy về cấu trúc dữ liệu và các loại giải thuật, giúp sinh viên có thể giải quyết nhiều vấn đề khác nhau.',
-      image: '/assets/images/course_image.jpg',
-      href: '/dsa'
-    }
-  ]
-}
+import Notification, { errorNotifi, successNotifi } from '@components/Notification';
 
 const Profile = () => {
 
@@ -91,7 +41,10 @@ const Profile = () => {
       .then((data) => {
         let user = data.data.user;
         handleDataUSer(user);
-        setUserProfile(user)
+        setUserProfile(user);
+      })
+      .catch(error => {
+        console.log('error')
       });
   }, []);
 
@@ -163,8 +116,12 @@ const Profile = () => {
           </div>
         </div>
         <div className='w-3/5 flex-col px-8 py-4'>
-          <h4 className='w-72 text-2xl font-medium mb-3 border-b border-solid border-black'>Các khóa học đang học</h4>
-          {userProfile && userProfile.courses && userProfile.courses.map((course, index) => (
+          <h4 className='w-72 text-2xl font-medium mb-3 border-b border-solid border-black'>
+            {userProfile.userType === "LECTURER" ? "Các khóa học đang dạy" : (
+              userProfile.userType === "STUDENT" ? "Các khóa học đang học" : " "
+            )}
+          </h4>
+          {userProfile && userProfile.courses && userProfile.courses.slice(0, 3).map((course, index) => (
             <Link href='/coursepage' key={index} className='flex-between px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action'>
               <div className='w-[200px] relative h-[160px]'>
                 <Image
@@ -183,6 +140,7 @@ const Profile = () => {
           ))}
         </div>
       </div>
+      <Notification />
     </div>
 
   )
