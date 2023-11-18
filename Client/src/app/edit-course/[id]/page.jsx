@@ -1,13 +1,16 @@
 'use client';
-import Image from "next/image";
+import axios from "axios";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation"
 
 import React from 'react'
 
 import RenderLessons from "@components/RenderLessons";
 import RenderAccount from "@components/RenderAccount";
 import RatingCourses from "@components/RatingCourses";
+import Notification, { warningNotifi, errorNotifi, successNotifi } from "@components/Notification";
 
 
 const COURSE_INFO = {
@@ -250,13 +253,41 @@ const USERS_RATING = {
     ]
 }
 
-const EditCourse = () => {
+const EditCourse = ({ params }) => {
     const [buttonStates, setButtonStates] = useState([true, false, false, false]);
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const router = useRouter();
 
     const handleButtonClick = (index) => {
         const newButtonStates = buttonStates.map((state, i) => i === index);
         setButtonStates(newButtonStates);
     };
+
+    const handleConfirmDelete = () => {
+        setConfirmDelete(true);
+        setTimeout(() => {
+            setConfirmDelete(false);
+        }, 4000);
+    }
+
+    const handleDeleteCourse = () => {
+        const token = localStorage.getItem("JWT");
+        axios.delete('http://localhost:8080' + `/api/v1/course/${params?.id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((response) => {
+            if (response.statusText === 'OK') {
+                successNotifi('Xóa khóa học thành công!.');
+            }
+            else {
+                errorNotifi('Xóa khóa học thất bại!.');
+            }
+            setTimeout(() => {
+                router.push('/lecturer-manage');
+            }, 4000);
+        }).catch((error) => errorNotifi('Có lỗi xảy ra, vui lòng thử lại!.'))
+    }
 
     return (
         <div className='w-full'>
@@ -266,7 +297,13 @@ const EditCourse = () => {
                     <p className='text-lg font-medium'>Tổng quan khóa học</p>
                 </div>
                 <div className='w-1/2'>
-                    <button className='float-right medium-red-button'>Xóa khóa học</button>
+                    {
+                        confirmDelete ? (
+                            <button className='float-right medium-orange-button' >Xác nhận xóa</button>
+                        ) : (
+                            <button className='float-right medium-red-button' onClick={handleConfirmDelete}>Xóa khóa học</button>
+                        )
+                    }
                 </div>
             </div>
             <div className='w-full mt-2 border-b border-solid border-black'>
@@ -282,6 +319,7 @@ const EditCourse = () => {
                 {buttonStates[2] ? '' : ''}
                 {buttonStates[3] ? <RatingCourses users={USERS_RATING} /> : ''}
             </div>
+            <Notification />
         </div>
     )
 }

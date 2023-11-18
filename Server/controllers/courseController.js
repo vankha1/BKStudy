@@ -177,9 +177,10 @@ const deleteCourse = async (req, res, next) => {
     clearImage(course.imageUrl);
 
     await Course.findByIdAndRemove(courseId);
-    const user = await User.findById(req.userId);
-    user.courses.pull(postId);
-    await user.save();
+    await User.updateOne(
+      { _id: req.userId },
+      { $pull: { courses: {courseId: courseId} } }
+    )
 
     res.status(200).json({
       message: "Delete course successfully !!!",

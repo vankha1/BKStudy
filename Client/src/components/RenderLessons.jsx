@@ -33,8 +33,8 @@ const RenderLessons = ({ course }) => {
                                 <div className='w-full flex mb-4 cursor-pointer'>
                                     <Image
                                         className={displayChapter[indexChapter] ? 'rotate-right-action' : 'rotate-left-action'}
-                                        src='assets/icons/downward.svg'
-                                        alt="FileType Picture"
+                                        src='/assets/icons/downward.svg'
+                                        alt="Downward"
                                         width={30}
                                         height={30}
                                         priority

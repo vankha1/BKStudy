@@ -6,33 +6,6 @@ import axios from 'axios';
 
 import FilterSearch from '@components/FilterSearch';
 
-const COURSES = [
-    {
-        course_name: 'Cấu trúc dữ liệu và giải thuật',
-        number_register: '1000',
-        image: '/assets/images/course_image.jpg',
-        href: '/dsa'
-    },
-    {
-        course_name: 'Cấu trúc dữ liệu và giải thuật',
-        number_register: '1000',
-        image: '/assets/images/course_image.jpg',
-        href: '/dsa'
-    },
-    {
-        course_name: 'Cấu trúc dữ liệu và giải thuật',
-        number_register: '1000',
-        image: '/assets/images/course_image.jpg',
-        href: '/dsa'
-    },
-    {
-        course_name: 'Cấu trúc dữ liệu và giải thuật',
-        number_register: '1000',
-        image: '/assets/images/course_image.jpg',
-        href: '/dsa'
-    }
-]
-
 const ManageCourses = () => {
     const [courses, setCourses] = useState();
 
@@ -64,21 +37,30 @@ const ManageCourses = () => {
             </div>
             <div className='w-full flex flex-col'>
                 {courses && courses.map((course, index) => (
-                    <Link key={index} href='/' className='px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action flex flex-row'>
-                        <div className='w-[180px] relative h-[140px]'>
-                            <Image
-                                className="rounded-2xl py-2"
-                                src={'http://localhost:8080/' + course.courseId.imageUrl}
-                                alt="Courses Picture"
-                                fill
-                                objectFit="cover"
-                            />
-                        </div>
-                        <div className='pl-4 pt-2'>
-                            <h3 className='text-2xl font-medium mb-2'>{course.courseId.title}</h3>
-                            <p className='text-base font-normal'>Số lượng sinh viên đăng kí: {course.courseId.numberOfStudent}</p>
-                        </div>
-                    </Link>
+                    <>
+                        {
+                            course.courseId != null ? (
+                                <Link key={index} href={`/edit-course/${course.courseId._id}`} className='px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action flex flex-row'>
+                                    <div className='w-[180px] relative h-[140px]'>
+                                        <Image
+                                            className="rounded-2xl py-2"
+                                            src={'http://localhost:8080/' + course.courseId.imageUrl}
+                                            alt="Courses Picture"
+                                            fill
+                                            objectFit="cover"
+                                        />
+                                    </div>
+                                    <div className='pl-4 pt-2'>
+                                        <h3 className='text-2xl font-medium mb-2'>{course.courseId.title}</h3>
+                                        <p className='text-base font-normal'>Số lượng sinh viên đăng kí: {course.courseId.numberOfStudent}</p>
+                                    </div>
+                                </Link>
+                            ) : (
+                                <>
+                                </>
+                            )
+                        }
+                    </>
                 ))}
             </div>
         </div>
