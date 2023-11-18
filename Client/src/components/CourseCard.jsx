@@ -1,9 +1,9 @@
 import Link from "next/link"
 import Image from "next/image";
 
-const CourseCard = ({ title, imageUrl, price }) => {
+const CourseCard = ({ courseId, title, imageUrl, price }) => {
   return (
-    <Link href="/coursepage" className="flex-center flex-col transfrom-action bg-white shadow-sm rounded-lg">
+    <Link href={`/coursepage/${courseId}`} className="flex-center flex-col transfrom-action bg-white shadow-sm rounded-lg">
         <div className="w-full relative h-28">
           <Image
             src={'http://localhost:8080/' + imageUrl}
