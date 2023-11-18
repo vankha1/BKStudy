@@ -8,8 +8,8 @@ const courseSchema = new Schema(
       type: String,
       required: true,
     },
-    imageUrl : {
-      type : String, 
+    imageUrl: {
+      type: String,
       required: true,
     },
     description: {
@@ -25,7 +25,14 @@ const courseSchema = new Schema(
     chapters: {
       type: [
         {
-          name: String,
+          name: {
+            type: String
+          },
+          number: {
+            type: Number,
+            unique: true,
+            required: true,
+          },
           lessons: [
             {
               lessonId: {
@@ -52,7 +59,7 @@ const courseSchema = new Schema(
       ref: "User",
       required: true,
     },
-    isApproved : {
+    isApproved: {
       type: Boolean,
       default: false,
       required: true,

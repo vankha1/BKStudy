@@ -1,24 +1,114 @@
-const User = require('../models/userModel');
-const Course = require('../models/courseModel');
-const Lesson = require('../models/lessonModel');
-const Note = require('../models/noteModel');
+const fs = require("fs");
+
+const User = require("../models/userModel");
+const Course = require("../models/courseModel");
+const Lesson = require("../models/lessonModel");
+const Note = require("../models/noteModel");
+
+//This controller is now use to handle request about contents of a specific course (chapters, lessons)
 
 // all priviledge
-const getLessons = async (req, res, next) => {
+// GET /course/:courseId
+const getAllLessons = async (req, res, next) => {
   try {
+    const userId = req.userId;
     const courseId = req.params.courseId;
 
-    const course = await Course.findById(courseId);
+    const user = await User.findById(userId);
+
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const courseInUser = await user.courses.filter((c) => {
+      return c.courseId.toString() === courseId;
+    });
+
+    if (!courseInUser) {
+      const error = new Error("Access denied");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const course = await Course.findById(courseInUser[0].courseId).populate(
+      "chapters.lessons.lessonId"
+    );
 
     if (!course) {
-      const error = new Error("Course not found !");
-      error.statusCode = 422;
+      const error = new Error("Course not found");
+      error.statusCode = 404;
       throw error;
     }
 
     res.status(200).json({
-      lessons: course.chapters.lessons
-    })
+      chapters: course.chapters,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+// GET /course?courseId=...&lessonId=...
+const getLesson = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const { courseId, lessonId } = req.query;
+
+    const user = await User.findOne({
+      _id: userId,
+      "courses.courseId": courseId,
+    });
+
+    if (!user) {
+      const error = new Error("Course not matching");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const course = await Course.findOne({
+      _id: courseId,
+      "chapters.lessons.lessonId": lessonId,
+    });
+
+    if (!course) {
+      const error = new Error("Lesson not matching");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const lesson = await Lesson.findById(lessonId);
+
+    if (user.userType == "LECTURER") {
+      res.status(200).json({
+        title: lesson.title,
+        contents: lesson.contents,
+        url: lesson.videoURL,
+        attachedFiles: lesson.attachedFiles,
+        courseId: lesson.courseId
+      });
+    }
+
+    const note = await Note.findOne({ userId: userId, lessonId: lessonId });
+
+    if (!note) {
+      const error = new Error("Note not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({
+      title: lesson.title,
+      contents: lesson.contents,
+      url: lesson.videoURL,
+      attachedFiles: lesson.attachedFiles,
+      courseId: lesson.courseId,
+      noteContents: note.contents
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -29,110 +119,82 @@ const getLessons = async (req, res, next) => {
 
 // teacher's priviledge
 
-const getLessonsByIdTeacher = async (req, res, next) => {
-  res.send("teacher get lesson from controller");
-  try {
-    //const { userId } = req.params.userId;
-    const { courseId } = req.params.courseId;
-    const { lessonId } = req.params.lessonId;
-
-    //const user = await User.findById(userId).populate('courses.courseId').exec();
-    const course = await Course.findById(courseId);
-    const lesson = await Lesson.findById(lessonId);
-
-    //validate existence
-    if (!user) {
-      const error = new Error("User not found !");
-      error.statusCode = 404;
-      throw error;
-    }
-    if (!course) {
-      const error = new Error("Course not found !");
-      error.statusCode = 404;
-      throw error;
-    }
-    if (!lesson) {
-      const error = new Error("Lesson not found !");
-      error.statusCode = 404;
-      throw error;
-    }
-
-    //validate ownership
-
-    res.status(200).json({
-      message: "get lesson successfully",
-      course: course,
-      lesson: lesson,
-    })
-
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-  }
-
-}
-
+// POST /create/:courseId
 const createLesson = async (req, res, next) => {
   try {
+    const userId = req.userId;
     const courseId = req.params.courseId;
+
+    const user = await User.findOne({
+      _id: userId,
+      "courses.courseId": courseId,
+    });
+
+    if (!user) {
+      const error = new Error("Course not matching");
+      error.statusCode = 401;
+      throw error;
+    }
 
     const course = await Course.findById(courseId);
 
-    if (!course) {
-      const error = new Error("Course not found !");
-      error.statusCode = 422;
-      throw error;
-    }
     //video URL is not neccessary, the whole lesson can just be only reading
     //file is also not neccessary, same idea as above
     const title = req.body.title;
     const contents = req.body.contents;
-    const description = req.body.description;
     const videoURL = req.body.videoURL != "" ? req.body.videoURL : null;
-    let attachedFileCount = 0;
+    const chapter = parseInt(req.body.chapter);
+    const nameOfChapter = req.body.nameOfChapter;
     //handle attach files
     const attachedFiles = [];
     //append file
-    if (!req.files) {
-      attachedFileCount = 0;
-    }
-    else {
-      let count = 0;
-      for (let prop in req.files) {
-        count++;
-        const file = {
-          filename: req.files[prop].originalname,
-          filepath: req.files[prop].path
-            .replace(/\\\\/g, "/")
-            .replace(/\\/g, "/"),
-        };
-        //console.log(file);
-        attachedFiles.push(file);
-      }
-      attachedFileCount = count;
+
+    let count = 0;
+    for (let prop in req.files) {
+      count++;
+      const file = {
+        filename: req.files[prop].originalname,
+        filepath: req.files[prop].path
+          .replace(/\\\\/g, "/")
+          .replace(/\\/g, "/"),
+      };
+      //console.log(file);
+      attachedFiles.push(file);
     }
 
     let lesson = new Lesson({
       title: title,
       contents: contents,
-      description: description,
       videoURL: videoURL,
-      attachedFileCount: attachedFileCount,
       attachedFiles: attachedFiles,
-      courseId,
+      courseId: course._id,
+      chapter,
     });
     //console.log(lesson);
 
     await lesson.save();
 
-    course.chapters.lesson.push(lesson._id);
+    if (course.chapters[chapter]) {
+      course.chapters[chapter].lessons.push({
+        lessonId: lesson._id,
+      }); S
+    } else {
+      course.chapters.splice(chapter, 0, {
+        name: nameOfChapter,
+        lessons: [{ lessonId: lesson._id }],
+      });
+    }
+    //if (lesson.videoURL) course.numberOfVideo += 1;
     await course.save();
 
-    res.status(200).json({
-      message: "Lesson is added",
-      lesson: lesson
+
+    res.status(201).json({
+      message: "Lesson created successfully",
+      title: lesson.title,
+      contents: lesson.contents,
+      url: lesson.videoURL,
+      attachedFiles: lesson.attachedFiles,
+      courseId: lesson.courseId,
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -142,60 +204,170 @@ const createLesson = async (req, res, next) => {
   }
 };
 
+// PUT /update?courseId=...&lessonId=...
 const updateLesson = async (req, res, next) => {
   try {
-    const courseId = req.params.courseId;
-    const lessonId = req.params.lessonId;
+    const userId = req.userId;
+    const { courseId, lessonId } = req.query;
     //res.send("edit lesson from controller");
-    console.log(lessonId);
+    //console.log(lessonId);
 
-    const lesson = await Lesson.findById(lessonId);
+    const user = await User.findOne({
+      _id: userId,
+      "courses.courseId": courseId,
+    });
 
-    if (!lesson) {
-      const error = new Error("Lesson not found !");
+    if (!user) {
+      const error = new Error("Course not matching");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const course = await Course.findOne({
+      _id: courseId,
+      "chapters.lessons.lessonId": lessonId,
+    });
+
+    if (!course) {
+      const error = new Error("Lesson not matching");
       error.statusCode = 404;
       throw error;
     }
 
-    const lastChanged = new Date();
+    const lesson = await Lesson.findById(lessonId);
+
+
+    //before change
+    const oldVideoURL = lesson.videoURL;
+    lesson.attachedFiles.forEach((file) => {
+      try {
+        fs.unlinkSync(file.filepath);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    //after change
     const title = req.body.title;
     const contents = req.body.contents;
-    const description = req.body.description;
     const videoURL = req.body.videoURL != "" ? req.body.videoURL : null;
-    let attachedFileCount = 0;
+    const chapter = parseInt(req.body.chapter);
     const attachedFiles = [];
 
-    if (!req.files) {
-      attachedFileCount = 0;
-    }
-    else {
-      let count = 0;
-      for (let prop in req.files) {
-        count++;
-        const file = {
-          filename: req.files[prop].originalname,
-          filepath: req.files[prop].path
-            .replace(/\\\\/g, "/")
-            .replace(/\\/g, "/"),
-        };
-        //console.log(file);
-        attachedFiles.push(file);
-      }
-      attachedFileCount = count;
+    for (let prop in req.files) {
+      const file = {
+        filename: req.files[prop].originalname,
+        filepath: req.files[prop].path
+          .replace(/\\\\/g, "/")
+          .replace(/\\/g, "/"),
+      };
+      //console.log(file);
+      attachedFiles.push(file);
     }
 
-    lesson.lastChanged = lastChanged;
     lesson.title = title;
     lesson.contents = contents;
     lesson.videoURL = videoURL;
-    lesson.attachedFileCount = attachedFileCount;
+    if (chapter !== lesson.chapter) {
+      const foundLesson = course.chapters[lesson.chapter].lessons.filter(lesson => lesson.lessonId.toString() !== lessonId);
+
+      console.log(foundLesson);
+
+      course.chapters[lesson.chapter].lessons = foundLesson
+
+      if (course.chapters[chapter]) {
+        course.chapters[chapter].lessons.push({
+          lessonId: lesson._id,
+        });
+      } else {
+        course.chapters.splice(chapter, 0, {
+          name: nameOfChapter,
+          lessons: [{ lessonId: lesson._id }],
+        });
+      }
+    }
+    lesson.chapter = chapter;
     lesson.attachedFiles = attachedFiles;
 
     await lesson.save();
+
+    if (oldVideoURL && !lesson.videoURL) course.numberOfVideo = course.numberOfVideo <= 0 ? 0 : course.numberOfVideo - 1; // from "have video" to "no video"
+    else if (!oldVideoURL && lesson.videoURL) course.numberOfVideo += 1; //from "no video" to "have video"
+
+    await course.save();
+    res.status(201).json({
+      message: "Update lesson successfully !!!",
+      title: lesson.title,
+      contents: lesson.contents,
+      url: lesson.videoURL,
+      attachedFiles: lesson.attachedFiles,
+      courseId: lesson.courseId,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+// DELETE /delete?courseId=...&&lessonId=...
+const deleteLesson = async (req, res, next) => {
+  //res.send("delete lesson from controller");
+  try {
+    const userId = req.userId;
+
+    const { courseId, lessonId } = req.query;
+
+    const user = await User.findOne({
+      _id: userId,
+      "courses.courseId": courseId,
+    });
+
+    if (!user) {
+      const error = new Error("Course not matching");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const course = await Course.findOne({
+      _id: courseId,
+      "chapters.lessons.lessonId": lessonId,
+    });
+
+    if (!course) {
+      const error = new Error("Lesson not matching");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const lesson = await Lesson.findById(lessonId);
+
+    //clear files in file system
+    lesson.attachedFiles.forEach((file) => {
+      try {
+        fs.unlinkSync(file.filepath);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    const videoURL = lesson.videoURL;
+    await Lesson.findByIdAndDelete(lessonId);
+
+    // chapters.$.lessons means “the lessons field of the element in the chapters array that matched the query condition”. The $pull operator then removes from the lessons array the element that matches the specified condition ({ lessonId: lessonId }).
+    await Course.updateMany(
+      { 'chapters.lessons.lessonId': lessonId },
+      { $pull: { 'chapters.$.lessons': { lessonId: lessonId } } }
+    );
+
+    if (videoURL) {
+      course.numberOfVideo = course.numberOfVideo <= 0 ? 0 : course.numberOfVideo - 1;
+    };
+    await course.save();
+
     res.status(200).json({
-      message: "Change lesson successfully",
-      lesson: lesson
-    })
+      message: "Delete lesson successfully"
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -206,95 +378,68 @@ const updateLesson = async (req, res, next) => {
 
 // student's priviledge
 
-const getLessonsByIdStudent = async (req, res, next) => {
-  //res.send("get lesson from controller");
-  // if user doesnt have any association with the course -> kick user to course's description page
-  // if user is the owner of the course, move to edit mode
-  // if user is enrolling in this course, move to normal mode
-  try {
-    const { userId } = req.params.userId;
-    const { courseId } = req.params.courseId; // use course to render side bar
-    const { lessonId } = req.params.lessonId; // use lesson to render main content
-
-    const user = await User.findById(userId);
-    const course = await Course.findById(courseId);
-    const lesson = await Lesson.findById(lessonId);
-
-    if (!user) {
-      const error = new Error("User not found !");
-      error.statusCode = 404;
-      throw error;
-    }
-    if (!course) {
-      const error = new Error("Course not found !");
-      error.statusCode = 404;
-      throw error;
-    }
-    if (!lesson) {
-      const error = new Error("Lesson not found !");
-      error.statusCode = 404;
-      throw error;
-    }
-
-    const note = await Note.findOne({ userId: user._id, lessonId: lesson._id });
-    // should alway be return something, even if contents of the note is empty, for student role
-    // (this mean the moment a student registering course, it'll automatically generate empty note for each lesson
-    //  and store them in db)
-
-    if (!note) {
-      const error = new Error("Note not found !");
-      error.statusCode = 404;
-      throw error;
-    }
-
-    res.status(200).json({
-      chapter: course.chapters,
-      lesson: lesson,
-      note: note,
-    })
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-  }
-}
-
+// PUT /update-note?courseId=...?lessonId=...
 const updateNote = async (req, res, next) => {
-  res.send("update note from controller");
   try {
-    const { userId } = req.params.userId;
-    const { lessonId } = req.params.lessonId;
+    const userId = req.userId;
+    const { courseId, lessonId } = req.query;
 
-    const note = await Note.findOne({ userId: userId, lessonId: lessonId });
+    const course = await Course.findOne({
+      _id: courseId,
+      "chapters.lessons.lessonId": lessonId,
+    });
+
+    if (!course) {
+      const error = new Error("Lesson not matching");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    let note = await Note.findOne({ userId: userId, lessonId: lessonId });
 
     if (!note) {
-      const error = new Error("Note not found !");
-      error.statusCode = 442;
-      throw error;
+      note = new Note({
+        contents: "",
+        userId,
+        lessonId
+      })
     }
 
     note.contents = req.body.contents;
 
     await note.save();
 
-    res.status(200).json({
-      message: "change note successfully",
-      note
-    })
+    res.status(201).json({
+      message: "Change note successfully",
+      noteContents: note.contents,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-}
+};
+
+//GET /download/:filepath
+const downloadFile = async (req, res, next) => {
+  try {
+    const filepath = req.params.filepath;
+    res.download(filepath);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
 
 module.exports = {
-  getLessons,
-  getLessonsByIdTeacher,
+  getAllLessons,
+  getLesson,
   createLesson,
   updateLesson,
-  getLessonsByIdStudent,
+  deleteLesson,
   updateNote,
+  downloadFile,
 };
