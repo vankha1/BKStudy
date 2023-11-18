@@ -6,6 +6,14 @@ const Lesson = require("../models/lessonModel");
 const Note = require("../models/noteModel");
 
 //This controller is now use to handle request about contents of a specific course (chapters, lessons)
+const fs = require("fs");
+
+const User = require("../models/userModel");
+const Course = require("../models/courseModel");
+const Lesson = require("../models/lessonModel");
+const Note = require("../models/noteModel");
+
+//This controller is now use to handle request about contents of a specific course (chapters, lessons)
 
 // all priviledge
 // GET /course/:courseId
@@ -110,7 +118,9 @@ const getLesson = async (req, res, next) => {
 };
 
 // teacher's priviledge
+// teacher's priviledge
 
+// POST /create/:courseId
 // POST /create/:courseId
 const createLesson = async (req, res, next) => {
     try {
@@ -192,6 +202,7 @@ const createLesson = async (req, res, next) => {
     }
 };
 
+// PUT /update?courseId=...&lessonId=...
 // PUT /update?courseId=...&lessonId=...
 const updateLesson = async (req, res, next) => {
     try {
@@ -362,6 +373,7 @@ const deleteLesson = async (req, res, next) => {
 
 // student's priviledge
 
+// PUT /update-note?courseId=...?lessonId=...
 // PUT /update-note?courseId=...?lessonId=...
 const updateNote = async (req, res, next) => {
     try {
