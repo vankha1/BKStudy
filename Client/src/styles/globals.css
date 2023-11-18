@@ -50,6 +50,10 @@
   @apply w-32 bg-primary text-white font-semibold py-[5px] rounded-md hover:bg-blue-800
 }
 
+.small-second-button {
+  @apply w-32 text-black bg-secondary font-semibold py-[5px] rounded-md hover:bg-blue-300;
+}
+
 .big-white-button {
   @apply w-full border border-black px-2 py-3 rounded-md font-semibold hover:bg-blue-50/80 hover:text-blue-600
 }
@@ -68,4 +72,16 @@
 
 .transfrom-action {
   @apply transform transition-transform hover:scale-105;
+}
+
+.rotate-right-action {
+  @apply transform rotate-[-90deg] duration-300;
+}
+
+.rotate-left-action {
+  @apply transform rotate-[0deg] duration-300;
+}
+
+.hidden-action {
+  @apply hidden transition duration-300 delay-300;
 }

@@ -4,32 +4,6 @@ import CourseCard from "@components/CourseCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const COURSES = [
-  {
-      course_name: 'CTDL & Giải thuật',
-      number_register: '1000',
-      image: '/assets/images/course_image.jpg',
-      href: '/coursepage',
-      price: '500.000đ',
-      rate: '4.5'
-  },
-  {
-      course_name: 'CTDL & Giải thuật',
-      number_register: '1000',
-      image: '/assets/images/course_image.jpg',
-      href: '/coursepage',
-      price: '500.000đ',
-      rate: '4.5'
-  },
-  {
-      course_name: 'CTDL & Giải thuật',
-      number_register: '1000',
-      image: '/assets/images/course_image.jpg',
-      href: '/coursepage',
-      price: '500.000đ',
-      rate: '4.5'
-  }
-]
 
 const HomePage = () => {
   const [courses, setCourses] = useState([])
@@ -39,6 +13,8 @@ const HomePage = () => {
       if (response.statusText === 'OK') {setCourses(response.data.courses); console.log(response)}
     }).catch((error) => {alert(error)})
   }, [])
+
+  console.log(courses)
 
   return (
     <div className="min-h-[535px]">
@@ -56,7 +32,7 @@ const HomePage = () => {
         <h2 className="text-2xl font-bold">Khóa học hàng đầu</h2>
         <div className="w-full grid grid-cols-4 grid-flow-row gap-12">
           {courses.map((course) => (
-            <CourseCard title={course.title} imageUrl={course.imageUrl} price={course.price}/>
+            <CourseCard courseId={course._id} title={course.title} imageUrl={course.imageUrl} price={course.price}/>
           ))}
         </div>
       </div>

@@ -29,7 +29,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
         for (let [key, value] of Object.entries(updatedInfoCourse)) {
             updatedInfoCourse[key] = infos[index++].data || value;
         }
-        hanleCourse(JSON.stringify(updatedInfoCourse))
+        hanleCourse(updatedInfoCourse)
     }
     
 
@@ -52,7 +52,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
                                         />
                                         <UploadImage
                                             title={info.button_title}
-                                            className='py-2 px-4 ml-8 small-blue-button'
+                                            className='py-2 px-4 ml-8 small-second-button'
                                             fileType={info.fileType}
                                             onFileSelected={(fileUrl, selectedFile) => {
                                                 handleImage(fileUrl, selectedFile);
@@ -83,7 +83,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
                                             value={info.data}
                                             disabled
                                         />
-                                        <UploadImage title={info.button_title} className='py-2 px-4 ml-8 small-blue-button' fileType={info.fileType} />
+                                        <UploadImage title={info.button_title} className='py-2 px-4 ml-8 small-second-button' fileType={info.fileType} />
                                     </div>
                                 ) : (
                                     <textarea
@@ -104,7 +104,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
                 <button
                     className='small-blue-button'
                     onClick={() => {
-                        handleSaveClick();
+                        // handleSaveClick();
                         handleValueObj();
                     }}
                 >

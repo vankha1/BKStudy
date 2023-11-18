@@ -1,23 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuthContext } from "@app/contexts/auth";
 
 const Navbar = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
-  const [isLogin, setIsLogin] = useState(false)
-
-  useEffect(() => {
-    const token = localStorage.getItem("JWT");
-    if (token) {
-      setIsLogin(true);
-      setUserInfo(JSON.parse(localStorage.getItem("userInfo")))
-    }
-  }, [isLogin])
+  const { userInfo, isLogin, setIsLogin } = useAuthContext();
 
   const handleLogout = () => {
     localStorage.removeItem("JWT");
@@ -189,7 +181,7 @@ const Navbar = () => {
                     </a>
                   </li>
                 </ul>
-                <div class="py-1 w-full">
+                <div className="py-1 w-full">
                   <button
                     onClick={handleLogout}
                     className="px-4 py-2 text-sm hover:bg-gray-100 w-full block text-center"
@@ -215,6 +207,20 @@ const Navbar = () => {
           </Link>
         </div>
       )}
+
+      <div className="flex items-center hidden">
+        <Link href="/admin-manage-user" className="font-semibold text-lg mr-5">Người dùng</Link>
+        <Link href="admin-manage-course" className="font-semibold text-lg mr-5">Phê duyệt</Link>
+        <div>
+          <Image
+            src="/assets/avatar.png"
+            alt="Avatar"
+            width={48}
+            height={48}
+            className="w-[40px] my-0 mx-[10px] rounded-full"
+          />
+        </div>
+      </div>
     </nav>
   );
 };
