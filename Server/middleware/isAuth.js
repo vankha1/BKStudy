@@ -33,7 +33,7 @@ const authToken = (req, res, next) => {
         decodedPayload = jwt.verify(token, process.env.TOKEN_SECRET_KEY)
     }
     catch (err) {
-        err.statusCode = 500;
+        err.statusCode = 401;
         throw err
     }
     if (!decodedPayload) {

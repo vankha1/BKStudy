@@ -31,7 +31,7 @@ const warningNotifi = (description) =>
     });
 
 const successNotifi = (description) =>
-    toast.success({ description }, {
+    toast.success(description, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,

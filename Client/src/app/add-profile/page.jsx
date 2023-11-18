@@ -28,7 +28,7 @@ const AddProfile = () => {
     formData.append("image", imageFile, userInfo.filename)
     formData.append("phoneNumber", userInfo.phoneNumber)
     formData.append("fullname", userInfo.fullname)
-    formData.append("dataOfBirth", userInfo.dateOfBirth)
+    formData.append("dateOfBirth", userInfo.dateOfBirth)
 
     axios.post(`http://localhost:8080/api/v1/user/add-profile`, formData, {
       headers: {
