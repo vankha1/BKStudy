@@ -4,40 +4,6 @@ import CourseCard from "@components/CourseCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-// const COURSES = [
-//   {
-//       course_name: 'CTDL & Giải thuật',
-//       number_register: '1000',
-//       imageUrl: '/assets/images/course_image.jpg',
-//       href: '/coursepage',
-//       price: '500',
-//       rate: '4.5'
-//   },
-//   {
-//       course_name: 'CTDL & Giải thuật',
-//       number_register: '1000',
-//       imageUrl: '/assets/images/course_image.jpg',
-//       href: '/coursepage',
-//       price: '500',
-//       rate: '4.5'
-//   },
-//   {
-//       course_name: 'CTDL & Giải thuật',
-//       number_register: '1000',
-//       imageUrl: '/assets/images/course_image.jpg',
-//       href: '/coursepage',
-//       price: '500',
-//       rate: '4.5'
-//   },
-//   {
-//     course_name: 'CTDL & Giải thuật',
-//     number_register: '1000',
-//     imageUrl: '/assets/images/course_image.jpg',
-//     href: '/coursepage',
-//     price: '500',
-//     rate: '4.5'
-//   }
-// ]
 
 const HomePage = () => {
   const [courses, setCourses] = useState([])
@@ -65,8 +31,8 @@ const HomePage = () => {
       <div className="flex-start flex-col gap-6 mt-16 w-full">
         <h2 className="text-2xl font-bold">Khóa học hàng đầu</h2>
         <div className="w-full grid grid-cols-4 grid-flow-row gap-12">
-          {courses.slice(0,4).map((course) => (
-            <CourseCard title={course.title} imageUrl={course.imageUrl} price={course.price}/>
+          {courses.map((course) => (
+            <CourseCard courseId={course._id} title={course.title} imageUrl={course.imageUrl} price={course.price}/>
           ))}
         </div>
       </div>
