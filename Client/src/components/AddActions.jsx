@@ -52,7 +52,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
                                         />
                                         <UploadImage
                                             title={info.button_title}
-                                            className='py-2 px-4 ml-8 small-blue-button'
+                                            className='py-2 px-4 ml-8 small-second-button'
                                             fileType={info.fileType}
                                             onFileSelected={(fileUrl, selectedFile) => {
                                                 handleImage(fileUrl, selectedFile);
@@ -83,7 +83,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
                                             value={info.data}
                                             disabled
                                         />
-                                        <UploadImage title={info.button_title} className='py-2 px-4 ml-8 small-blue-button' fileType={info.fileType} />
+                                        <UploadImage title={info.button_title} className='py-2 px-4 ml-8 small-second-button' fileType={info.fileType} />
                                     </div>
                                 ) : (
                                     <textarea

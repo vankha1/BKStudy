@@ -34,55 +34,49 @@ const COURSES = [
 ]
 
 const ManageCourses = () => {
-    // const [courses, setCourses] = useState();
-    // const [loading, setLoading] = useState(true);
-    
-    // useEffect(() => {
-    //     const token = localStorage.getItem("JWT");
-    //     axios
-    //         .get("http://localhost:8080/api/v1/user/courses", {
-    //             headers: { Authorization: `Bearer ${token}` }
-    //         })
-    //         .then((response) => {
-    //             const data = response.data;
-    //             console.log(data)
-    //             const courseData = data.data;
+    const [courses, setCourses] = useState();
 
-    //             setCourses(courseData);
-    //             setLoading(false);
-    //         })
-    //         .catch((error) => {
-    //             console.error(`Error when call API: ${error}`);
-    //             setLoading(false);
-    //         });
-    // }, []);
+    useEffect(() => {
+        const token = localStorage.getItem("JWT");
+        axios
+            .get("http://localhost:8080/api/v1/user/courses", {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then((response) => {
+                const data = response.data.courses;
+                console.log(data)
+                const courseData = data;
 
-    // if (loading) {
-    //     return <p>Đang tải...</p>;
-    // }
+                setCourses(courseData);
+            })
+            .catch((error) => {
+                console.error(`Error when call API: ${error}`);
+            });
+    }, []);
 
     return (
         <div className='relative w-full mt-4'>
             <div className='w-full flex flex-col'>
                 <FilterSearch title="KHÓA HỌC ĐANG GIẢNG DẠY" />
-                <Link href='add-course' className='w-full relative mt-4'>
+                <Link href='/add-course' className='w-full relative mt-4'>
                     <button className='medium-blue-button float-right'>Thêm khóa học</button>
                 </Link>
             </div>
             <div className='w-full flex flex-col'>
-                {COURSES.map((course, index) => (
-                    <Link key={index} href={course.href} className='px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action flex flex-row'>
-                        <Image
-                            className="rounded-xl py-2"
-                            src={course.image}
-                            alt="Courses Picture"
-                            width={140}
-                            height={64}
-                            priority
-                        />
-                        <div className='pl-4 '>
-                            <h3 className='text-3xl font-medium mb-2'>{course.course_name}</h3>
-                            <p className='text-base font-normal'>Số lượng sinh viên đăng kí: {course.number_register}</p>
+                {courses && courses.map((course, index) => (
+                    <Link key={index} href='/' className='px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action flex flex-row'>
+                        <div className='w-[180px] relative h-[140px]'>
+                            <Image
+                                className="rounded-2xl py-2"
+                                src={'http://localhost:8080/' + course.courseId.imageUrl}
+                                alt="Courses Picture"
+                                fill
+                                objectFit="cover"
+                            />
+                        </div>
+                        <div className='pl-4 pt-2'>
+                            <h3 className='text-2xl font-medium mb-2'>{course.courseId.title}</h3>
+                            <p className='text-base font-normal'>Số lượng sinh viên đăng kí: {course.courseId.numberOfStudent}</p>
                         </div>
                     </Link>
                 ))}

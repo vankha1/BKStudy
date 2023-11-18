@@ -50,6 +50,10 @@
   @apply w-32 bg-primary text-white font-semibold py-[5px] rounded-md hover:bg-blue-800
 }
 
+.small-second-button {
+  @apply w-32 text-black bg-secondary font-semibold py-[5px] rounded-md hover:bg-blue-300;
+}
+
 .big-white-button {
   @apply w-full border border-black px-2 py-3 rounded-md font-semibold hover:bg-blue-50/80 hover:text-blue-600
 }

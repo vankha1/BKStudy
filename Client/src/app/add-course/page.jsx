@@ -51,7 +51,6 @@ const AddCourse = () => {
     })
 
     const handleCallAPI = (data) => {
-        console.log('Hello mấy em');
         const token = localStorage.getItem("JWT")
         const formData = new FormData()
 
@@ -68,16 +67,16 @@ const AddCourse = () => {
             }
         }).then((response) => {
             if (response.statusText === 'OK') {
-                successNotifi('Đăng kí thành công!.');
+                successNotifi('Tạo khóa học thành công!.');
             }
             else {
-                warningNotifi('Có lỗi xảy ra!.')
+                warningNotifi('Có lỗi xảy ra, thử lại sau!.')
             }
         }).catch((error) => {
             if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
                 errorNotifi('Vui lòng đăng nhập lại!.');
             } else {
-                errorNotifi('Đăng kí thất bại!.');
+                errorNotifi('Tạo khóa học thất bại!.');
             }
         })
     }

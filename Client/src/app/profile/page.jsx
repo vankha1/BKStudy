@@ -40,6 +40,7 @@ const Profile = () => {
       })
       .then((data) => {
         let user = data.data.user;
+        console.log(user);
         handleDataUSer(user);
         setUserProfile(user);
       })
@@ -71,8 +72,8 @@ const Profile = () => {
         <div className='absolute bottom-0 left-40 flex justify-between'>
           <div className='w-40 h-40 rounded-full flex-center bg-white'>
             <Image
-              className=""
-              src="/assets/images/avatar.svg"
+              className="w-32 h-32 rounded-full"
+              src={'http://localhost:8080/' + userProfile.avatar}
               alt="Profile Picture"
               width={130}
               height={130}
