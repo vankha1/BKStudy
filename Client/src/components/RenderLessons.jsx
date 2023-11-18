@@ -42,27 +42,27 @@ const RenderLessons = ({ course }) => {
                                     />
                                     <h3 className='text-xl font-medium'>{chapter.chapter}</h3>
                                 </div>
-                                <Link href='/add-lessons' className="flex-center small-blue-button mb-4">
-                                    Thêm bài học
-                                </Link>
                             </div>
                             <div className={displayChapter[indexChapter] ? 'hidden-action' : ''}>
+                                <Link href='/add-lessons' className="flex-center small-blue-button mb-4 ml-4">
+                                    Thêm bài học
+                                </Link>
                                 {
                                     chapter.content.map((item, index) => (
-                                        <Link key={index} href={item.link} className='w-full flex mb-8 rounded-lg p-2 border border-solid border-gray transfrom-action flex-between'>
+                                        <Link key={index} href={item.link} className='w-full flex mb-8 rounded-lg p-2 border border-solid border-grayflex-between'>
                                             <div className='w-1/2 flex'>
                                                 <Image
                                                     className=""
                                                     src={`/assets/images/${item.fileType}.png`}
                                                     alt="FileType Picture"
-                                                    width={80}
-                                                    height={80}
+                                                    width={70}
+                                                    height={70}
                                                     priority
                                                 />
-                                                <h2 className='font-normal text-xl pl-4 mt-2'>{item.title}</h2>
+                                                <h2 className='font-medium text-xl pl-4 mt-2'>{item.title}</h2>
                                             </div>
                                             <div className='w-1/2'>
-                                                <button className='w-32 bg-blue-200 font-semibold py-[5px] rounded-md hover:bg-blue-300 text-black float-right mr-4'>Chỉnh sửa</button>
+                                                <button className='w-28 bg-blue-200 font-semibold py-[5px] rounded-md hover:bg-blue-300 text-black float-right mr-4 mt-4'>Chỉnh sửa</button>
                                             </div>
                                         </Link>
                                     ))
