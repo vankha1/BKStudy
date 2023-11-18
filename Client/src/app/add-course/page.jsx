@@ -1,9 +1,11 @@
 "use client"; // This is a client component
-import { useState, useRoutes } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
+
 
 import FilterSearch from '@components/FilterSearch';
 import AddCourses from '@components/AddActions';
+import Notification, { errorNotifi, successNotifi, warningNotifi } from '@components/Notification';
 
 const AddCourse = () => {
 
@@ -42,26 +44,41 @@ const AddCourse = () => {
 
 
     const [infoCourse, setInfoCourse] = useState({
-        title: '',
-        price: '',
-        avatar: '',
-        description: '',
+        title: "",
+        price: "",
+        image: "",
+        description: "",
     })
 
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
-        axios.post(`http://localhost:8080/api/v1/course/create`, data, {
+        const formData = new FormData()
+
+        formData.append("title", data.title)
+        formData.append("price", Number(data.price))
+        formData.append("image", data.image, data.image.name)
+        formData.append("description", data.description)
+
+        console.log(formData, token);
+        axios.post(`http://localhost:8080/api/v1/course/create`, formData, {
             headers: {
-              'Authorization': `Bearer ${token}`,
-              "Content-Type": `multipart/form-data`
+                'Authorization': `Bearer ${token}`,
+                "Content-Type": `multipart/form-data`,
             }
         }).then((response) => {
             if (response.statusText === 'OK') {
-              console.log(response)
-            //   router.push('/')
+                successNotifi('Tạo khóa học thành công!.');
             }
-            else console.log(response)
-          }).catch((error) => {alert(error)})
+            else {
+                warningNotifi('Có lỗi xảy ra, thử lại sau!.')
+            }
+        }).catch((error) => {
+            if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
+                errorNotifi('Vui lòng đăng nhập lại!.');
+            } else {
+                errorNotifi('Tạo khóa học thất bại!.');
+            }
+        })
     }
 
     return (
@@ -79,6 +96,7 @@ const AddCourse = () => {
                     </div>
                 </div>
             </div>
+            <Notification />
         </div>
     )
 }

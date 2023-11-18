@@ -6,39 +6,62 @@ const lessonFileMulter = require('../middleware/lessonFileMulter');
 const lessonController = require('../controllers/lessonController');
 const isAuth = require('../middleware/isAuth');
 
-router.get('/teacher/:userId/:courseId/', lessonController.getLessons);
+// all
 
-router.get('/student/:userId/:courseId/', lessonController.getLessons);
-
-router.get('/teacher/:userId/:courseId/:lessonId/',
-    lessonController.getLessonsByIdTeacher,
+// user get all lesson from the course
+router.get('/course/:courseId',
+    isAuth.authToken,
+    isAuth.authRoles(["LECTURER", "STUDENT"]),
+    lessonController.getAllLessons
 );
 
 
-router.post('/teacher/:userId/:courseId/create-lesson',
+// user get a specific lesson from the course
+router.get('/course',
+    isAuth.authToken,
+    isAuth.authRoles(["LECTURER", "STUDENT"]),
+    lessonController.getLesson
+)
+
+
+// teacher's priviledge
+
+// teacher create a lesson in the course
+router.post('/create/:courseId',
     isAuth.authToken,
     isAuth.authRoles(["LECTURER"]),
     lessonFileMulter.uploadLessonFile.array("files"),
     lessonController.createLesson
 );
 
-router.put('/teacher/:userId/:courseId/:lessonId/update-lesson',
+// teacher update lesson's information in the course
+router.put('/update',
     isAuth.authToken,
     isAuth.authRoles(["LECTURER"]),
     lessonFileMulter.uploadLessonFile.array("files"),
     lessonController.updateLesson
 );
 
-router.get('/student/:userId/:courseId/:lessonId/',
+// teacher delete lesson in the course
+router.delete('/delete',
     isAuth.authToken,
-    isAuth.authRoles(["STUDENT"]),
-    lessonController.getLessonsByIdStudent
+    isAuth.authRoles(["LECTURER"]),
+    lessonController.deleteLesson
 );
 
-router.put('/student/:userId/:courseId/:lessonId/update-note',
+// student's priviledge
+
+router.put('/update-note',
     isAuth.authToken,
     isAuth.authRoles(["STUDENT"]),
     lessonController.updateNote
 );
+
+router.get('/download/:filepath',
+    isAuth.authToken,
+    isAuth.authRoles(["STUDENT"]),
+    lessonController.downloadFile
+);
+
 
 module.exports = router;

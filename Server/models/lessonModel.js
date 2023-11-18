@@ -15,10 +15,6 @@ const lessonSchema = new Schema(
     videoURL: {
       type: String,
     },
-    attachedFileCount: {
-      type: Number,
-      required: true
-    },
     attachedFiles: {
       type: [
         {
@@ -26,6 +22,9 @@ const lessonSchema = new Schema(
           filepath: String
         }
       ]
+    },
+    chapter: {
+      type: Number
     },
     courseId: {
       type: Schema.Types.ObjectId,

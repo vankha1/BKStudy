@@ -27,7 +27,6 @@ const signup = async (req, res, next) => {
       username,
       email,
       password: hashedPassword,
-      userOrigin: origin,
       joinedDate,
       userType,
       isAdmin,
@@ -74,10 +73,10 @@ const login = async (req, res, next) => {
         userType: user.userType,
       },
       process.env.TOKEN_SECRET_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "1d" }
     );
 
-    res.status(200).json({ token, userId: user._id.toString() });
+    res.status(200).json({ token, userInfo: user });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

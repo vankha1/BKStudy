@@ -1,3 +1,4 @@
+
 const fs = require("fs");
 const path = require("path");
 const { validationResult } = require("express-validator");
@@ -5,6 +6,7 @@ const { validationResult } = require("express-validator");
 const Course = require("../models/courseModel");
 const User = require("../models/userModel");
 
+// GET /
 const getAllCourses = async (req, res, next) => {
   try {
     const courses = await Course.find();
@@ -21,11 +23,12 @@ const getAllCourses = async (req, res, next) => {
   }
 };
 
+// GET /course-detail/:courseId
 const getCourse = async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
 
-    const course = await Course.findById(courseId);
+    const course = await Course.findById(courseId).populate('chapters.lessons.lessonId', 'title -_id');
     if (!course) {
       const error = new Error("No course found !!!");
       error.statusCode = 404;
@@ -42,6 +45,7 @@ const getCourse = async (req, res, next) => {
   }
 }
 
+// POST /create
 const createCourse = async (req, res, next) => {
   try {
     const errors = validationResult(req);
@@ -59,7 +63,8 @@ const createCourse = async (req, res, next) => {
     }
 
     const title = req.body.title;
-    const imageUrl = req.file.path.replace("\\", "/");
+    const temp = req.file.path.replace(/\\/g, "/").split("images")
+    const imageUrl = "images" + temp[1]
     const description = req.body.description;
     const price = req.body.price;
 
@@ -69,14 +74,18 @@ const createCourse = async (req, res, next) => {
       description,
       price,
       createdBy: req.userId,
+      numberOfStudent: 0,
+      numberOfVideo: 0,
       isApproved: false,
     });
 
     await course.save();
 
-    // Waiting for the approval of admin
     const user = await User.findById(req.userId);
-    user.courses.push(course)
+    user.courses.push({
+      courseId: course._id,
+      enrolledDate: new Date()
+    })
     await user.save()
 
     res.status(200).json({
@@ -148,6 +157,8 @@ const updateCourse = async (req, res, next) => {
   }
 };
  */
+
+// DELETE /:courseId
 const deleteCourse = async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
@@ -180,6 +191,7 @@ const deleteCourse = async (req, res, next) => {
     next(err);
   }
 };
+
 
 const clearImage = (filePath) => {
   // we are in controller folder, so we need to jump out of that by using '..'
