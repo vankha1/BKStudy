@@ -272,6 +272,7 @@ const EditCourse = ({ params }) => {
 
     const handleDeleteCourse = () => {
         const token = localStorage.getItem("JWT");
+        console.log(params?.id);
         axios.delete('http://localhost:8080' + `/api/v1/course/${params?.id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -299,7 +300,7 @@ const EditCourse = ({ params }) => {
                 <div className='w-1/2'>
                     {
                         confirmDelete ? (
-                            <button className='float-right medium-orange-button' >Xác nhận xóa</button>
+                            <button className='float-right medium-orange-button' onClick={handleDeleteCourse}>Xác nhận xóa</button>
                         ) : (
                             <button className='float-right medium-red-button' onClick={handleConfirmDelete}>Xóa khóa học</button>
                         )
@@ -313,7 +314,7 @@ const EditCourse = ({ params }) => {
                 <button className={`px-4 font-medium ${buttonStates[3] ? 'text-gray-500' : ''}`} onClick={() => handleButtonClick(3)}>Đánh giá</button>
             </div>
             <div className='w-full mt-8'>
-                {buttonStates[0] ? <RenderLessons course={COURSE_INFO.course} /> : ''}
+                {buttonStates[0] ? <RenderLessons course={COURSE_INFO.course} courseId={params?.id} /> : ''}
                 {buttonStates[1] ? <RenderAccount accounts={LIST_ACCOUNT} /> : ''}
                 {buttonStates[2] ? '' : ''}
                 {buttonStates[3] ? <RatingCourses users={USERS_RATING} /> : ''}

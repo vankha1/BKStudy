@@ -1,11 +1,12 @@
 'use client';
 import Link from "next/link";
 import Image from "next/image";
+import axios from "axios";
 import { useState, useEffect } from "react";
 
 import React from 'react'
 
-const RenderLessons = ({ course }) => {
+const RenderLessons = ({ course, courseId }) => {
     const [displayChapter, setDisplayChapter] = useState([]);
     const [isAddChapter, setIsAddChapter] = useState(false);
     const [newChapter, setNewChapter] = useState('');
@@ -34,12 +35,33 @@ const RenderLessons = ({ course }) => {
     };
 
     const handleUpdateCourse = () => {
-        console.log(newChapter);
         const newData = [...coursesInfo];
         newData[0].push({chapter: newChapter});
-        console.log(newData);
         setCourseInfo(newData);
         setIsAddChapter(false);
+
+        const token = localStorage.getItem("JWT");
+        const formData = new FormData();
+
+        formData.append("name", newData)
+        axios.post('http://localhost:8080' + `/api/v1/chapter/create?courseId=${courseId}`, formData, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((response) => {
+            // if (response.statusText === 'OK') {
+            //     successNotifi('Xóa khóa học thành công!.');
+            // }
+            // else {
+            //     errorNotifi('Xóa khóa học thất bại!.');
+            // }
+            // setTimeout(() => {
+            //     router.push('/lecturer-manage');
+            // }, 4000);
+            console.log(courseId);
+            console.log(response);
+        }).catch((error) => console.log(error))
+
     }
 
     return (
