@@ -6,14 +6,6 @@ const Lesson = require("../models/lessonModel");
 const Note = require("../models/noteModel");
 
 //This controller is now use to handle request about contents of a specific course (chapters, lessons)
-const fs = require("fs");
-
-const User = require("../models/userModel");
-const Course = require("../models/courseModel");
-const Lesson = require("../models/lessonModel");
-const Note = require("../models/noteModel");
-
-//This controller is now use to handle request about contents of a specific course (chapters, lessons)
 
 // all priviledge
 // GET /course/:courseId
@@ -93,7 +85,10 @@ const getLesson = async (req, res, next) => {
 
         if (user.userType == "LECTURE") {
             res.status(200).json({
-                lesson: lesson,
+                title: lesson.title,
+                contents: lesson.contents,
+                url: lesson.videoURL,
+                files: lesson.attachedFiles,
             });
         }
 
@@ -106,8 +101,11 @@ const getLesson = async (req, res, next) => {
         }
 
         res.status(200).json({
-            lesson: lesson,
-            note: note,
+            title: lesson.title,
+            contents: lesson.contents,
+            url: lesson.videoURL,
+            files: lesson.attachedFiles,
+            note: note.contents,
         });
     } catch (err) {
         if (!err.statusCode) {
@@ -118,9 +116,7 @@ const getLesson = async (req, res, next) => {
 };
 
 // teacher's priviledge
-// teacher's priviledge
 
-// POST /create/:courseId
 // POST /create/:courseId
 const createLesson = async (req, res, next) => {
     try {
@@ -186,13 +182,16 @@ const createLesson = async (req, res, next) => {
                 lessons: [{ lessonId: lesson._id }],
             });
         }
-        //if (lesson.videoURL) course.numberOfVideo += 1;
+        if (lesson.videoURL) course.numberOfVideo += 1;
         await course.save();
 
 
         res.status(201).json({
             message: "Lesson created successfully",
-            lesson: lesson
+            title: lesson.title,
+            contents: lesson.contents,
+            url: lesson.videoURL,
+            files: lesson.attachedFiles,
         });
     } catch (err) {
         if (!err.statusCode) {
@@ -202,7 +201,6 @@ const createLesson = async (req, res, next) => {
     }
 };
 
-// PUT /update?courseId=...&lessonId=...
 // PUT /update?courseId=...&lessonId=...
 const updateLesson = async (req, res, next) => {
     try {
@@ -295,7 +293,10 @@ const updateLesson = async (req, res, next) => {
         await course.save();
         res.status(201).json({
             message: "Update lesson successfully !!!",
-            lesson: lesson,
+            title: lesson.title,
+            contents: lesson.contents,
+            url: lesson.videoURL,
+            files: lesson.attachedFiles,
         });
     } catch (err) {
         if (!err.statusCode) {
@@ -374,7 +375,6 @@ const deleteLesson = async (req, res, next) => {
 // student's priviledge
 
 // PUT /update-note?courseId=...?lessonId=...
-// PUT /update-note?courseId=...?lessonId=...
 const updateNote = async (req, res, next) => {
     try {
         const userId = req.userId;
@@ -407,7 +407,7 @@ const updateNote = async (req, res, next) => {
 
         res.status(201).json({
             message: "Change note successfully",
-            note,
+            note: note.contents,
         });
     } catch (err) {
         if (!err.statusCode) {
