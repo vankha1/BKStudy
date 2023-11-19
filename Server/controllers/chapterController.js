@@ -5,7 +5,7 @@ const Lesson = require("../models/lessonModel");
 // for test only
 const getChapter = async (req, res, next) => {
     try {
-        const userId = req.body.userId;
+        const userId = req.userId;
         const courseId = req.query.courseId;
         const chapter = parseInt(req.query.chapter);
         let course = await Course.findById(courseId);
@@ -35,7 +35,7 @@ const getChapter = async (req, res, next) => {
 const createChapter = async (req, res, next) => {
     try {
         //res.send("create chapter from controller");
-        const userId = req.body.userId;
+        const userId = req.userId;
         const courseId = req.query.courseId;
 
         const user = await User.findOne({
@@ -53,7 +53,6 @@ const createChapter = async (req, res, next) => {
 
         course.chapters.push({
             name: req.body.name,
-            number: parseInt(req.body.number),
             lessons: []
         });
 
@@ -63,9 +62,7 @@ const createChapter = async (req, res, next) => {
         let chapter = course.chapters.find(chapter => chapter.name === req.body.name);
         res.status(200).json({
             message: "create chapter successfully",
-            name: chapter.name,
-            number: chapter.number,
-            lessons: chapter.lessons
+            chapter: chapter,
         });
     } catch (err) {
         if (!err.statusCode) {
@@ -78,9 +75,9 @@ const createChapter = async (req, res, next) => {
 const updateChapter = async (req, res, next) => {
     try {
         //res.send("update chapter from controller");
-        const userId = req.body.userId;
+        const userId = req.userId;
         const courseId = req.query.courseId;
-        const chapter = parseInt(req.query.chapter);
+        const chapterName = req.query.chapterName;
 
         const user = await User.findOne({
             _id: userId,
@@ -94,7 +91,7 @@ const updateChapter = async (req, res, next) => {
         }
 
         const course = await Course.findById(courseId);
-        const targetIndex = await course.chapters.findIndex(c => c.number === chapter);
+        const targetIndex = await course.chapters.findIndex(c => c.name === chapterName);
         if (targetIndex == -1) {
             const error = new Error("Chapter not found");
             error.statusCode = 404;
@@ -102,15 +99,12 @@ const updateChapter = async (req, res, next) => {
         }
 
         course.chapters[targetIndex].name = req.body.name;
-        course.chapters[targetIndex].number = req.body.number;
 
         await course.save();
-        const targetChapter = await course.chapters.find(c => c.number === chapter);
+        const targetChapter = await course.chapters.find(c => c.name === chapter);
         res.status(200).json({
             message: "update chapter successfully",
-            name: targetChapter.name,
-            number: targetChapter.number,
-            lessons: targetChapter.lessons,
+            chapter: targetChapter,
         })
     } catch (err) {
         if (!err.statusCode) {
@@ -123,9 +117,9 @@ const updateChapter = async (req, res, next) => {
 const deleteChapter = async (req, res, next) => {
     try {
         //res.send("delete chapter from controller");
-        const userId = req.body.userId;
+        const userId = req.userId;
         const courseId = req.query.courseId;
-        const chapter = parseInt(req.query.chapter);
+        const chapterName = req.query.chapterName;
 
         const user = await User.findOne({
             _id: userId,
@@ -139,7 +133,7 @@ const deleteChapter = async (req, res, next) => {
         }
 
         const course = await Course.findById(courseId);
-        const targetIndex = await course.chapters.findIndex(c => c.number === chapter);
+        const targetIndex = await course.chapters.findIndex(c => c.name === chapterName);
         if (targetIndex == -1) {
             const error = new Error("Chapter not found");
             error.statusCode = 404;
