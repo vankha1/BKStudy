@@ -311,7 +311,6 @@ const EditCourse = ({ params }) => {
                 <button className={`px-4 font-medium ${buttonStates[1] ? 'text-gray-500' : ''}`} onClick={() => handleButtonClick(1)}>Danh sách học viên</button>
                 <button className={`px-4 font-medium ${buttonStates[2] ? 'text-gray-500' : ''}`} onClick={() => handleButtonClick(2)}>Diễn đàn khóa học</button>
                 <button className={`px-4 font-medium ${buttonStates[3] ? 'text-gray-500' : ''}`} onClick={() => handleButtonClick(3)}>Đánh giá</button>
-                {console.log(buttonStates)}
             </div>
             <div className='w-full mt-8'>
                 {buttonStates[0] ? <RenderLessons course={COURSE_INFO.course} /> : ''}
