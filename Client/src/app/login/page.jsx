@@ -8,7 +8,7 @@ import { useAuthContext } from "@app/contexts/auth";
 
 const LogInPage = () => {
   const router = useRouter();
-  const { setIsLogin, setUserInfo } = useAuthContext();
+  const { setIsLogin } = useAuthContext();
 
   const [submitting, setSubmitting] = useState(false);
   const [account, setAccount] = useState({
@@ -27,7 +27,6 @@ const LogInPage = () => {
           localStorage.setItem("JWT", response.data.token)
           localStorage.setItem("userInfo", JSON.stringify(response.data.userInfo))
           setIsLogin(true);
-          setUserInfo(response.data.userInfo);
           router.push('/')
         }
       }

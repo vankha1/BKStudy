@@ -12,7 +12,7 @@ const errorHandlingMiddleware = require('./middleware/errorHandling')
 const dbConnect = require('./config/db')
 const auth = require('./routes/auth')
 const course = require('./routes/course')
-
+const chapter = require('./routes/chapter')
 const lesson = require('./routes/lesson')
 const lessonFileMulter = require('./middleware/lessonFileMulter')
 
@@ -65,6 +65,7 @@ app.use('/api/v1/auth', auth);
 app.use('/api/v1/course', course);
 
 //app.use('/google', authMedia1);
+app.use('/api/v1/chapter', chapter);
 app.use('/api/v1/lesson', lesson);
 app.use('/api/v1/user', user);
 

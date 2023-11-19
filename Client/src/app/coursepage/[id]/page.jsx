@@ -10,17 +10,18 @@ import { useAuthContext } from "@app/contexts/auth";
 const CoursePage = ({ params }) => {
   const [course, setCourse] = useState({});
   const router = useRouter();
-  const { token } = useAuthContext();
+  const { SERVER_URL } = useAuthContext();
 
   useEffect(() => {
     axios
       .get(
-        "http://localhost:8080" + `/api/v1/course/course-detail/${params?.id}`
+        SERVER_URL + `/api/v1/course/course-detail/${params?.id}`
       )
       .then((response) => {
         if (response.statusText === "OK") {
           setCourse(response.data.course);
         }
+        console.log(response)
       })
       .catch((error) => {
         alert(error);
@@ -28,7 +29,7 @@ const CoursePage = ({ params }) => {
   }, []);
 
   const handleRegister = () => {
-    console.log(token)
+    const token = localStorage.getItem("JWT")
     axios.post('http://localhost:8080' + `/api/v1/user/register/${params?.id}`,{}, {
         headers: {
           'Authorization': `Bearer ${token}`

@@ -25,7 +25,14 @@ const courseSchema = new Schema(
     chapters: {
       type: [
         {
-          name: String,
+          name: {
+            type: String
+          },
+          number: {
+            type: Number,
+            unique: true,
+            required: true,
+          },
           lessons: [
             {
               lessonId: {
