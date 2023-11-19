@@ -68,7 +68,7 @@ const updateProfile = async (req, res, next) => {
   try {
     const userId = req.userId;
 
-    const { fullname, dateOfBirth, phoneNumber, email } = req.body;
+    const { fullname, dateOfBirth, phoneNumber} = req.body;
     const avatar = req.body.image;
 
     if (req.file) {
@@ -83,7 +83,6 @@ const updateProfile = async (req, res, next) => {
     }
 
     user.fullname = fullname;
-    user.email = email;
     user.avatar = avatar;
     user.dateOfBirth = dateOfBirth;
     user.phoneNumber = phoneNumber;
@@ -120,20 +119,6 @@ const registerCourse = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
-    //handle create note for each lesson in course
-    // for (let lesson of chapter.lessons) {
-    //   let lessonId = lesson.lessonId;
-
-    //   const note = await new Note({
-    //     lessonId: lessonId,
-    //     userId: user._id,
-    //     contents: " ",
-    //   });
-
-    //   await note.save();
-    // }
-    //
 
     user.courses.push({
       courseId: course._id,
