@@ -28,11 +28,6 @@ const courseSchema = new Schema(
           name: {
             type: String
           },
-          number: {
-            type: Number,
-            unique: true,
-            required: true,
-          },
           lessons: [
             {
               lessonId: {
