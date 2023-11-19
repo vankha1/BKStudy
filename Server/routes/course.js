@@ -13,6 +13,11 @@ router.get("/", courseController.getAllCourses);
 // used for guest
 router.get("/course-detail/:courseId", courseController.getCourse)
 
+// get students in course
+router.get("/students/:courseId", isAuth.authToken ,courseController.getStudents)
+
+// view student in detail
+router.get("/:courseId/:detailUserId", isAuth.authToken ,courseController.getStudent)
 
 // used for lecturers
 router.post(
