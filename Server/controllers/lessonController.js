@@ -85,10 +85,7 @@ const getLesson = async (req, res, next) => {
 
         if (user.userType == "LECTURE") {
             res.status(200).json({
-                title: lesson.title,
-                contents: lesson.contents,
-                url: lesson.videoURL,
-                files: lesson.attachedFiles,
+                lesson: lesson
             });
         }
 
@@ -101,11 +98,8 @@ const getLesson = async (req, res, next) => {
         }
 
         res.status(200).json({
-            title: lesson.title,
-            contents: lesson.contents,
-            url: lesson.videoURL,
-            files: lesson.attachedFiles,
-            note: note.contents,
+            lesson: lesson,
+            note: note,
         });
     } catch (err) {
         if (!err.statusCode) {
@@ -188,10 +182,7 @@ const createLesson = async (req, res, next) => {
 
         res.status(201).json({
             message: "Lesson created successfully",
-            title: lesson.title,
-            contents: lesson.contents,
-            url: lesson.videoURL,
-            files: lesson.attachedFiles,
+            lesson: lesson,
         });
     } catch (err) {
         if (!err.statusCode) {
@@ -293,10 +284,7 @@ const updateLesson = async (req, res, next) => {
         await course.save();
         res.status(201).json({
             message: "Update lesson successfully !!!",
-            title: lesson.title,
-            contents: lesson.contents,
-            url: lesson.videoURL,
-            files: lesson.attachedFiles,
+            lesson: lesson,
         });
     } catch (err) {
         if (!err.statusCode) {
@@ -407,7 +395,7 @@ const updateNote = async (req, res, next) => {
 
         res.status(201).json({
             message: "Change note successfully",
-            note: note.contents,
+            note: note
         });
     } catch (err) {
         if (!err.statusCode) {
