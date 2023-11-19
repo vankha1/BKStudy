@@ -10,14 +10,12 @@ const HomePage = () => {
 
   useEffect(() => {
     axios.get('http://localhost:8080' + '/api/v1/course').then((response) => {
-      if (response.statusText === 'OK') {setCourses(response.data.courses); console.log(response)}
+      if (response.statusText === 'OK') {setCourses(response.data.courses)}
     }).catch((error) => {alert(error)})
   }, [])
 
-  console.log(courses)
-
   return (
-    <div className="min-h-[535px]">
+    <div className="flex-center flex-col min-h-[535px]">
       <div className="w-[1000px] h-[200px] bg-[#9ccaff] rounded-[15px] px-[60px] py-[20px] mt-[20px]">
         <h1 className="text-3xl font-bold pb-[50px]">
           Chào mừng đến với BKStudy
@@ -30,9 +28,9 @@ const HomePage = () => {
 
       <div className="flex-start flex-col gap-6 mt-16 w-full">
         <h2 className="text-2xl font-bold">Khóa học hàng đầu</h2>
-        <div className="w-full grid grid-cols-4 grid-flow-row gap-12">
+        <div className="w-full grid grid-cols-3 grid-flow-row gap-12">
           {courses.map((course) => (
-            <CourseCard courseId={course._id} title={course.title} imageUrl={course.imageUrl} price={course.price}/>
+            <CourseCard key={course._id} courseId={course._id} title={course.title} imageUrl={course.imageUrl} price={course.price} desc={course.description}/>
           ))}
         </div>
       </div>
