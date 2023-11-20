@@ -5,8 +5,9 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 import React from 'react'
+import { errorNotifi } from "./Notification";
 
-const RenderLessons = ({ course, courseId }) => {
+const RenderLessons = ({ course, handleUpdateCourse }) => {
     const [displayChapter, setDisplayChapter] = useState([]);
     const [isAddChapter, setIsAddChapter] = useState(false);
     const [newChapter, setNewChapter] = useState('');
@@ -34,36 +35,6 @@ const RenderLessons = ({ course, courseId }) => {
         setNewChapter(value);
     };
 
-    const handleUpdateCourse = () => {
-        const newData = [...coursesInfo];
-        newData[0].push({chapter: newChapter});
-        setCourseInfo(newData);
-        setIsAddChapter(false);
-
-        const token = localStorage.getItem("JWT");
-        const formData = new FormData();
-
-        formData.append("name", newData)
-        axios.post('http://localhost:8080' + `/api/v1/chapter/create?courseId=${courseId}`, formData, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        }).then((response) => {
-            // if (response.statusText === 'OK') {
-            //     successNotifi('Xóa khóa học thành công!.');
-            // }
-            // else {
-            //     errorNotifi('Xóa khóa học thất bại!.');
-            // }
-            // setTimeout(() => {
-            //     router.push('/lecturer-manage');
-            // }, 4000);
-            console.log(courseId);
-            console.log(response);
-        }).catch((error) => console.log(error))
-
-    }
-
     return (
         <div className='w-full'>
             <div className='w-full mt-8'>
@@ -85,7 +56,7 @@ const RenderLessons = ({ course, courseId }) => {
                                         priority
                                         onClick={() => handleToggleClick(indexChapter)}
                                     />
-                                    <h3 className='text-xl font-medium'>{chapter.chapter}</h3>
+                                    <h3 className='text-xl font-medium'>{chapter.name}</h3>
                                 </div>
                             </div>
                             <div className={displayChapter[indexChapter] ? 'hidden-action' : ''}>
@@ -93,8 +64,8 @@ const RenderLessons = ({ course, courseId }) => {
                                     Thêm bài học
                                 </Link>
                                 {
-                                    chapter && chapter.content && chapter.content.map((item, index) => (
-                                        <Link key={index} href={item.link} className='w-full flex mb-8 rounded-lg p-2 border border-solid border-grayflex-between'>
+                                    chapter && chapter.lessons && chapter.lessons && chapter.lessons.map((item, index) => (
+                                        <Link key={index} href='/' className='w-full flex mb-8 rounded-lg p-2 border border-solid border-grayflex-between'>
                                             <div className='w-1/2 flex'>
                                                 <Image
                                                     className=""
@@ -138,7 +109,7 @@ const RenderLessons = ({ course, courseId }) => {
                                 </div>
                                 <div className='w-1/4 flex'>
                                     <button className="flex-center small-gray-button mb-4 ml-4" onClick={handleSaveChapter}>Hủy</button>
-                                    <button className="flex-center small-blue-button mb-4 ml-4" onClick={handleUpdateCourse}>Xác nhận</button>
+                                    <button className="flex-center small-blue-button mb-4 ml-4" onClick={() => handleUpdateCourse(coursesInfo, setCourseInfo, setIsAddChapter, newChapter)}>Xác nhận</button>
                                 </div>
                             </div>
                         ) : (

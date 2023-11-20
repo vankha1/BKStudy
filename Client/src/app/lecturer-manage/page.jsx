@@ -37,7 +37,7 @@ const ManageCourses = () => {
             </div>
             <div className='w-full flex flex-col'>
                 {courses && courses.map((course, index) => (
-                    <>
+                    <div key={index}>
                         {
                             course.courseId != null ? (
                                 <Link key={index} href={`/edit-course/${course.courseId._id}`} className='px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action flex flex-row'>
@@ -60,7 +60,7 @@ const ManageCourses = () => {
                                 </>
                             )
                         }
-                    </>
+                    </div>
                 ))}
             </div>
         </div>
