@@ -1,16 +1,21 @@
 'use client';
 import Link from "next/link";
 import Image from "next/image";
+import axios from "axios";
 import { useState, useEffect } from "react";
 
 import React from 'react'
+import { errorNotifi } from "./Notification";
 
-const RenderLessons = ({ course }) => {
+const RenderLessons = ({ course, handleUpdateCourse }) => {
     const [displayChapter, setDisplayChapter] = useState([]);
+    const [isAddChapter, setIsAddChapter] = useState(false);
+    const [newChapter, setNewChapter] = useState('');
+    const [coursesInfo, setCourseInfo] = useState([course]);
     useEffect(() => {
-        const initialDisplayArray = new Array(course.length).fill(false);
-        setDisplayChapter(initialDisplayArray);
-    }, [course]);
+        const initialDisplayArray = new Array(coursesInfo.length).fill(false);
+        displayChapter ? setDisplayChapter([...displayChapter, false]) : setDisplayChapter(initialDisplayArray);
+    }, [coursesInfo]);
 
     const handleToggleClick = (index) => {
         const newData = [...displayChapter];
@@ -18,29 +23,40 @@ const RenderLessons = ({ course }) => {
         setDisplayChapter(newData);
     }
 
+    const handleAddNewChapter = () => {
+        setIsAddChapter(true);
+    }
+
+    const handleSaveChapter = () => {
+        setIsAddChapter(false);
+    }
+
+    const handleInputChange = (value) => {
+        setNewChapter(value);
+    };
 
     return (
         <div className='w-full'>
             <div className='w-full mt-8'>
-                <button className='float-right medium-blue-button'>Thêm chương mới</button>
+                <button className='float-right medium-blue-button' onClick={handleAddNewChapter}>Thêm chương mới</button>
                 <div className="opacity-0">!!!</div>
             </div>
             <div className='mt-12'>
                 {
-                    course.map((chapter, indexChapter) => (
+                    course && course.map((chapter, indexChapter) => (
                         <div key={indexChapter} className='w-full'>
                             <div className="w-full flex-between">
                                 <div className='w-full flex mb-4 cursor-pointer'>
                                     <Image
                                         className={displayChapter[indexChapter] ? 'rotate-right-action' : 'rotate-left-action'}
-                                        src='assets/icons/downward.svg'
-                                        alt="FileType Picture"
+                                        src='/assets/icons/downward.svg'
+                                        alt="Downward"
                                         width={30}
                                         height={30}
                                         priority
                                         onClick={() => handleToggleClick(indexChapter)}
                                     />
-                                    <h3 className='text-xl font-medium'>{chapter.chapter}</h3>
+                                    <h3 className='text-xl font-medium'>{chapter.name}</h3>
                                 </div>
                             </div>
                             <div className={displayChapter[indexChapter] ? 'hidden-action' : ''}>
@@ -48,8 +64,8 @@ const RenderLessons = ({ course }) => {
                                     Thêm bài học
                                 </Link>
                                 {
-                                    chapter.content.map((item, index) => (
-                                        <Link key={index} href={item.link} className='w-full flex mb-8 rounded-lg p-2 border border-solid border-grayflex-between'>
+                                    chapter && chapter.lessons && chapter.lessons && chapter.lessons.map((item, index) => (
+                                        <Link key={index} href='/' className='w-full flex mb-8 rounded-lg p-2 border border-solid border-grayflex-between'>
                                             <div className='w-1/2 flex'>
                                                 <Image
                                                     className=""
@@ -71,6 +87,37 @@ const RenderLessons = ({ course }) => {
                         </div>
                     ))
                 }
+                <>
+                    {
+                        isAddChapter ? (
+                            <div className="w-full flex-between">
+                                <div className='w-3/4 flex mb-4 cursor-pointer'>
+                                    <Image
+                                        className='rotate-left-action'
+                                        src='/assets/icons/downward.svg'
+                                        alt="Downward"
+                                        width={30}
+                                        height={30}
+                                        priority
+                                    />
+                                    <input
+                                        type='text'
+                                        className='w-[600px] text-xl font-medium border px-1'
+                                        value={newChapter}
+                                        onChange={(e) => handleInputChange(e.target.value)}
+                                    />
+                                </div>
+                                <div className='w-1/4 flex'>
+                                    <button className="flex-center small-gray-button mb-4 ml-4" onClick={handleSaveChapter}>Hủy</button>
+                                    <button className="flex-center small-blue-button mb-4 ml-4" onClick={() => handleUpdateCourse(coursesInfo, setCourseInfo, setIsAddChapter, newChapter)}>Xác nhận</button>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                            </>
+                        )
+                    }
+                </>
             </div>
         </div>
     )
