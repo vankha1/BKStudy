@@ -6,48 +6,61 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@app/contexts/auth";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const CoursePage = ({ params }) => {
   const [course, setCourse] = useState({});
+  const [done, setDone] = useState(false);
   const router = useRouter();
   const { SERVER_URL } = useAuthContext();
 
   useEffect(() => {
+    const fetchCourse = async () => {
+      await axios
+        .get(SERVER_URL + `/api/v1/course/course-detail/${params?.id}`)
+        .then((response) => {
+          if (response.statusText === "OK") {
+            setCourse(response.data.course);
+            setDone(true);
+          }
+        })
+        .catch((error) => {
+          alert(error);
+        });
+    };
+    fetchCourse();
+  }, [params.id]);
+
+  const handleRegister = () => {
+    const token = localStorage.getItem("JWT");
     axios
-      .get(
-        SERVER_URL + `/api/v1/course/course-detail/${params?.id}`
+      .post(
+        "http://localhost:8080" + `/api/v1/user/register/${params?.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       )
       .then((response) => {
         if (response.statusText === "OK") {
-          setCourse(response.data.course);
+          console.log(response.data);
+          router.push("/student-courses");
         }
-        console.log(response)
       })
-      .catch((error) => {
-        alert(error);
-      });
-  }, []);
+      .catch((error) => alert(error));
+  };
 
-  const handleRegister = () => {
-    const token = localStorage.getItem("JWT")
-    axios.post('http://localhost:8080' + `/api/v1/user/register/${params?.id}`,{}, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }).then((response) => {
-        if (response.statusText === 'OK') {
-            console.log(response.data)
-            router.push('/student-courses');
-        }
-      }).catch((error) => alert(error))
-  }
-
-  return (
-    <div className="coursepage">
-      <div className="w-screen h-48 bg-footer text-white px-32 py-3">
+  return !done ? (
+    <Skeleton />
+  ) : (
+    <div className="w-[1519px]">
+      <div className="w-full h-48 bg-footer text-white px-32 py-3">
         <div className="description w-3/5">
-          <h1 className="text-3xl font-bold mb-3">{course.title}</h1>
-          <p className="text-xs font-light mb-5">{course.description}</p>
+          <h1 className="text-4xl font-bold mb-3">{course.title}</h1>
+          <p className="font-semibold mb-5">{course.description}</p>
           <div className="flex mb-1">
             <span className="mr-28">
               <span className="font-medium">Đánh giá: </span>
@@ -56,24 +69,20 @@ const CoursePage = ({ params }) => {
               </span>
               <span>/5</span>
             </span>
-            <span>
-              <span className="font-medium">Đã tham gia: </span>
-              <span>{course.number_register}</span>
-            </span>
           </div>
           <div className="mb-1">
             <span className="font-light">Giáo viên: </span>
             <Link href="\" className="font-semibold underline ">
-              {course.lecturer}
+              {course.createdBy}
             </Link>
           </div>
           <div className="font-light">
-            <span>Cập nhật lần cuối vào </span>
-            <span>{course.update_time}</span>
+            <span>Cập nhật lần cuối vào: </span>
+            <span>{Date(course.updatedAt)}</span>
           </div>
         </div>
 
-        <div className="video absolute bg-white right-10 top-4 shadow-lg border border-border rounded-2xl text-black">
+        <div className="absolute bg-white right-10 top-4 shadow-lg border border-border rounded-2xl text-black">
           <Image
             width={560}
             height={315}
@@ -81,10 +90,13 @@ const CoursePage = ({ params }) => {
             className="w-80 h-44 m-auto mb-3 rounded-2xl border border-border"
           />
           <h1 className="font-bold text-center text-3xl mb-3">
-            {course.price}
+            {course.price + " vnd"}
           </h1>
           <div className="flex mb-8">
-            <button className="m-auto small-primary-button rounded-full w-40 h-12 text-xl" onClick={handleRegister}>
+            <button
+              className="m-auto small-primary-button rounded-full w-40 h-12 text-xl"
+              onClick={handleRegister}
+            >
               Đăng ký học
             </button>
           </div>

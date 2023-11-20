@@ -22,7 +22,6 @@ const StudentCourses = () => {
         if (response.statusText === "OK") {
           setCourses(response.data.courses);
         }
-        console.log(response)
       })
       .catch((error) => console.log(error));
   }, []);
@@ -30,7 +29,7 @@ const StudentCourses = () => {
   return (
     <section className="w-full">
       <FilterSearch title="KHÓA HỌC ĐÃ ĐĂNG KÝ" />
-      {courses.map((course) => (
+      {(courses.length > 0) ? (courses.map((course) => (
         <div key={course.courseId._id} className="w-full flex-center">
           <StudentCourseCard
             id={course.courseId._id}
@@ -38,8 +37,10 @@ const StudentCourses = () => {
             author={course.courseId.createdBy}
             image={SERVER_URL + "/" + course.courseId.imageUrl}
           />
-        </div>
-      ))}
+        </div>))) : (
+          <div className="font-bold text-2xl w-full text-center">Chưa có khóa học nào được đăng ký</div>
+        )
+      }
     </section>
   );
 };

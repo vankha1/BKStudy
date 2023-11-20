@@ -34,12 +34,6 @@ const SignUpPage = () => {
                   alert("Wrong password");
                 else {
                   localStorage.setItem("JWT", response.data.token);
-                  localStorage.setItem(
-                    "userInfo",
-                    JSON.stringify(response.data.userInfo)
-                  );
-                  setIsLogin(true);
-                  setUserInfo(response.data.userInfo);
                   router.push("/add-profile");
                 }
               } else alert("Something wrong is happening");
