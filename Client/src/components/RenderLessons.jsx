@@ -1,13 +1,10 @@
 'use client';
 import Link from "next/link";
 import Image from "next/image";
-import axios from "axios";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
-import React from 'react'
-import { errorNotifi } from "./Notification";
-
-const RenderLessons = ({ course, handleUpdateCourse }) => {
+const RenderLessons = ({ course, handleUpdateCourse, courseId }) => {
     const [displayChapter, setDisplayChapter] = useState([]);
     const [isAddChapter, setIsAddChapter] = useState(false);
     const [newChapter, setNewChapter] = useState('');
@@ -35,6 +32,19 @@ const RenderLessons = ({ course, handleUpdateCourse }) => {
         setNewChapter(value);
     };
 
+    const handleDeleteChapter = (indexChapter) => {
+        const token = localStorage.getItem("JWT");
+        axios.delete('http://localhost:8080' + `api/v1/chapter/delete?courseId=${courseId}sth&chapter=${indexChapter}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((data) => {
+            console.log(data);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    }
+
     return (
         <div className='w-full'>
             <div className='w-full mt-8'>
@@ -46,7 +56,7 @@ const RenderLessons = ({ course, handleUpdateCourse }) => {
                     course && course.map((chapter, indexChapter) => (
                         <div key={indexChapter} className='w-full'>
                             <div className="w-full flex-between">
-                                <div className='w-full flex mb-4 cursor-pointer'>
+                                <div className='w-7/8 flex mb-4 cursor-pointer'>
                                     <Image
                                         className={displayChapter[indexChapter] ? 'rotate-right-action' : 'rotate-left-action'}
                                         src='/assets/icons/downward.svg'
@@ -57,6 +67,26 @@ const RenderLessons = ({ course, handleUpdateCourse }) => {
                                         onClick={() => handleToggleClick(indexChapter)}
                                     />
                                     <h3 className='text-xl font-medium'>{chapter.name}</h3>
+                                </div>
+                                <div className='w-1/8 flex'>
+                                    <Image
+                                        className="mr-4 hover:cursor-pointer"
+                                        src='/assets/icons/edit_icon.svg'
+                                        alt="Downward"
+                                        width={18}
+                                        height={18}
+                                        priority
+                                    // onClick={() => handleToggleClick(indexChapter)}
+                                    />
+                                    <Image
+                                        className=" hover:cursor-pointer"
+                                        src='/assets/icons/delete_icon.svg'
+                                        alt="Downward"
+                                        width={18}
+                                        height={18}
+                                        priority
+                                    onClick={() => handleDeleteChapter(indexChapter)}
+                                    />
                                 </div>
                             </div>
                             <div className={displayChapter[indexChapter] ? 'hidden-action' : ''}>

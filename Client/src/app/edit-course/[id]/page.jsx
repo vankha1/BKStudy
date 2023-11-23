@@ -243,7 +243,7 @@ const EditCourse = ({ params }) => {
                 <button className={`px-4 font-medium ${buttonStates[3] ? 'text-blue-500' : ''}`} onClick={() => handleButtonClick(3)}>Đánh giá</button>
             </div>
             <div className='w-full mt-8'>
-                {buttonStates[0] ? <RenderLessons course={dataCourse} handleUpdateCourse={handleUpdateCourse} /> : ''}
+                {buttonStates[0] ? <RenderLessons course={dataCourse} courseId={params?.id} handleUpdateCourse={handleUpdateCourse} /> : ''}
                 {buttonStates[1] ? <RenderAccount accounts={listUsers} /> : ''}
                 {buttonStates[2] ? '' : ''}
                 {buttonStates[3] ? <RatingCourses users={USERS_RATING} /> : ''}
