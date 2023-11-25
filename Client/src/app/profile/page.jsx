@@ -31,6 +31,7 @@ const Profile = () => {
       data: ''
     },
   ])
+  const [viewAvatar, setViewAvatar] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("JWT");
@@ -40,7 +41,6 @@ const Profile = () => {
       })
       .then((data) => {
         let user = data.data.user;
-        console.log(user);
         handleDataUSer(user);
         setUserProfile(user);
       })
@@ -70,7 +70,7 @@ const Profile = () => {
         <div className='h-72 mx-8 rounded-3xl bg-blue-300'>
         </div>
         <div className='absolute bottom-0 left-40 flex justify-between'>
-          <div className='w-40 h-40 rounded-full flex-center bg-white'>
+          <div className='w-40 h-40 rounded-full flex-center bg-white cursor-pointer' onClick={() => setViewAvatar(!viewAvatar)}>
             <Image
               className="w-32 h-32 rounded-full"
               src={'http://localhost:8080/' + userProfile.avatar}
@@ -82,7 +82,6 @@ const Profile = () => {
           </div>
           <h2 className='pl-8 mt-20 text-3xl font-medium'>
             {userProfile.fullname}
-
           </h2>
         </div>
         <div className='absolute bottom-12 right-20 flex-between cursor-pointer'>

@@ -70,6 +70,10 @@
   @apply w-36 bg-red-500 text-black font-semibold py-2 rounded-md hover:bg-red-800
 }
 
+.medium-orange-button {
+  @apply w-36 bg-orange-400 text-white font-semibold py-2 rounded-md hover:bg-orange-600
+}
+
 .transfrom-action {
   @apply transform transition-transform hover:scale-105;
 }
