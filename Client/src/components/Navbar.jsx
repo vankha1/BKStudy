@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuthContext } from "@app/contexts/auth";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [showMessage, setShowMessage] = useState(false);
@@ -11,6 +12,7 @@ const Navbar = () => {
   const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
   const [userInfo, setUserInfo] = useState({})
   const { isLogin, setIsLogin } = useAuthContext();
+  const router = useRouter();
 
   useEffect(() => {
     if (localStorage.getItem("userInfo")) setUserInfo(JSON.parse(localStorage.getItem("userInfo")))
@@ -20,6 +22,7 @@ const Navbar = () => {
     localStorage.removeItem("JWT");
     localStorage.removeItem("userInfo");
     setIsLogin(false);
+    router.back.push('/');
   }
 
   return (
