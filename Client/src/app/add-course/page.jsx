@@ -59,7 +59,6 @@ const AddCourse = () => {
         formData.append("image", data.image, data.image.name)
         formData.append("description", data.description)
 
-        console.log(formData, token);
         axios.post(`http://localhost:8080/api/v1/course/create`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -94,7 +93,7 @@ const AddCourse = () => {
                 <div className='border border-solid border-black'>
                     <div className='px-8 bg-white'>
                         <div className='w-full mt-4'>
-                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI} />
+                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI} router={router} path='lecturer-manage' />
                         </div>
                     </div>
                 </div>

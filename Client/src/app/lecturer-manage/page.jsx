@@ -17,7 +17,6 @@ const ManageCourses = () => {
             })
             .then((response) => {
                 const data = response.data.courses;
-                console.log(data)
                 const courseData = data;
 
                 setCourses(courseData);

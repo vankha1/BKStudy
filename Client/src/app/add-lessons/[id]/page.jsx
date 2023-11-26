@@ -1,7 +1,7 @@
 "use client"; // This is a client component
 import { useState } from 'react';
 import axios from 'axios';
-import { useRouter } from "next/navigation"
+import { useSearchParams, useRouter } from 'next/navigation'
 import AddCourses from '@components/AddActions';
 
 import Notification, { errorNotifi, successNotifi, warningNotifi } from '@components/Notification';
@@ -41,14 +41,17 @@ const AddLessons = ({ params }) => {
         },
     ]
 
-    const router = useRouter();
-
     const [infoCourse, setInfoCourse] = useState({
         title: "",
         contents: "",
         videoURL: "",
         files: "",
     })
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const courseName = searchParams.get('course');
+    const indexChapter = searchParams.get('chapter');
 
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
@@ -58,16 +61,14 @@ const AddLessons = ({ params }) => {
         formData.append("contents", data.contents)
         formData.append("videoURL", data.videoURL)
         formData.append("files", data.files)
-        formData.append("chapter", params?.index)
+        formData.append("chapter", indexChapter)
 
-        console.log(data, formData, params?.index);
         axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 "Content-Type": `multipart/form-data`,
             }
         }).then((response) => {
-            console.log(response);
             if (response.statusText === 'Created') {
                 successNotifi('Tạo bài giảng thành công!.');
             }
@@ -81,7 +82,7 @@ const AddLessons = ({ params }) => {
             if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
                 errorNotifi('Vui lòng đăng nhập lại!.');
             } else {
-                errorNotifi('Tạo khóa học thất bại!.');
+                errorNotifi('Tạo bài giảng thất bại!.');
             }
         })
     }
@@ -89,13 +90,13 @@ const AddLessons = ({ params }) => {
     return (
         <div className='relative w-full mt-4'>
             <div className='w-full flex flex-col'>
-                <div className='text-2xl font-bold top-0 left-0 mb-2 border-b border-solid border-black'>GIẢI TÍCH 1</div>
+                <div className='text-2xl font-bold top-0 left-0 mb-2 border-b border-solid border-black'>{courseName.toUpperCase()}</div>
             </div>
             <div className='mx-32 mt-10'>
                 <div className='border border-solid border-black'>
                     <div className='px-8 bg-white'>
                         <div className='w-full mt-4'>
-                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI}/>
+                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI} router={router} path={`/edit-course/${params?.id}`} />
                         </div>
                     </div>
                 </div>
