@@ -1,7 +1,7 @@
 "use client"; // This is a client component
 import { useState } from 'react';
 import axios from 'axios';
-import FilterSearch from '@components/FilterSearch';
+import { useRouter } from "next/navigation"
 import AddCourses from '@components/AddActions';
 
 import Notification, { errorNotifi, successNotifi, warningNotifi } from '@components/Notification';
@@ -41,6 +41,8 @@ const AddLessons = ({ params }) => {
         },
     ]
 
+    const router = useRouter();
+
     const [infoCourse, setInfoCourse] = useState({
         title: "",
         contents: "",
@@ -72,9 +74,9 @@ const AddLessons = ({ params }) => {
             else {
                 warningNotifi('Có lỗi xảy ra, thử lại sau!.')
             }
-            // setTimeout(() => {
-            //     router.push(`/edit-course/${params?.id}`);
-            // }, 1000);
+            setTimeout(() => {
+                router.push(`/edit-course/${params?.id}`);
+            }, 1000);
         }).catch((error) => {
             if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
                 errorNotifi('Vui lòng đăng nhập lại!.');
