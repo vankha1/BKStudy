@@ -3,7 +3,6 @@ import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation"
 import _ from 'lodash';
 
 import React from 'react'
@@ -56,7 +55,6 @@ const EditCourse = ({ params }) => {
     const [titelCourse, setTitleCourse] = useState('');
     const [dataCourse, setDataCourse] = useState([]);
     const [prevChapterName, setPrevChapterName] = useState([]);
-    const router = useRouter();
 
     useEffect(() => {
         const token = localStorage.getItem("JWT");
@@ -189,7 +187,7 @@ const EditCourse = ({ params }) => {
         <div className='w-full'>
             <div className='relative w-full mt-4 flex-between border-b border-solid border-black'>
                 <div className='w-1/2'>
-                    <h1 className='text-3xl font-semibold'>{titelCourse}</h1>
+                    <h1 className='text-3xl font-semibold'>{titelCourse && titelCourse.toUpperCase}</h1>
                     <p className='text-lg font-medium'>Tổng quan khóa học</p>
                 </div>
                 <div className='w-1/2'>
@@ -222,7 +220,7 @@ const EditCourse = ({ params }) => {
                 <button className={`px-4 font-medium ${buttonStates[3] ? 'text-blue-500' : ''}`} onClick={() => handleButtonClick(3)}>Đánh giá</button>
             </div>
             <div className='w-full mt-8'>
-                {buttonStates[0] ? <RenderLessons course={dataCourse} setCourse={setDataCourse} courseId={params?.id} handleAddNewChapter={handleAddNewChapter} handleDeleteChapter={handleDeleteChapter} prevChapterName={prevChapterName} handleEditChapter={handleEditChapter} /> : ''}
+                {buttonStates[0] ? <RenderLessons course={dataCourse} setCourse={setDataCourse} courseId={params?.id} handleAddNewChapter={handleAddNewChapter} handleDeleteChapter={handleDeleteChapter} prevChapterName={prevChapterName} handleEditChapter={handleEditChapter} courseName={titelCourse} /> : ''}
                 {buttonStates[1] ? <RenderAccount accounts={listUsers} /> : ''}
                 {buttonStates[2] ? '' : ''}
                 {buttonStates[3] ? <RatingCourses users={USERS_RATING} /> : ''}

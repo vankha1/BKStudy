@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react'
 
 import UploadImage from '@components/UploadFile'
 
-const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI }) => {
+const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, router, path }) => {
 
     const [isEditing, setIsEditing] = useState(true);
     const [newData, setNewData] = useState([infos]);
@@ -131,7 +131,9 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI }) =>
                 </div>
             ))}
             <div className='flex-between w-full mb-8'>
-                <button className='small-gray-button'>Hủy</button>
+                <button className='small-gray-button' onClick={() => {
+                    router.push(path)
+                }}>Hủy</button>
                 <button
                     className='small-blue-button'
                     onClick={() => {

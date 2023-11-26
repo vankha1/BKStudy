@@ -1,29 +1,29 @@
 "use client"; // This is a client component
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import AddCourses from '@components/AddActions';
 
 import Notification, { errorNotifi, successNotifi, warningNotifi } from '@components/Notification';
 
-const AddLessons = ({ params }) => {
+const EditLesson = ({ params }) => {
     const infos = [
         {
-            title: 'Thêm tiêu đề bài giảng',
+            title: 'Chỉnh sửa tiêu đề bài giảng',
             value: '',
             placeholders: 'Nhập tiêu đề bài giảng vào đây',
             className: 'mb-4 w-full',
             input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1'
         },
         {
-            title: 'Thêm bài đọc',
+            title: 'Chỉnh sửa bài đọc',
             value: '',
             placeholders: 'Nhập bài học tại đây',
             className: 'mb-4 w-full h-60 ',
             input_className: 'w-full h-4/5 text-base font-normal border border-solid p-1 align-top'
         },
         {
-            title: 'Thêm video',
+            title: 'Chỉnh sửa video',
             value: '',
             placeholders: 'Đường dẫn video',
             button_title: 'Tải lên',
@@ -42,13 +42,29 @@ const AddLessons = ({ params }) => {
     ]
 
     const router = useRouter();
-
+    const searchParams = useSearchParams()
+    const courseName = searchParams.get('course');
     const [infoCourse, setInfoCourse] = useState({
         title: "",
         contents: "",
         videoURL: "",
         files: "",
     })
+
+    useEffect(() => {
+        const token = localStorage.getItem("JWT");
+        axios
+            .get('http://localhost:8080' + `/api/v1/lesson/course?courseId=${params?.id}&lessonId=${params?.idlesson}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((data) => {
+                console.log(data)
+            })
+            .catch(error => {
+                console.log('error')
+            });
+    }, []);
+    console.log(params?.idlesson);
 
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
@@ -69,7 +85,7 @@ const AddLessons = ({ params }) => {
         }).then((response) => {
             console.log(response);
             if (response.statusText === 'Created') {
-                successNotifi('Tạo bài giảng thành công!.');
+                successNotifi('Chỉnh sửa bài giảng thành công!.');
             }
             else {
                 warningNotifi('Có lỗi xảy ra, thử lại sau!.')
@@ -81,7 +97,7 @@ const AddLessons = ({ params }) => {
             if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
                 errorNotifi('Vui lòng đăng nhập lại!.');
             } else {
-                errorNotifi('Tạo khóa học thất bại!.');
+                errorNotifi('Chỉnh sửa bài giảng thất bại!.');
             }
         })
     }
@@ -89,13 +105,17 @@ const AddLessons = ({ params }) => {
     return (
         <div className='relative w-full mt-4'>
             <div className='w-full flex flex-col'>
-                <div className='text-2xl font-bold top-0 left-0 mb-2 border-b border-solid border-black'>GIẢI TÍCH 1</div>
+                <div className='text-2xl font-bold top-0 left-0 mb-2 border-b border-solid border-black'>{courseName.toUpperCase()}</div>
             </div>
             <div className='mx-32 mt-10'>
+                <div className='flex flex-between'>
+                <h2 className='text-xl font-semibold mb-2'>CHỈNH SỬA BÀI GIẢNG</h2>
+                <button className='medium-red-button mb-2'>Xóa bài giảng</button>
+                </div>
                 <div className='border border-solid border-black'>
                     <div className='px-8 bg-white'>
                         <div className='w-full mt-4'>
-                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI}/>
+                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI} />
                         </div>
                     </div>
                 </div>
@@ -105,4 +125,4 @@ const AddLessons = ({ params }) => {
     )
 }
 
-export default AddLessons
+export default EditLesson
