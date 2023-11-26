@@ -43,6 +43,7 @@ const getAllLessons = async (req, res, next) => {
     }
 
     res.status(200).json({
+      courseName: course.title,
       chapters: course.chapters,
     });
   } catch (err) {

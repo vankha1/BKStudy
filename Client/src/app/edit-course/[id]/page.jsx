@@ -2,8 +2,9 @@
 import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation"
+import _ from 'lodash';
 
 import React from 'react'
 
@@ -11,68 +12,6 @@ import RenderLessons from "@components/RenderLessons";
 import RenderAccount from "@components/RenderAccount";
 import RatingCourses from "@components/RatingCourses";
 import Notification, { warningNotifi, errorNotifi, successNotifi } from "@components/Notification";
-
-
-const COURSE_INFO = {
-    title: 'Giải tích 1',
-    course: [
-        {
-            chapter: 'Giới thiệu môn học',
-            content: [
-                {
-                    title: 'Giới thiệu môn học',
-                    fileType: 'video',
-                    link: '',
-                },
-                {
-                    title: 'Các chủ đề liên quan trong môn học',
-                    fileType: 'file',
-                    link: '',
-                }
-            ]
-        },
-        {
-            chapter: 'Giới thiệu về tích phân',
-            content: [
-                {
-                    title: 'Tích phân là gì',
-                    fileType: 'video',
-                    link: '',
-                },
-                {
-                    title: 'Các ứng dụng của tích phân',
-                    fileType: 'file',
-                    link: '',
-                },
-                {
-                    title: 'Tích phân ba lớp',
-                    fileType: 'video',
-                    link: '',
-                }
-            ]
-        },
-        {
-            chapter: 'Ứng dụng của tích phân trong việc tính thể tích',
-            content: [
-                {
-                    title: 'Sử dụng tích phân hai lớp',
-                    fileType: 'video',
-                    link: '',
-                },
-                {
-                    title: 'Sử dụng tích phân ba lớp',
-                    fileType: 'file',
-                    link: '',
-                },
-                {
-                    title: 'Giới thiệu thêm về một số loại tích phân đặt biệt',
-                    fileType: 'video',
-                    link: '',
-                }
-            ]
-        }
-    ]
-}
 
 const USERS_RATING = {
     ratingavg: '5',
@@ -114,7 +53,9 @@ const EditCourse = ({ params }) => {
     const [buttonStates, setButtonStates] = useState([true, false, false, false]);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [listUsers, setListUsers] = useState([]);
+    const [titelCourse, setTitleCourse] = useState('');
     const [dataCourse, setDataCourse] = useState([]);
+    const [prevChapterName, setPrevChapterName] = useState([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -124,9 +65,11 @@ const EditCourse = ({ params }) => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((data) => {
+                console.log(data);
                 const newDataCourse = data.data.chapters;
-                setDataCourse(newDataCourse);
-                console.log(newDataCourse);
+                setTitleCourse(data.data.courseName);
+                setPrevChapterName(_.cloneDeep(newDataCourse));
+                setDataCourse(_.cloneDeep(newDataCourse));
             })
             .catch(error => {
                 console.log('error')
@@ -147,7 +90,6 @@ const EditCourse = ({ params }) => {
 
     const handleDeleteCourse = () => {
         const token = localStorage.getItem("JWT");
-        console.log(params?.id);
         axios.delete('http://localhost:8080' + `/api/v1/course/${params?.id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -165,29 +107,67 @@ const EditCourse = ({ params }) => {
         }).catch((error) => errorNotifi('Có lỗi xảy ra, vui lòng thử lại!.'))
     }
 
-    const handleUpdateCourse = (coursesInfo, setCourseInfo, setIsAddChapter, newChapter) => {
-        const newData = [...coursesInfo];
-        newData[0].push({ chapter: newChapter });
-        setCourseInfo(newData);
-        setIsAddChapter(false);
-
+    const handleAddNewChapter = (newChapter, handleSaveChapter) => {
         const token = localStorage.getItem("JWT");
-        const formData = new FormData();
-
-        formData.append("name", newData)
-        axios.post('http://localhost:8080' + `/api/v1/chapter/create?courseId=${params?.id}`, formData, {
+        const data = {
+            name: newChapter
+        }
+        const newDataCourse = [...dataCourse];
+        newDataCourse.push(data);
+        axios.post('http://localhost:8080' + `/api/v1/chapter/create?courseId=${params?.id}`, data, {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
             }
         }).then((response) => {
             if (response.statusText === 'OK') {
                 successNotifi('Thêm chương mới thành công!.');
+                setDataCourse(newDataCourse);
+                handleSaveChapter();
             }
             else {
                 errorNotifi('Thêm chương mới thất bại!.');
             }
         }).catch((error) => errorNotifi('Có lỗi xảy ra, thử lại sau!.'))
+    }
 
+    const handleDeleteChapter = (indexChapter) => {
+        const token = localStorage.getItem("JWT");
+        axios.delete('http://localhost:8080' + `/api/v1/chapter/delete?courseId=${params?.id}&chapter=${indexChapter}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then((responses) => {
+                if (responses.status === 200 && responses.data.message === 'delete chapter successfully') {
+                    successNotifi('Xóa chương thành công!.')
+                }
+                else {
+                    errorNotifi('Có lỗi xảy ra!.');
+                }
+            })
+            .catch(error => {
+                errorNotifi('Có lỗi xảy ra!.');
+            });
+        setDataCourse(dataCourse.filter((course, index) => index != indexChapter))
+    }
+
+    const handleEditChapter = (indexChapter) => {
+        const token = localStorage.getItem("JWT");
+        const data = {
+            name: dataCourse[indexChapter].name
+        }
+        axios.put('http://localhost:8080' + `/api/v1/chapter/update?courseId=${params?.id}&chapter=${indexChapter}`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then((responses) => {
+                if (responses.status === 200 && responses.data.message === 'update chapter successfully'){
+                    successNotifi('Chỉnh sửa chương thành công!.');
+                }
+                else {
+                    errorNotifi('Chỉnh sửa thất bại!.')
+                }
+            })
+            .catch(error => {
+                errorNotifi('Có lỗi xảy ra, thử lại sau.')
+            });
     }
 
     const handleGetUserInfos = () => {
@@ -198,7 +178,6 @@ const EditCourse = ({ params }) => {
             })
             .then((data) => {
                 const newDataUsers = data.data.users;
-                console.log(newDataUsers);
                 setListUsers(newDataUsers);
             })
             .catch(error => {
@@ -210,7 +189,7 @@ const EditCourse = ({ params }) => {
         <div className='w-full'>
             <div className='relative w-full mt-4 flex-between border-b border-solid border-black'>
                 <div className='w-1/2'>
-                    <h1 className='text-3xl font-semibold'>{COURSE_INFO.title.toUpperCase()}</h1>
+                    <h1 className='text-3xl font-semibold'>{titelCourse}</h1>
                     <p className='text-lg font-medium'>Tổng quan khóa học</p>
                 </div>
                 <div className='w-1/2'>
@@ -218,7 +197,7 @@ const EditCourse = ({ params }) => {
                         confirmDelete ? (
                             <button className='float-right medium-orange-button' onClick={handleDeleteCourse}>Xác nhận xóa</button>
                         ) : (
-                            <button className='float-right medium-red-button' onClick={handleConfirmDelete}>Xóa khóa học</button>
+                            <button className='float-right medium-red-button' onClick={handleConfirmDelete}>Xóa khóa</button>
                         )
                     }
                 </div>
@@ -243,7 +222,7 @@ const EditCourse = ({ params }) => {
                 <button className={`px-4 font-medium ${buttonStates[3] ? 'text-blue-500' : ''}`} onClick={() => handleButtonClick(3)}>Đánh giá</button>
             </div>
             <div className='w-full mt-8'>
-                {buttonStates[0] ? <RenderLessons course={dataCourse} handleUpdateCourse={handleUpdateCourse} /> : ''}
+                {buttonStates[0] ? <RenderLessons course={dataCourse} setCourse={setDataCourse} courseId={params?.id} handleAddNewChapter={handleAddNewChapter} handleDeleteChapter={handleDeleteChapter} prevChapterName={prevChapterName} handleEditChapter={handleEditChapter} /> : ''}
                 {buttonStates[1] ? <RenderAccount accounts={listUsers} /> : ''}
                 {buttonStates[2] ? '' : ''}
                 {buttonStates[3] ? <RatingCourses users={USERS_RATING} /> : ''}

@@ -50,7 +50,7 @@ const ManageCourses = () => {
                                             objectFit="cover"
                                         />
                                     </div>
-                                    <div className='pl-4 pt-2'>
+                                    <div className='pl-4 pt-2 w-[55.625rem]'>
                                         <h3 className='text-2xl font-medium mb-2'>{course.courseId.title}</h3>
                                         <p className='text-base font-normal'>Số lượng sinh viên đăng kí: {course.courseId.numberOfStudent}</p>
                                     </div>

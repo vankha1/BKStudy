@@ -2,52 +2,52 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from "next/navigation"
-
-import FilterSearch from '@components/FilterSearch';
 import AddCourses from '@components/AddActions';
+
 import Notification, { errorNotifi, successNotifi, warningNotifi } from '@components/Notification';
 
-const AddCourse = () => {
-    const router = useRouter();
+const AddLessons = ({ params }) => {
     const infos = [
         {
-            title: 'Tên khóa học',
+            title: 'Thêm tiêu đề bài giảng',
             value: '',
-            placeholders: 'Nhập tên khóa học vào đây',
-            className: 'mb-4 w-3/4',
-            input_className: 'w-5/6 h-[36px] text-base font-normal border border-solid p-1'
-        },
-        {
-            title: 'Giá tiền',
-            value: '',
-            placeholders: 'Giá tiền của khóa học',
-            className: 'mb-4 w-1/4',
+            placeholders: 'Nhập tiêu đề bài giảng vào đây',
+            className: 'mb-4 w-full',
             input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1'
         },
         {
-            title: 'Hình ảnh kèm theo',
+            title: 'Thêm bài đọc',
             value: '',
-            placeholders: 'Đường dẫn hình ảnh',
-            button_title: 'Tải lên',
-            fileType: 'image',
-            className: 'mb-4 w-full',
-            input_className: 'w-4/5 h-[36px] text-base font-normal border border-solid p-1'
-        },
-        {
-            title: 'Mô tả kèm theo',
-            value: '',
-            placeholders: 'Nhập mô tả khóa học',
+            placeholders: 'Nhập bài học tại đây',
             className: 'mb-4 w-full h-60 ',
             input_className: 'w-full h-4/5 text-base font-normal border border-solid p-1 align-top'
         },
+        {
+            title: 'Thêm video',
+            value: '',
+            placeholders: 'Đường dẫn video',
+            button_title: 'Tải lên',
+            className: 'mb-4 w-full',
+            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
+        },
+        {
+            title: 'Các tập tin kèm theo',
+            value: '',
+            placeholders: 'Tải lên tập tin kèm theo',
+            button_title: 'Tải lên',
+            fileType: '*',
+            className: 'mb-12 w-full',
+            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
+        },
     ]
 
+    const router = useRouter();
 
     const [infoCourse, setInfoCourse] = useState({
         title: "",
-        price: "",
-        image: "",
-        description: "",
+        contents: "",
+        videoURL: "",
+        files: "",
     })
 
     const handleCallAPI = (data) => {
@@ -55,25 +55,27 @@ const AddCourse = () => {
         const formData = new FormData()
 
         formData.append("title", data.title)
-        formData.append("price", Number(data.price))
-        formData.append("image", data.image, data.image.name)
-        formData.append("description", data.description)
+        formData.append("contents", data.contents)
+        formData.append("videoURL", data.videoURL)
+        formData.append("files", data.files)
+        formData.append("chapter", params?.index)
 
-        console.log(formData, token);
-        axios.post(`http://localhost:8080/api/v1/course/create`, formData, {
+        console.log(data, formData, params?.index);
+        axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 "Content-Type": `multipart/form-data`,
             }
         }).then((response) => {
-            if (response.statusText === 'OK') {
-                successNotifi('Tạo khóa học thành công!.');
+            console.log(response);
+            if (response.statusText === 'Created') {
+                successNotifi('Tạo bài giảng thành công!.');
             }
             else {
                 warningNotifi('Có lỗi xảy ra, thử lại sau!.')
             }
             setTimeout(() => {
-                router.push('/lecturer-manage');
+                router.push(`/edit-course/${params?.id}`);
             }, 1000);
         }).catch((error) => {
             if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
@@ -87,14 +89,13 @@ const AddCourse = () => {
     return (
         <div className='relative w-full mt-4'>
             <div className='w-full flex flex-col'>
-                <FilterSearch title="KHÓA HỌC ĐANG GIẢNG DẠY" />
+                <div className='text-2xl font-bold top-0 left-0 mb-2 border-b border-solid border-black'>GIẢI TÍCH 1</div>
             </div>
             <div className='mx-32 mt-10'>
-                <h2 className='text-xl font-medium'>Thêm khóa học</h2>
                 <div className='border border-solid border-black'>
                     <div className='px-8 bg-white'>
                         <div className='w-full mt-4'>
-                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI} />
+                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI}/>
                         </div>
                     </div>
                 </div>
@@ -104,4 +105,4 @@ const AddCourse = () => {
     )
 }
 
-export default AddCourse;
+export default AddLessons
