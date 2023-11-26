@@ -63,7 +63,6 @@ const EditCourse = ({ params }) => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((data) => {
-                console.log(data);
                 const newDataCourse = data.data.chapters;
                 setTitleCourse(data.data.courseName);
                 setPrevChapterName(_.cloneDeep(newDataCourse));
@@ -187,7 +186,7 @@ const EditCourse = ({ params }) => {
         <div className='w-full'>
             <div className='relative w-full mt-4 flex-between border-b border-solid border-black'>
                 <div className='w-1/2'>
-                    <h1 className='text-3xl font-semibold'>{titelCourse && titelCourse.toUpperCase}</h1>
+                    <h1 className='text-3xl font-semibold'>{titelCourse && titelCourse.toUpperCase()}</h1>
                     <p className='text-lg font-medium'>Tổng quan khóa học</p>
                 </div>
                 <div className='w-1/2'>

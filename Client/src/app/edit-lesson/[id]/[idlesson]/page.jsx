@@ -64,7 +64,23 @@ const EditLesson = ({ params }) => {
                 console.log('error')
             });
     }, []);
-    console.log(params?.idlesson);
+    
+    const handleDeleteLesson = () => {
+        const token = localStorage.getItem("JWT");
+        axios.delete('http://localhost:8080' + `/api/v1/lesson/delete?courseId=${params?.id}&lessonId=${params?.idlesson}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((response) => {
+            if (response.statusText === 'OK') {
+                successNotifi('Xóa bài học thành công!.');
+            }
+            else {
+                errorNotifi('Xóa bài học thất bại!.');
+            }
+            router.push(`edit-course/${params?.id}`)
+        }).catch((error) => errorNotifi('Có lỗi xảy ra, vui lòng thử lại!.'))  
+    }
 
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
@@ -75,8 +91,7 @@ const EditLesson = ({ params }) => {
         formData.append("videoURL", data.videoURL)
         formData.append("files", data.files)
         formData.append("chapter", params?.index)
-
-        console.log(data, formData, params?.index);
+        
         axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -110,7 +125,7 @@ const EditLesson = ({ params }) => {
             <div className='mx-32 mt-10'>
                 <div className='flex flex-between'>
                 <h2 className='text-xl font-semibold mb-2'>CHỈNH SỬA BÀI GIẢNG</h2>
-                <button className='medium-red-button mb-2'>Xóa bài giảng</button>
+                <button className='medium-red-button mb-2' onClick={handleDeleteLesson}>Xóa bài giảng</button>
                 </div>
                 <div className='border border-solid border-black'>
                     <div className='px-8 bg-white'>

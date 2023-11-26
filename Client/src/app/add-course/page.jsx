@@ -59,7 +59,6 @@ const AddCourse = () => {
         formData.append("image", data.image, data.image.name)
         formData.append("description", data.description)
 
-        console.log(formData, token);
         axios.post(`http://localhost:8080/api/v1/course/create`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,

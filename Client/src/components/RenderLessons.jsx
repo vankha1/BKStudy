@@ -80,7 +80,8 @@ const RenderLessons =
             setIsEditChapter(editTitleChapter);
             handleEditChapter(index);
         }
-        console.log(course)
+
+
         return (
             <div className='w-full'>
                 <div className='w-full mt-8'>
@@ -169,18 +170,19 @@ const RenderLessons =
                                     </Link>
                                     {
                                         chapter && chapter.lessons && chapter.lessons.map((item, index) => (
-                                            <Link key={index} href={{ pathname: `/edit-lesson/${courseId}/${item._id}`, query: { course: courseName } }} className='w-full flex mb-8 rounded-lg p-2 border border-solid border-grayflex-between hover:bg-gray-100'>
-                                                <div className='flex'>
-                                                    <Image
-                                                        className=""
-                                                        src={`/assets/images/${item.lessonId.videoURL ? 'video' : 'file'}.png`}
-                                                        alt="FileType Picture"
-                                                        width={70}
-                                                        height={70}
-                                                        priority
-                                                    />
-                                                    <h2 className='font-medium text-xl pl-4 mt-2'>{item.lessonId.title}</h2>
-                                                    <h2 className='font-medium text-xl pl-4 mt-2'>{item._id}</h2>
+                                            <Link key={index} href={{ pathname: `/edit-lesson/${courseId}/${item.lessonId._id}`, query: { course: courseName } }} className='w-full flex mb-8 rounded-lg p-2 border border-solid border-grayflex-between hover:bg-gray-100'>
+                                                <div className='w-full flex'>
+                                                    <div className='flex'>
+                                                        <Image
+                                                            className=""
+                                                            src={`/assets/images/${item.lessonId.videoURL ? 'video' : 'file'}.png`}
+                                                            alt="FileType Picture"
+                                                            width={70}
+                                                            height={70}
+                                                            priority
+                                                        />
+                                                        <h2 className='font-medium text-xl pl-4 mt-2'>{item.lessonId.title}</h2>
+                                                    </div>
                                                 </div>
                                             </Link>
                                         ))

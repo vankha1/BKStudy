@@ -63,14 +63,12 @@ const AddLessons = ({ params }) => {
         formData.append("files", data.files)
         formData.append("chapter", indexChapter)
 
-        console.log(data, formData, indexChapter);
         axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 "Content-Type": `multipart/form-data`,
             }
         }).then((response) => {
-            console.log(response);
             if (response.statusText === 'Created') {
                 successNotifi('Tạo bài giảng thành công!.');
             }
@@ -92,7 +90,7 @@ const AddLessons = ({ params }) => {
     return (
         <div className='relative w-full mt-4'>
             <div className='w-full flex flex-col'>
-                <div className='text-2xl font-bold top-0 left-0 mb-2 border-b border-solid border-black'>{courseName.toUpperCase}</div>
+                <div className='text-2xl font-bold top-0 left-0 mb-2 border-b border-solid border-black'>{courseName.toUpperCase()}</div>
             </div>
             <div className='mx-32 mt-10'>
                 <div className='border border-solid border-black'>
