@@ -31,11 +31,12 @@ const LogInPage = () => {
         }
       }
       else alert("Something wrong is happening")
-    }).catch((error) => {alert(error)}).finally(() => {setSubmitting(false)})
+    }).catch((error) => { alert(error) }).finally(() => { setSubmitting(false) })
   }
 
   return (
     <section className="flex-center flex-col drop-shadow-md mt-3 px-8 py-5 bg-white rounded-md">
+      {console.log('re-render')}
       <h1 className="text-3xl font-bold">Đăng nhập</h1>
       <form onSubmit={logIn} className="flex-center flex-col w-full">
         <div className="w-full flex-start flex-col mt-5 mb-3"></div>

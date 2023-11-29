@@ -3,11 +3,12 @@ import React, { useState, useRef } from 'react'
 
 import UploadImage from '@components/UploadFile'
 
-const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
+const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, router, path }) => {
 
     const [isEditing, setIsEditing] = useState(true);
     const [newData, setNewData] = useState([infos]);
     const [image, setImage] = useState();
+    const [videoURL, setVideoURL] = useState('');
 
     const handleSaveClick = () => {
         setIsEditing(false);
@@ -23,15 +24,23 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
         setImage(selectedFile);
     }
 
+    const handleVideoURL = (value) => {
+        setVideoURL(value);
+    }
+
+    const handleGetVideoURL = () => {
+
+    }
+
     const handleValueObj = () => {
-        const updatedInfoCourse = { ...infoCourse };    
+        const updatedInfoCourse = { ...infoCourse };
         let index = 0;
         for (let [key, value] of Object.entries(updatedInfoCourse)) {
             updatedInfoCourse[key] = infos[index++].data || value;
         }
-        hanleCourse(updatedInfoCourse)
+        handlGetDataForAPI(updatedInfoCourse)
     }
-    
+
 
     return (
         <div className='flex flex-wrap'>
@@ -41,7 +50,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
                     {isEditing ? (
                         <>
                             {
-                                info.button_title ? (
+                                info.button_title && info.fileType ? (
                                     <div className='flex-between'>
                                         <textarea
                                             type='text'
@@ -61,13 +70,35 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
                                         />
                                     </div>
                                 ) : (
-                                    <textarea
-                                        type='text'
-                                        className={`${info.input_className} resize-none`}
-                                        placeholder={info.placeholders}
-                                        value={info.data}
-                                        onChange={(e) => handleInputChange(e.target.value, index)}
-                                    />
+                                    <>
+                                        {
+                                            info.button_title ? (
+                                                <div className='flex-between'>
+                                                    <textarea
+                                                        type='text'
+                                                        className={`${info.input_className} resize-none`}
+                                                        placeholder={info.placeholders}
+                                                        value={info.data}
+                                                        onChange={(e) => handleInputChange(e.target.value, index)}
+                                                    />
+                                                    <button
+                                                        className='py-2 px-4 ml-8 small-second-button'
+                                                        // onClick={handlGetDataForAPI}
+                                                    >
+                                                        {info.button_title}
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <textarea
+                                                    type='text'
+                                                    className={`${info.input_className} resize-none`}
+                                                    placeholder={info.placeholders}
+                                                    value={info.data}
+                                                    onChange={(e) => handleInputChange(e.target.value, index)}
+                                                />
+                                            )
+                                        }
+                                    </>
                                 )
                             }
                         </>
@@ -100,7 +131,9 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, hanleCourse }) => {
                 </div>
             ))}
             <div className='flex-between w-full mb-8'>
-                <button className='small-gray-button'>Hủy</button>
+                <button className='small-gray-button' onClick={() => {
+                    router.push(path)
+                }}>Hủy</button>
                 <button
                     className='small-blue-button'
                     onClick={() => {
