@@ -14,6 +14,7 @@ const auth = require('./routes/auth')
 const course = require('./routes/course')
 const chapter = require('./routes/chapter')
 const lesson = require('./routes/lesson')
+const discussion = require('./routes/discussion')
 const lessonFileMulter = require('./middleware/lessonFileMulter')
 
 //const authMedia1 = require('./routes/authMedia')
@@ -63,7 +64,7 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/course', course);
-
+app.use('/api/v1/discussion', discussion);
 //app.use('/google', authMedia1);
 app.use('/api/v1/chapter', chapter);
 app.use('/api/v1/lesson', lesson);
