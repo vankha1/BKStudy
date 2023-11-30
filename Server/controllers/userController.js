@@ -124,9 +124,9 @@ const registerCourse = async (req, res, next) => {
       courseId: course._id,
       enrolledDate: new Date()
     });
+    course.numberOfStudent++;
     await user.save();
 
-    course.numberOfStudent++;
     res.status(200).json({
       message: "Register course successfully !!!"
     })

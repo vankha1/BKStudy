@@ -84,7 +84,7 @@ const getLesson = async (req, res, next) => {
 
     const lesson = await Lesson.findById(lessonId);
 
-    if (user.userType == "LECTURE") {
+    if (user.userType == "LECTURER") {
       res.status(200).json({
         lesson: lesson,
       });

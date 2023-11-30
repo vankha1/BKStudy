@@ -40,11 +40,11 @@ const EditLesson = ({ params }) => {
             input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
         },
     ]
-
+    const [lesson, setLesson] = useState();
     const router = useRouter();
     const searchParams = useSearchParams()
     const courseName = searchParams.get('course');
-    const [infoCourse, setInfoCourse] = useState({
+    const [infoLesson, setInfoLesson] = useState({
         title: "",
         contents: "",
         videoURL: "",
@@ -57,14 +57,16 @@ const EditLesson = ({ params }) => {
             .get('http://localhost:8080' + `/api/v1/lesson/course?courseId=${params?.id}&lessonId=${params?.idlesson}`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
-            .then((data) => {
-                console.log(data)
+            .then((response) => {
+                setLesson(response.data.lesson);
+                console.log(response.data);
+                handleInfoLesson(response.data.lesson);
             })
             .catch(error => {
                 console.log('error')
             });
     }, []);
-    
+
     const handleDeleteLesson = () => {
         const token = localStorage.getItem("JWT");
         axios.delete('http://localhost:8080' + `/api/v1/lesson/delete?courseId=${params?.id}&lessonId=${params?.idlesson}`, {
@@ -79,7 +81,16 @@ const EditLesson = ({ params }) => {
                 errorNotifi('Xóa bài học thất bại!.');
             }
             router.push(`edit-course/${params?.id}`)
-        }).catch((error) => errorNotifi('Có lỗi xảy ra, vui lòng thử lại!.'))  
+        }).catch((error) => errorNotifi('Có lỗi xảy ra, vui lòng thử lại!.'))
+    }
+
+    const handleInfoLesson = (data) => {
+        const updatedInfoLesson = { ...lesson };
+        let index = 0;
+        for (let [key, value] of Object.entries(updatedInfoLesson)) {
+            infos[index++].value = value;
+        }
+        console.log(data, 'update lesson');
     }
 
     const handleCallAPI = (data) => {
@@ -91,7 +102,7 @@ const EditLesson = ({ params }) => {
         formData.append("videoURL", data.videoURL)
         formData.append("files", data.files)
         formData.append("chapter", params?.index)
-        
+
         axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -124,13 +135,13 @@ const EditLesson = ({ params }) => {
             </div>
             <div className='mx-32 mt-10'>
                 <div className='flex flex-between'>
-                <h2 className='text-xl font-semibold mb-2'>CHỈNH SỬA BÀI GIẢNG</h2>
-                <button className='medium-red-button mb-2' onClick={handleDeleteLesson}>Xóa bài giảng</button>
+                    <h2 className='text-xl font-semibold mb-2'>CHỈNH SỬA BÀI GIẢNG</h2>
+                    <button className='medium-red-button mb-2' onClick={handleDeleteLesson}>Xóa bài giảng</button>
                 </div>
                 <div className='border border-solid border-black'>
                     <div className='px-8 bg-white'>
                         <div className='w-full mt-4'>
-                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI} />
+                            <AddCourses infos={infos} infoCourse={infoLesson} setInfoCourse={setInfoLesson} handlGetDataForAPI={handleCallAPI} />
                         </div>
                     </div>
                 </div>

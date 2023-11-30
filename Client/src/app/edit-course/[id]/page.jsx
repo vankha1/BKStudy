@@ -3,6 +3,7 @@ import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import _ from 'lodash';
 
 import React from 'react'
@@ -55,6 +56,7 @@ const EditCourse = ({ params }) => {
     const [titelCourse, setTitleCourse] = useState('');
     const [dataCourse, setDataCourse] = useState([]);
     const [prevChapterName, setPrevChapterName] = useState([]);
+    const router = useRouter();
 
     useEffect(() => {
         const token = localStorage.getItem("JWT");
