@@ -420,10 +420,25 @@ const updateNote = async (req, res, next) => {
     }
 };
 
+const getFile = async (req, res, next) => {
+    try {
+        const filepath = decodeURIComponent(req.params.filepath);
+        res.sendFile(filepath, (err) => {
+            if (err) throw err;
+            //console.log("send file successfully");
+        })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
 //GET /download/:filepath
 const downloadFile = async (req, res, next) => {
     try {
-        const filepath = req.params.filepath;
+        const filepath = decodeURIComponent(req.params.filepath);
         res.download(filepath);
     } catch (err) {
         if (!err.statusCode) {
@@ -440,5 +455,6 @@ module.exports = {
     updateLesson,
     deleteLesson,
     updateNote,
+    getFile,
     downloadFile,
 };
