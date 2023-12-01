@@ -14,7 +14,7 @@ const RootLayout = ({ children }) => {
       <body>
         <AuthProvider>
             <Navbar />
-            <main className="app">{children}</main>
+            <main className="app min-h-[27rem]">{children}</main>
             <Footer />
         </AuthProvider>
       </body>

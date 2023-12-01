@@ -9,7 +9,7 @@ const replySchema = new Schema(
       ref: "User",
       required: true,
     },
-    message: {
+    content: {
       type: String,
       required: true,
     },
@@ -19,18 +19,22 @@ const replySchema = new Schema(
 
 const discussionSchema = new Schema(
   {
+    title: {
+      type: String,
+      required: true
+    },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    message: {
+    content: {
       type: String,
       required: true,
     },
-    lessonId: {
+    courseId: {
       type: Schema.Types.ObjectId,
-      ref: "Lesson",
+      ref: "Course",
       required: true,
     },
     replies: {

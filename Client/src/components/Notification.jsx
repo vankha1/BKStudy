@@ -6,7 +6,7 @@ import React from 'react';
 const errorNotifi = (description) =>
     toast.error(description, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -20,7 +20,7 @@ const errorNotifi = (description) =>
 const warningNotifi = (description) =>
     toast.error(description, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -33,7 +33,7 @@ const warningNotifi = (description) =>
 const successNotifi = (description) =>
     toast.success(description, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -48,7 +48,7 @@ const Notification = () => {
     return (
         <ToastContainer
             position="top-right"
-            autoClose={5000}
+            autoClose={4000}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick

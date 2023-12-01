@@ -1,14 +1,14 @@
 "use client"; // This is a client component
 import { useState } from 'react';
 import axios from 'axios';
-
+import { useRouter } from "next/navigation"
 
 import FilterSearch from '@components/FilterSearch';
 import AddCourses from '@components/AddActions';
 import Notification, { errorNotifi, successNotifi, warningNotifi } from '@components/Notification';
 
 const AddCourse = () => {
-
+    const router = useRouter();
     const infos = [
         {
             title: 'Tên khóa học',
@@ -59,7 +59,6 @@ const AddCourse = () => {
         formData.append("image", data.image, data.image.name)
         formData.append("description", data.description)
 
-        console.log(formData, token);
         axios.post(`http://localhost:8080/api/v1/course/create`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -72,6 +71,9 @@ const AddCourse = () => {
             else {
                 warningNotifi('Có lỗi xảy ra, thử lại sau!.')
             }
+            setTimeout(() => {
+                router.push('/lecturer-manage');
+            }, 1000);
         }).catch((error) => {
             if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
                 errorNotifi('Vui lòng đăng nhập lại!.');
@@ -91,7 +93,7 @@ const AddCourse = () => {
                 <div className='border border-solid border-black'>
                     <div className='px-8 bg-white'>
                         <div className='w-full mt-4'>
-                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} hanleCourse={handleCallAPI} />
+                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI} router={router} path='lecturer-manage' />
                         </div>
                     </div>
                 </div>

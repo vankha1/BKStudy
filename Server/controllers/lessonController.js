@@ -1,5 +1,5 @@
 const fs = require("fs");
-const path = require("path");
+
 const User = require("../models/userModel");
 const Course = require("../models/courseModel");
 const Lesson = require("../models/lessonModel");
@@ -43,6 +43,7 @@ const getAllLessons = async (req, res, next) => {
         }
 
         res.status(200).json({
+            courseName: course.title,
             chapters: course.chapters,
         });
     } catch (err) {
@@ -422,9 +423,8 @@ const updateNote = async (req, res, next) => {
 //GET /download/:filepath
 const downloadFile = async (req, res, next) => {
     try {
-        const filename = req.params.filepath;
-        const filepath = path.join(__dirname, "../files/", filename).replace(/\\\\/g, "/").replace(/\\/g, "/");
-        res.download(filepath, (err) => { if (err) console.log(err) });
+        const filepath = req.params.filepath;
+        res.download(filepath);
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
