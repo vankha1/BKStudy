@@ -12,6 +12,6 @@ router.get('/:courseId/:discussionId', isAuth.authToken, isAuth.authRoles(["LECT
 
 router.post('/:courseId/:discussionId/createReply', isAuth.authToken, isAuth.authRoles(["LECTURER", "STUDENT"]), discussionController.createReplyMessage);
 
-router.delete('/:courseId/:discussionId/deleteReply', isAuth.authToken, isAuth.authRoles(["LECTURER", "STUDENT"]), discussionController.deleteReplyMessage);
+router.delete('/:courseId/:discussionId/deleteReply/:replyId', isAuth.authToken, isAuth.authRoles(["LECTURER", "STUDENT"]), discussionController.deleteReplyMessage);
 
 module.exports = router

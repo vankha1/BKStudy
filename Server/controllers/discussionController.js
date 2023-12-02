@@ -129,12 +129,13 @@ const createReplyMessage = async (req, res, next) => {
   }
 };
 
-// DELETE /:courseId/:discussionId/deleteReply
+// DELETE /:courseId/:discussionId/deleteReply/:replyId
 const deleteReplyMessage = async (req, res, next) => {
   try {
     const userId = req.userId;
     const discussionId = req.params.discussionId;
     const courseId = req.params.courseId;
+    const replyId = req.params.replyId;
 
     const discussion = await Discussion.findById(discussionId)
       .populate("createdBy", "fullname -_id")
@@ -152,19 +153,27 @@ const deleteReplyMessage = async (req, res, next) => {
       throw error;
     }
 
-    const idxUser = discussion.replies.findIndex(reply => reply.createdBy._id.toString() === userId);
-
-    if (idxUser === -1){
-        const error = new Error("Not authenticated");
-        error.statusCode = 404;
-        throw error;
+    const userReplies = discussion.replies.filter(
+      (reply) => reply.createdBy._id.toString() === userId
+    );
+    console.log(userReplies);
+    if (userReplies.length === 0) {
+      const error = new Error("Not authenticated");
+      error.statusCode = 404;
+      throw error;
     }
-    discussion.replies.splice(idxUser, 1);
-    await discussion.save()
+
+    const idxReply = discussion.replies.findIndex(
+      (reply) => reply._id.toString() === replyId
+    );
+    console.log(idxReply);
+
+    discussion.replies.splice(idxReply, 1);
+    await discussion.save();
 
     res.status(200).json({
-        message: "Delete reply successfully"
-    })
+      message: "Delete reply successfully",
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
