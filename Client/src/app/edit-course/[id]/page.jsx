@@ -2,7 +2,7 @@
 import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import _ from 'lodash';
 
@@ -11,6 +11,7 @@ import React from 'react'
 import RenderLessons from "@components/RenderLessons";
 import RenderAccount from "@components/RenderAccount";
 import RatingCourses from "@components/RatingCourses";
+import RenderDiscussion from "@components/RenderDiscussion";
 import Notification, { warningNotifi, errorNotifi, successNotifi } from "@components/Notification";
 
 const USERS_RATING = {
@@ -53,6 +54,7 @@ const EditCourse = ({ params }) => {
     const [buttonStates, setButtonStates] = useState([true, false, false, false]);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [listUsers, setListUsers] = useState([]);
+    const [forums, setForums] = useState();
     const [titelCourse, setTitleCourse] = useState('');
     const [dataCourse, setDataCourse] = useState([]);
     const [prevChapterName, setPrevChapterName] = useState([]);
@@ -64,9 +66,9 @@ const EditCourse = ({ params }) => {
             .get('http://localhost:8080' + `/api/v1/lesson/course/${params?.id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
-            .then((data) => {
-                const newDataCourse = data.data.chapters;
-                setTitleCourse(data.data.courseName);
+            .then((responses) => {
+                const newDataCourse = responses.data.chapters;
+                setTitleCourse(responses.data.courseName);
                 setPrevChapterName(_.cloneDeep(newDataCourse));
                 setDataCourse(_.cloneDeep(newDataCourse));
             })
@@ -157,7 +159,7 @@ const EditCourse = ({ params }) => {
             headers: { Authorization: `Bearer ${token}` },
         })
             .then((responses) => {
-                if (responses.status === 200 && responses.data.message === 'update chapter successfully'){
+                if (responses.status === 200 && responses.data.message === 'update chapter successfully') {
                     successNotifi('Chỉnh sửa chương thành công!.');
                 }
                 else {
@@ -175,12 +177,26 @@ const EditCourse = ({ params }) => {
             .get('http://localhost:8080' + `/api/v1/course/students/${params?.id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
-            .then((data) => {
-                const newDataUsers = data.data.users;
+            .then((responses) => {
+                const newDataUsers = responses.data.users;
                 setListUsers(newDataUsers);
             })
             .catch(error => {
                 console.log('error');
+            });
+    }
+
+    const handleGetForumInfos = () => {
+        const token = localStorage.getItem("JWT");
+        axios
+            .get('http://localhost:8080' + `/api/v1/discussion/${params?.id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((responses) => {
+                setForums(responses.data.discussions);
+            })
+            .catch(error => {
+                console.log('error')
             });
     }
 
@@ -214,7 +230,10 @@ const EditCourse = ({ params }) => {
                 </button>
                 <button
                     className={`px-4 font-medium ${buttonStates[2] ? 'text-blue-500' : ''}`}
-                    onClick={() => handleButtonClick(2)}
+                    onClick={() => {
+                        handleButtonClick(2);
+                        handleGetForumInfos();
+                    }}
                 >
                     Diễn đàn khóa học
                 </button>
@@ -223,7 +242,7 @@ const EditCourse = ({ params }) => {
             <div className='w-full mt-8'>
                 {buttonStates[0] ? <RenderLessons course={dataCourse} setCourse={setDataCourse} courseId={params?.id} handleAddNewChapter={handleAddNewChapter} handleDeleteChapter={handleDeleteChapter} prevChapterName={prevChapterName} handleEditChapter={handleEditChapter} courseName={titelCourse} /> : ''}
                 {buttonStates[1] ? <RenderAccount accounts={listUsers} /> : ''}
-                {buttonStates[2] ? '' : ''}
+                {buttonStates[2] ? <RenderDiscussion courseId={params?.id} courseName={titelCourse} /> : ''}
                 {buttonStates[3] ? <RatingCourses users={USERS_RATING} /> : ''}
             </div>
             <Notification />

@@ -56,12 +56,11 @@ const AddLessons = ({ params }) => {
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
         const formData = new FormData()
-
-        formData.append("title", data.title)
-        formData.append("contents", data.contents)
-        formData.append("videoURL", data.videoURL)
-        formData.append("files", data.files)
-        formData.append("chapter", indexChapter)
+        formData.append("title", data.title);
+        formData.append("contents", data.contents);
+        formData.append("videoURL", data.videoURL);
+        formData.append("files", data.files);
+        formData.append("chapter", indexChapter);
 
         axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
             headers: {
@@ -73,7 +72,7 @@ const AddLessons = ({ params }) => {
                 successNotifi('Tạo bài giảng thành công!.');
             }
             else {
-                warningNotifi('Có lỗi xảy ra, thử lại sau!.')
+                warningNotifi('Có lỗi xảy ra, thử lại sau!.');
             }
             setTimeout(() => {
                 router.push(`/edit-course/${params?.id}`);

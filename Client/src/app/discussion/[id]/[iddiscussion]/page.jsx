@@ -1,0 +1,210 @@
+'use client';
+import axios from "axios";
+import Link from "next/link";
+import Image from "next/image";
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation'
+import FilterSearch from "@components/FilterSearch";
+
+const AddDiscussion = ({ params }) => {
+    const searchParams = useSearchParams();
+    const courseName = searchParams.get('course');
+    const [discussion, setDiscussion] = useState();
+    const [isReply, setIsReply] = useState(false);
+    const [reply, setReply] = useState('');
+
+    useEffect(() => {
+        const token = localStorage.getItem("JWT");
+        axios
+            .get('http://localhost:8080' + `/api/v1/discussion/${params?.id}/${params?.iddiscussion}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            })
+            .then((responses) => {
+                if (responses.data && responses.data.discussion) {
+                    console.log(responses.data)
+                    setDiscussion(responses.data.discussion);
+                } else {
+                    console.log('Invalid response format');
+                }
+            })
+            .catch(error => {
+                console.log('error');
+            });
+    }, [])
+
+    const handleAddNewReply = () => {
+        const token = localStorage.getItem("JWT");
+        const data = {
+            content: reply
+        }
+        axios
+            .post('http://localhost:8080' + `/api/v1/discussion/${params?.id}/${params?.iddiscussion}/createReply`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then((responses) => {
+                console.log(responses);
+            })
+            .catch(error => {
+                console.log('error');
+            });
+    }
+
+    const handleDeleteReply = (id) => {
+        const token = localStorage.getItem("JWT");
+        axios
+            .delete('http://localhost:8080' + `/api/v1/discussion/${params?.id}/${id}/deleteReply`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            })
+            .then((responses) => {
+                console.log(responses);
+            })
+            .catch(error => {
+                console.log('error');
+            });
+    }
+
+    return (
+        <div className='w-full mt-4'>
+            <div className='w-full flex flex-col'>
+                <FilterSearch title={courseName.toUpperCase()} />
+            </div>
+            <h1 className="font-medium text-lg mt-4">DIỄN ĐÀN MÔN HỌC</h1>
+            <div className="mt-4">
+                <Link href={`/edit-course/${params?.id}`}>
+                    <button className="small-blue-button">Quay lại</button>
+                </Link>
+            </div>
+            <div className='w-full mt-10 border border-solid border-gray-200 rounded-lg hover:bg-gray-100'>
+                <div className="flex-start mt-4 mx-4">
+                    <Image
+                        className="rounded-2xl py-2 hover:cursor-pointer mr-2"
+                        src='/assets/images/avatar.svg'
+                        alt="Avatar User"
+                        width={60}
+                        height={60}
+                    />
+                    <div className="w-full mt-2 ml-2 mb-4">
+                        <h1 className="font-medium text-xl">{discussion && discussion.title}</h1>
+                        <div className="flex">
+                            <h2 className="text-base pr-1">Được tạo bởi</h2>
+                            <h2 className="text-base text-blue-500 pr-1">{discussion && discussion.createdBy.fullname}</h2>
+                            <h2 className="text-base pr-1">vào lúc</h2>
+                            <h2 className="text-base text-blue-500 pr-1">{discussion && discussion.createdAt.slice(0, 10)}</h2>
+                        </div>
+                        <div className="w-full flex-between">
+                            <h2 className="w-4/5 text-base mt-4">{discussion && discussion.content}</h2>
+                            <div className="flex">
+                                <button
+                                    className="small-gray-button mr-8"
+                                    onClick={() => {
+                                        handleDeleteReply(discussion._id)
+                                    }}
+                                >
+                                    Xóa bình luận
+                                </button>
+                                <button
+                                    className="small-light-blue-button"
+                                    onClick={() => setIsReply(true)}
+                                >
+                                    Trả lời
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <>
+                {
+                    isReply ? (
+                        <div className="mt-4 border border-solid border-gray-200 rounded-lg">
+                            <div className="flex-between mx-4 my-4">
+                                <textarea
+                                    type='text'
+                                    className='w-full h-28 border border-solid border-gray-300 focus:border-gray-300 focus:outline-none pl-2 pt-2 rounded-lg'
+                                    placeholder='Nhập câu trả lời'
+                                    defaultValue={reply}
+                                    onChange={(e) => {
+                                        setReply(e.target.value);
+                                    }}
+                                />
+                            </div>
+                            <div className="flex-between mb-4">
+                                <div className="opacity-0">!!!</div>
+                                <div className='flex mr-4'>
+                                    <button
+                                        className='small-gray-button mr-8'
+                                        onClick={() => {
+                                            setIsReply(false);
+                                        }}
+                                    >
+                                        Hủy bỏ
+                                    </button>
+                                    <button
+                                        className='small-blue-button'
+                                        onClick={() => {
+                                            handleAddNewReply();
+                                            setIsReply(false);
+                                        }}
+                                    >
+                                        Xác nhận
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <></>
+                    )
+                }
+            </>
+            <>
+                {
+                    discussion && discussion.replies.map((item) => (
+                        <div key={item._id} className='mt-8 ml-16 border border-solid border-gray-200 rounded-lg hover:bg-gray-100'>
+                            <div className="flex-start mt-4 mx-4">
+                                <Image
+                                    className="rounded-2xl py-2 hover:cursor-pointer mr-2"
+                                    src='/assets/images/avatar.svg'
+                                    alt="Avatar User"
+                                    width={40}
+                                    height={40}
+                                />
+                                <div className="w-full mt-1 ml-2 mb-2">
+                                    <div className="flex">
+                                        <h1 className="font-medium text-lg pr-1">Trả lời</h1>
+                                        <h1 className="font-medium text-lg text-blue-500">{discussion && discussion.title}</h1>
+                                    </div>
+                                    <div className="flex">
+                                        <h2 className="text-sm pr-1">Được tạo bởi</h2>
+                                        <h2 className="text-sm text-blue-500 pr-1">{item.createdBy.fullname}</h2>
+                                        <h2 className="text-sm pr-1">vào lúc</h2>
+                                        <h2 className="text-sm text-blue-500 pr-1">{item.createdAt.slice(0, 10)}</h2>
+                                    </div>
+                                    <div className="w-full flex-between">
+                                        <h2 className="w-4/5 text-sm mt-2">{item.content}</h2>
+                                        <button
+                                            className="w-28 bg-gray-300 text-sm text-black font-semibold py-[4px] rounded-md hover:bg-gray-400"
+                                            onClick={() => {
+                                                handleDeleteReply(item._id)
+                                            }}
+                                        >
+                                            Xóa bình luận
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                }
+            </>
+        </div>
+    )
+}
+
+export default AddDiscussion

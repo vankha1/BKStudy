@@ -44,7 +44,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, rout
 
     return (
         <div className='flex flex-wrap'>
-            {infos.map((info, index) => (
+            {Array.isArray(infos) && infos.map((info, index) => (
                 <div key={index} className={info.className}>
                     <h4 className='text-lg font-normal mb-1'>{info.title}</h4>
                     {isEditing ? (
@@ -56,7 +56,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, rout
                                             type='text'
                                             className={`${info.input_className} resize-none`}
                                             placeholder={info.placeholders}
-                                            value={image ? image.name : info.data}
+                                            value={image ? image.name : info.data ? (Array.isArray(info.data) ? info.data[0].filename : info.data) : ''}
                                             disabled
                                         />
                                         <UploadImage

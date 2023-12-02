@@ -5,26 +5,27 @@ import { useRouter, useSearchParams } from "next/navigation"
 import AddCourses from '@components/AddActions';
 
 import Notification, { errorNotifi, successNotifi, warningNotifi } from '@components/Notification';
+import { title } from 'process';
 
 const EditLesson = ({ params }) => {
-    const infos = [
+    const [infos, setInfos] = useState([
         {
             title: 'Chỉnh sửa tiêu đề bài giảng',
-            value: '',
+            data: '',
             placeholders: 'Nhập tiêu đề bài giảng vào đây',
             className: 'mb-4 w-full',
             input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1'
         },
         {
             title: 'Chỉnh sửa bài đọc',
-            value: '',
+            data: '',
             placeholders: 'Nhập bài học tại đây',
             className: 'mb-4 w-full h-60 ',
             input_className: 'w-full h-4/5 text-base font-normal border border-solid p-1 align-top'
         },
         {
             title: 'Chỉnh sửa video',
-            value: '',
+            data: '',
             placeholders: 'Đường dẫn video',
             button_title: 'Tải lên',
             className: 'mb-4 w-full',
@@ -32,14 +33,14 @@ const EditLesson = ({ params }) => {
         },
         {
             title: 'Các tập tin kèm theo',
-            value: '',
+            data: null,
             placeholders: 'Tải lên tập tin kèm theo',
             button_title: 'Tải lên',
             fileType: '*',
             className: 'mb-12 w-full',
             input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
         },
-    ]
+    ])
     const [lesson, setLesson] = useState();
     const router = useRouter();
     const searchParams = useSearchParams()
@@ -59,8 +60,13 @@ const EditLesson = ({ params }) => {
             })
             .then((response) => {
                 setLesson(response.data.lesson);
-                console.log(response.data);
-                handleInfoLesson(response.data.lesson);
+                console.log(response.data.lesson);
+                const newInfos = [...infos];
+                newInfos[0].data = response.data.lesson.title,
+                newInfos[1].data = response.data.lesson.contents,
+                newInfos[2].data = response.data.lesson.videoURL,
+                newInfos[3].data = response.data.lesson.attachedFiles
+                setInfos(newInfos);
             })
             .catch(error => {
                 console.log('error')
@@ -84,15 +90,6 @@ const EditLesson = ({ params }) => {
         }).catch((error) => errorNotifi('Có lỗi xảy ra, vui lòng thử lại!.'))
     }
 
-    const handleInfoLesson = (data) => {
-        const updatedInfoLesson = { ...lesson };
-        let index = 0;
-        for (let [key, value] of Object.entries(updatedInfoLesson)) {
-            infos[index++].value = value;
-        }
-        console.log(data, 'update lesson');
-    }
-
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
         const formData = new FormData()
@@ -101,9 +98,9 @@ const EditLesson = ({ params }) => {
         formData.append("contents", data.contents)
         formData.append("videoURL", data.videoURL)
         formData.append("files", data.files)
-        formData.append("chapter", params?.index)
-
-        axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
+        // formData.append("chapter", params?.index)
+        console.log('api', data);
+        axios.put('http://localhost:8080' + `/api/v1/lesson/update?courseId=${params?.id}&lessonId=${params?.idlesson}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 "Content-Type": `multipart/form-data`,
@@ -120,6 +117,7 @@ const EditLesson = ({ params }) => {
                 router.push(`/edit-course/${params?.id}`);
             }, 1000);
         }).catch((error) => {
+            console.log(error);
             if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
                 errorNotifi('Vui lòng đăng nhập lại!.');
             } else {

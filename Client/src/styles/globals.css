@@ -63,7 +63,7 @@
 }
 
 .small-light-blue-button {
-  @apply w-32 bg-blue-200 text-white font-semibold py-[5px] rounded-md hover:bg-blue-300
+  @apply w-32 bg-blue-200 text-black font-semibold py-[5px] rounded-md hover:bg-blue-300
 }
 
 .medium-red-button {

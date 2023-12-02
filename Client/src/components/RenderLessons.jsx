@@ -84,9 +84,9 @@ const RenderLessons =
 
         return (
             <div className='w-full'>
-                <div className='w-full mt-8'>
-                    <button className='float-right medium-blue-button' onClick={handleIsAddChapter}>Thêm chương mới</button>
+                <div className='w-full mt-8 flex-between'>
                     <div className="opacity-0">!!!</div>
+                    <button className='medium-blue-button' onClick={handleIsAddChapter}>Thêm chương mới</button>
                 </div>
                 <div className='mt-12'>
                     {
