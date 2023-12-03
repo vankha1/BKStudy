@@ -57,6 +57,11 @@ router.put('/update-note',
     lessonController.updateNote
 );
 
+router.get('/file/:filepath',
+    isAuth.authToken,
+    lessonController.getFile
+)
+
 router.get('/download/:filepath',
     isAuth.authToken,
     isAuth.authRoles(["STUDENT"]),
