@@ -3,14 +3,10 @@ import axios from 'axios';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
+import EditData from '@components/EditInfoUser';
 
-import EditData from '../../components/EditInfoUser';
-import UploadImage from '@components/UploadFile';
-import Notification, { errorNotifi, successNotifi } from '@components/Notification';
+const User = ({ params }) => {
 
-const Profile = () => {
-
-  const fileInputRef = useRef(null);
   const [userProfile, setUserProfile] = useState({})
   const [imageSelected, setImageSelected] = useState('');
   const [userInfo, setUserInfo] = useState([
@@ -36,12 +32,12 @@ const Profile = () => {
   useEffect(() => {
     const token = localStorage.getItem("JWT");
     axios
-      .get("http://localhost:8080/api/v1/user/profile", {
+      .get('http://localhost:8080' + `/api/v1/course/${params?.id}/${params?.idUser}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((data) => {
-        let user = data.data.user;
-        console.log(data);
+        let user = data.data;
+        console.log(data)
         handleDataUSer(user);
         setUserProfile(user);
       })
@@ -85,17 +81,6 @@ const Profile = () => {
             {userProfile.fullname}
           </h2>
         </div>
-        <div className='absolute bottom-12 right-20 flex-between cursor-pointer'>
-          <Image
-            className=""
-            src='/assets/icons/upload.svg'
-            alt="Profile Picture"
-            width={30}
-            height={30}
-            priority
-          />
-          <UploadImage title='Đổi ảnh bìa' className='text-xl ml-2 font-normal' fileType='image' />
-        </div>
       </div>
       <div className='flex justify-between mx-16'>
         <div className='relative flex-col pt-8'>
@@ -113,7 +98,7 @@ const Profile = () => {
           </div>
           <div className='w-full px-16 py-4 rounded-lg shadow-lg mb-8'>
             <h3 className='w-52 text-xl font-medium mb-3 border-b border-solid border-black'>Thông tin tài khoản</h3>
-            <EditData infos={userInfo} onlyView={false} />
+            <EditData infos={userInfo} onlyView={true} />
           </div>
         </div>
         <div className='w-3/5 flex-col px-8 py-4'>
@@ -141,10 +126,9 @@ const Profile = () => {
           ))}
         </div>
       </div>
-      <Notification />
     </div>
 
   )
 }
 
-export default Profile
+export default User

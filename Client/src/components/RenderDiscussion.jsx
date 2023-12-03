@@ -4,50 +4,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 
-const RenderDiscussion = ({ courseId, courseName }) => {
+const RenderDiscussion = ({
+    courseId,
+    courseName,
+    discussions,
+    handleAddNewDiscussion,
+}) => {
     const [isAddDiscussion, setIsAddDiscussion] = useState(false);
     const [dataAddDiscussion, setDataAddDiscussion] = useState({
         title: '',
         content: ''
     });
-    const [discussions, setDiscussions] = useState();
-
-    useEffect(() => {
-        const token = localStorage.getItem("JWT");
-        axios
-            .get('http://localhost:8080' + `/api/v1/discussion/${courseId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            })
-            .then((responses) => {
-                setDiscussions(responses.data.discussions);
-            })
-            .catch(error => {
-                console.log('error');
-            });
-    }, [])
-
-    const handleAddNewDiscussion = () => {
-        const token = localStorage.getItem("JWT");
-        const data = {
-            title: dataAddDiscussion.title,
-            content: dataAddDiscussion.content
-        }
-        axios
-            .post('http://localhost:8080' + `/api/v1/discussion/${courseId}/create`, data, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    "Content-Type": 'application/json',
-                }
-            })
-            .then((responses) => {
-                console.log(responses);
-            })
-            .catch(error => {
-                console.log('error');
-            });
-    }
 
     return (
         <div className='w-full'>
@@ -110,7 +77,7 @@ const RenderDiscussion = ({ courseId, courseName }) => {
                                 <button
                                     className='small-blue-button'
                                     onClick={() => {
-                                        handleAddNewDiscussion()
+                                        handleAddNewDiscussion(dataAddDiscussion, setIsAddDiscussion, setDataAddDiscussion);
                                     }}
                                 >
                                     Xác nhận

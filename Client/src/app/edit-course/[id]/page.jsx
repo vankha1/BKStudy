@@ -59,6 +59,8 @@ const EditCourse = ({ params }) => {
     const [dataCourse, setDataCourse] = useState([]);
     const [prevChapterName, setPrevChapterName] = useState([]);
     const router = useRouter();
+    const [discussions, setDiscussions] = useState();
+    const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")));
 
     useEffect(() => {
         const token = localStorage.getItem("JWT");
@@ -73,9 +75,55 @@ const EditCourse = ({ params }) => {
                 setDataCourse(_.cloneDeep(newDataCourse));
             })
             .catch(error => {
-                console.log('error')
+                console.log('error');
             });
     }, []);
+
+
+    useEffect(() => {
+        const token = localStorage.getItem("JWT");
+        axios
+            .get('http://localhost:8080' + `/api/v1/discussion/${params?.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            })
+            .then((responses) => {
+                setDiscussions(responses.data.discussions);
+            })
+            .catch(error => {
+                console.log('error');
+            });
+    }, []);
+
+    useEffect(() => {
+        const token = localStorage.getItem("JWT");
+        axios
+            .get('http://localhost:8080' + `/api/v1/course/students/${params?.id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((responses) => {
+                const newDataUsers = responses.data.users;
+                setListUsers(newDataUsers);
+            })
+            .catch(error => {
+                console.log('error');
+            });
+    }, []);
+
+    useEffect(() => {
+        const token = localStorage.getItem("JWT");
+        axios
+            .get('http://localhost:8080' + `/api/v1/discussion/${params?.id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((responses) => {
+                setForums(responses.data.discussions);
+            })
+            .catch(error => {
+                console.log('error')
+            });
+    }, [])
 
     const handleButtonClick = (index) => {
         const newButtonStates = buttonStates.map((state, i) => i === index);
@@ -171,33 +219,49 @@ const EditCourse = ({ params }) => {
             });
     }
 
-    const handleGetUserInfos = () => {
+    const handleAddNewDiscussion = (dataAddDiscussion, setIsAddDiscussion, setDataAddDiscussion) => {
         const token = localStorage.getItem("JWT");
-        axios
-            .get('http://localhost:8080' + `/api/v1/course/students/${params?.id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((responses) => {
-                const newDataUsers = responses.data.users;
-                setListUsers(newDataUsers);
-            })
-            .catch(error => {
-                console.log('error');
-            });
-    }
+        const data = {
+            title: dataAddDiscussion.title,
+            content: dataAddDiscussion.content
+        }
+        const date = new Date();
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
 
-    const handleGetForumInfos = () => {
-        const token = localStorage.getItem("JWT");
+            return `${year}-${month}-${day}`;
+        }
+        const newData = {
+            title: dataAddDiscussion.title,
+            content: dataAddDiscussion.content,
+            createdBy: {
+                fullname: userInfo ? userInfo.fullname : undefined
+            },
+            createdAt: formatDate(date),
+            updatedAt: formatDate(date),
+        }
+        setDiscussions([...discussions, newData]);
         axios
-            .get('http://localhost:8080' + `/api/v1/discussion/${params?.id}`, {
-                headers: { Authorization: `Bearer ${token}` },
+            .post('http://localhost:8080' + `/api/v1/discussion/${params?.id}/create`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    "Content-Type": 'application/json',
+                }
             })
             .then((responses) => {
-                setForums(responses.data.discussions);
+                successNotifi('Thêm thảo luận thành công!.');
             })
             .catch(error => {
-                console.log('error')
+                errorNotifi('Thêm thảo luận thất bại');
             });
+
+        setDataAddDiscussion({
+            title: '',
+            content: ''
+        });
+        setIsAddDiscussion(false);
     }
 
     return (
@@ -218,12 +282,18 @@ const EditCourse = ({ params }) => {
                 </div>
             </div>
             <div className='w-full mt-2 border-b border-solid border-black'>
-                <button className={`px-4 font-medium ${buttonStates[0] ? 'text-blue-500' : ''}`} onClick={() => handleButtonClick(0)}>Khóa học</button>
+                <button
+                    className={`px-4 font-medium ${buttonStates[0] ? 'text-blue-500' : ''}`}
+                    onClick={() => {
+                        handleButtonClick(0)
+                    }}
+                >
+                    Khóa học
+                </button>
                 <button
                     className={`px-4 font-medium ${buttonStates[1] ? 'text-blue-500' : ''}`}
                     onClick={() => {
                         handleButtonClick(1);
-                        handleGetUserInfos();
                     }}
                 >
                     Danh sách học viên
@@ -232,17 +302,23 @@ const EditCourse = ({ params }) => {
                     className={`px-4 font-medium ${buttonStates[2] ? 'text-blue-500' : ''}`}
                     onClick={() => {
                         handleButtonClick(2);
-                        handleGetForumInfos();
                     }}
                 >
                     Diễn đàn khóa học
                 </button>
-                <button className={`px-4 font-medium ${buttonStates[3] ? 'text-blue-500' : ''}`} onClick={() => handleButtonClick(3)}>Đánh giá</button>
+                <button
+                    className={`px-4 font-medium ${buttonStates[3] ? 'text-blue-500' : ''}`}
+                    onClick={() => {
+                        handleButtonClick(3)
+                    }}
+                >
+                    Đánh giá
+                </button>
             </div>
             <div className='w-full mt-8'>
                 {buttonStates[0] ? <RenderLessons course={dataCourse} setCourse={setDataCourse} courseId={params?.id} handleAddNewChapter={handleAddNewChapter} handleDeleteChapter={handleDeleteChapter} prevChapterName={prevChapterName} handleEditChapter={handleEditChapter} courseName={titelCourse} /> : ''}
-                {buttonStates[1] ? <RenderAccount accounts={listUsers} /> : ''}
-                {buttonStates[2] ? <RenderDiscussion courseId={params?.id} courseName={titelCourse} /> : ''}
+                {buttonStates[1] ? <RenderAccount accounts={listUsers} courseId={params?.id} /> : ''}
+                {buttonStates[2] ? <RenderDiscussion courseId={params?.id} courseName={titelCourse} discussions={discussions} handleAddNewDiscussion={handleAddNewDiscussion} /> : ''}
                 {buttonStates[3] ? <RatingCourses users={USERS_RATING} /> : ''}
             </div>
             <Notification />

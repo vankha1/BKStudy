@@ -2,7 +2,7 @@
 import Link from "next/link";
 import React from 'react';
 
-const RenderAccount = ({ accounts }) => {
+const RenderAccount = ({ accounts, courseId }) => {
 
     return (
         <div className='w-full'>
@@ -24,7 +24,7 @@ const RenderAccount = ({ accounts }) => {
                                 <th className='font-medium py-2'>{account.username}</th>
                                 <th className='font-medium py-2'>Đã tham gia vào ngày {account.joinedDate.slice(0, 10)}</th>
                                 <th className='font-medium py-2'>
-                                    <Link href='/'>
+                                    <Link href={`/user/${courseId}/${account._id}`}>
                                         Xem thêm
                                     </Link>
                                 </th>
@@ -37,4 +37,4 @@ const RenderAccount = ({ accounts }) => {
     )
 }
 
-export default RenderAccount
+export default RenderAccount;

@@ -5,6 +5,7 @@ import Image from "next/image";
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation'
 import FilterSearch from "@components/FilterSearch";
+import Notification, { errorNotifi, successNotifi } from "@components/Notification";
 
 const AddDiscussion = ({ params }) => {
     const searchParams = useSearchParams();
@@ -12,6 +13,7 @@ const AddDiscussion = ({ params }) => {
     const [discussion, setDiscussion] = useState();
     const [isReply, setIsReply] = useState(false);
     const [reply, setReply] = useState('');
+    const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")));
 
     useEffect(() => {
         const token = localStorage.getItem("JWT");
@@ -23,7 +25,6 @@ const AddDiscussion = ({ params }) => {
             })
             .then((responses) => {
                 if (responses.data && responses.data.discussion) {
-                    console.log(responses.data)
                     setDiscussion(responses.data.discussion);
                 } else {
                     console.log('Invalid response format');
@@ -39,6 +40,23 @@ const AddDiscussion = ({ params }) => {
         const data = {
             content: reply
         }
+        const date = new Date();
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+
+            return `${year}-${month}-${day}`;
+        }
+        const newData = {
+            content: reply,
+            createdBy: {
+                fullname: userInfo ? userInfo.fullname : undefined,
+                _id: userInfo._id
+            },
+            createdAt: formatDate(date),
+        }
+
         axios
             .post('http://localhost:8080' + `/api/v1/discussion/${params?.id}/${params?.iddiscussion}/createReply`, data, {
                 headers: {
@@ -47,17 +65,24 @@ const AddDiscussion = ({ params }) => {
                 }
             })
             .then((responses) => {
-                console.log(responses);
+                successNotifi('Thêm bình luận thành công!.');
             })
             .catch(error => {
-                console.log('error');
+                errorNotifi('Thêm bình luận thất bại!.');
             });
+
+        const existingReplies = discussion ? discussion.replies : [];
+        setDiscussion({
+            ...discussion,
+            replies: [...existingReplies, newData],
+        });
+        setReply('');
     }
 
-    const handleDeleteReply = (id) => {
+    const handleDeleteReply = (discussionId, id) => {
         const token = localStorage.getItem("JWT");
         axios
-            .delete('http://localhost:8080' + `/api/v1/discussion/${params?.id}/${id}/deleteReply`, {
+            .delete('http://localhost:8080' + `/api/v1/discussion/${params?.id}/${discussionId}/deleteReply/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
@@ -101,14 +126,6 @@ const AddDiscussion = ({ params }) => {
                         <div className="w-full flex-between">
                             <h2 className="w-4/5 text-base mt-4">{discussion && discussion.content}</h2>
                             <div className="flex">
-                                <button
-                                    className="small-gray-button mr-8"
-                                    onClick={() => {
-                                        handleDeleteReply(discussion._id)
-                                    }}
-                                >
-                                    Xóa bình luận
-                                </button>
                                 <button
                                     className="small-light-blue-button"
                                     onClick={() => setIsReply(true)}
@@ -188,14 +205,20 @@ const AddDiscussion = ({ params }) => {
                                     </div>
                                     <div className="w-full flex-between">
                                         <h2 className="w-4/5 text-sm mt-2">{item.content}</h2>
-                                        <button
-                                            className="w-28 bg-gray-300 text-sm text-black font-semibold py-[4px] rounded-md hover:bg-gray-400"
-                                            onClick={() => {
-                                                handleDeleteReply(item._id)
-                                            }}
-                                        >
-                                            Xóa bình luận
-                                        </button>
+                                        {
+                                            userInfo && userInfo._id === item.createdBy._id ? (
+                                                <button
+                                                    className="w-28 bg-gray-300 text-sm text-black font-semibold py-[4px] rounded-md hover:bg-gray-400"
+                                                    onClick={() => {
+                                                        handleDeleteReply(discussion._id, item._id)
+                                                    }}
+                                                >
+                                                    Xóa bình luận
+                                                </button>
+                                            ) : (
+                                                <></>
+                                            )
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -203,6 +226,7 @@ const AddDiscussion = ({ params }) => {
                     ))
                 }
             </>
+            <Notification />
         </div>
     )
 }

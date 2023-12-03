@@ -62,6 +62,8 @@ const AddLessons = ({ params }) => {
         formData.append("files", data.files);
         formData.append("chapter", indexChapter);
 
+        console.log(data.files);
+
         axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,

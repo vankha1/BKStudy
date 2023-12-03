@@ -1,7 +1,7 @@
 "use client"; // This is a client component
 import React, { useState } from 'react';
 
-function EditData({ infos }) {
+function EditData({ infos, onlyView }) {
   const [isEditing, setIsEditing] = useState(false);
   const [newData, setNewData] = useState([infos]);
 
@@ -25,7 +25,7 @@ function EditData({ infos }) {
         <div key={index} className='mb-4'>
           <h4 className='text-lg font-medium mb-1'>{info.title}</h4>
           {
-            isEditing ? (
+            isEditing && !onlyView ? (
               <>
                 {
                   info.title === 'Ngày tham gia' || info.title === 'Email' ? (
@@ -68,20 +68,28 @@ function EditData({ infos }) {
         </div >
       ))}
       {
-        isEditing ? (
-          <button
-            className='w-44 px-4 py-2 rounded-3xl border border-solid border-gray-300'
-            onClick={handleSaveClick}
-          >
-            Lưu
-          </button>
+        onlyView ? (
+          <></>
         ) : (
-          <button
-            className='w-44 px-4 py-2 rounded-3xl border border-solid border-gray-300'
-            onClick={handleEditClick}
-          >
-            Chỉnh sửa thông tin
-          </button>
+          <>
+            {
+              isEditing ? (
+                <button
+                  className='w-44 px-4 py-2 rounded-3xl border border-solid border-gray-300'
+                  onClick={handleSaveClick}
+                >
+                  Lưu
+                </button>
+              ) : (
+                <button
+                  className='w-44 px-4 py-2 rounded-3xl border border-solid border-gray-300'
+                  onClick={handleEditClick}
+                >
+                  Chỉnh sửa thông tin
+                </button>
+              )
+            }
+          </>
         )
       }
     </div >

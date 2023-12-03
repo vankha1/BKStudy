@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation"
 import AddCourses from '@components/AddActions';
 
 import Notification, { errorNotifi, successNotifi, warningNotifi } from '@components/Notification';
-import { title } from 'process';
 
 const EditLesson = ({ params }) => {
     const [infos, setInfos] = useState([
@@ -58,20 +57,37 @@ const EditLesson = ({ params }) => {
             .get('http://localhost:8080' + `/api/v1/lesson/course?courseId=${params?.id}&lessonId=${params?.idlesson}`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
-            .then((response) => {
-                setLesson(response.data.lesson);
-                console.log(response.data.lesson);
+            .then((responses) => {
+                setLesson(responses.data.lesson);
                 const newInfos = [...infos];
-                newInfos[0].data = response.data.lesson.title,
-                newInfos[1].data = response.data.lesson.contents,
-                newInfos[2].data = response.data.lesson.videoURL,
-                newInfos[3].data = response.data.lesson.attachedFiles
+                newInfos[0].data = responses.data.lesson.title,
+                newInfos[1].data = responses.data.lesson.contents,
+                newInfos[2].data = responses.data.lesson.videoURL,
+                newInfos[3].data = responses.data.lesson.attachedFiles
                 setInfos(newInfos);
             })
             .catch(error => {
-                console.log('error')
+                console.log(error)
             });
     }, []);
+
+    useEffect(() => {
+        const token = localStorage.getItem("JWT");
+        const filepath = 'D:/STUDY/HK231/Đồ án/Coding/BKStudy/Server/files/1700893113290.pdf';
+        axios
+            .get('http://localhost:8080' + `/api/v1/lesson/file/${encodeURIComponent(filepath)}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": 'application/pdf'
+                },
+            })
+            .then((responses) => {
+                console.log(responses)
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    }, [])
 
     const handleDeleteLesson = () => {
         const token = localStorage.getItem("JWT");
