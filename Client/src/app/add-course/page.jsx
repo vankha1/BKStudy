@@ -12,33 +12,37 @@ const AddCourse = () => {
     const infos = [
         {
             title: 'Tên khóa học',
+            title_className: 'w-1/3',
             value: '',
             placeholders: 'Nhập tên khóa học vào đây',
-            className: 'mb-4 w-3/4',
-            input_className: 'w-5/6 h-[36px] text-base font-normal border border-solid p-1'
+            className: 'mb-4 w-full flex-between',
+            input_className: 'w-2/3 h-[36px] text-base font-normal border border-solid border-gray-400 p-1'
         },
         {
             title: 'Giá tiền',
+            title_className: 'w-1/3',
             value: '',
             placeholders: 'Giá tiền của khóa học',
-            className: 'mb-4 w-1/4',
-            input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1'
+            className: 'mb-4 w-full flex-between',
+            input_className: 'w-2/3 h-[36px] text-base font-normal border border-solid border-gray-400 p-1'
         },
         {
             title: 'Hình ảnh kèm theo',
+            title_className: 'w-1/3',
             value: '',
-            placeholders: 'Đường dẫn hình ảnh',
+            placeholders: 'Tải lên hình ảnh của bạn',
             button_title: 'Tải lên',
             fileType: 'image',
-            className: 'mb-4 w-full',
-            input_className: 'w-4/5 h-[36px] text-base font-normal border border-solid p-1'
+            className: 'mb-4 w-full h-40 flex justify-between',
+            input_className: 'w-2/3 h-4/5 text-base font-normal border border-solid border-gray-400 p-1'
         },
         {
             title: 'Mô tả kèm theo',
+            title_className: 'w-1/3',
             value: '',
             placeholders: 'Nhập mô tả khóa học',
-            className: 'mb-4 w-full h-60 ',
-            input_className: 'w-full h-4/5 text-base font-normal border border-solid p-1 align-top'
+            className: 'mb-4 w-full flex justify-between h-60 ',
+            input_className: 'w-2/3 h-4/5 text-base font-normal border border-solid border-gray-400 p-1 align-top'
         },
     ]
 
@@ -88,10 +92,10 @@ const AddCourse = () => {
             <div className='w-full flex flex-col'>
                 <FilterSearch title="KHÓA HỌC ĐANG GIẢNG DẠY" />
             </div>
-            <div className='mx-32 mt-10'>
-                <h2 className='text-xl font-medium'>Thêm khóa học</h2>
-                <div className='border border-solid border-black'>
-                    <div className='px-8 bg-white'>
+            <div className='mx-12 mt-10'>
+                <h2 className='text-xl font-medium mb-2'>Thêm khóa học</h2>
+                <div className='border border-solid border-gray-400 rounded-lg'>
+                    <div className='px-8 bg-white mb-2'>
                         <div className='w-full mt-4'>
                             <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI} router={router} path='lecturer-manage' />
                         </div>
