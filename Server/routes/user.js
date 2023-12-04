@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get('/profile', isAuth.authToken, userController.getProfile)
 
+router.get('/profile/:userId', isAuth.authToken, userController.getAnotherProfile)
+
 router.post('/add-profile', isAuth.authToken, imageMulterMiddleware, userController.addProfile)
 
 router.put('/update-profile', isAuth.authToken, imageMulterMiddleware, userController.updateProfile)

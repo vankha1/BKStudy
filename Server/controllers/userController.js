@@ -7,7 +7,10 @@ const getProfile = async (req, res, next) => {
   try {
     const userId = req.userId;
 
-    const user = await User.findById(userId).populate('courses.courseId', 'title imageUrl description');
+    const user = await User.findById(userId).populate(
+      "courses.courseId",
+      "title imageUrl description"
+    );
 
     if (!user) {
       const error = new Error("User not found !!");
@@ -24,6 +27,27 @@ const getProfile = async (req, res, next) => {
   }
 };
 
+// GET /profile/:userId
+const getAnotherProfile = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      const err = new Error("User not found");
+      err.statusCode = 404;
+      throw err;
+    }
+
+    res.status(200).json({ user });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500; // Server error
+    }
+    next(err);
+  }
+};
 
 const addProfile = async (req, res, next) => {
   try {
@@ -34,8 +58,8 @@ const addProfile = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    const temp = req.file.path.replace(/\\/g, "/").split("images")
-    const imageUrl = "images" + temp[1]
+    const temp = req.file.path.replace(/\\/g, "/").split("images");
+    const imageUrl = "images" + temp[1];
 
     const { fullname, dateOfBirth, phoneNumber } = req.body;
 
@@ -54,8 +78,8 @@ const addProfile = async (req, res, next) => {
     await user.save();
     res.status(200).json({
       message: "User sign in successfully !!!",
-      user
-    })
+      user,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500; // Server error
@@ -68,7 +92,7 @@ const updateProfile = async (req, res, next) => {
   try {
     const userId = req.userId;
 
-    const { fullname, dateOfBirth, phoneNumber} = req.body;
+    const { fullname, dateOfBirth, phoneNumber } = req.body;
     const avatar = req.body.image;
 
     if (req.file) {
@@ -91,10 +115,9 @@ const updateProfile = async (req, res, next) => {
 
     res.status(200).json({
       message: "Update user successfully !!!",
-      user
-    })
-  }
-  catch (err) {
+      user,
+    });
+  } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500; // Server error
     }
@@ -122,7 +145,7 @@ const registerCourse = async (req, res, next) => {
 
     user.courses.push({
       courseId: course._id,
-      enrolledDate: new Date()
+      enrolledDate: new Date(),
     });
     await user.save();
 
@@ -130,22 +153,23 @@ const registerCourse = async (req, res, next) => {
     await course.save();
 
     res.status(200).json({
-      message: "Register course successfully !!!"
-    })
-  }
-  catch (err) {
+      message: "Register course successfully !!!",
+    });
+  } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500; // Server error
     }
     next(err);
   }
-}
+};
 
 const getCourses = async (req, res, next) => {
   try {
     const userId = req.userId;
 
-    const user = await User.findById(userId).populate('courses.courseId').exec();
+    const user = await User.findById(userId)
+      .populate("courses.courseId")
+      .exec();
 
     if (!user) {
       const error = new Error("User not found !!");
@@ -154,20 +178,19 @@ const getCourses = async (req, res, next) => {
     }
 
     res.status(200).json({ courses: user.courses });
-
-  }
-  catch (err) {
+  } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500; // Server error
     }
     next(err);
   }
-}
+};
 
 module.exports = {
   getProfile,
+  getAnotherProfile,
   addProfile,
   updateProfile,
   registerCourse,
-  getCourses
+  getCourses,
 };
