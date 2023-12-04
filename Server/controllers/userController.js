@@ -32,7 +32,7 @@ const getAnotherProfile = async (req, res, next) => {
   try {
     const userId = req.params.userId;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("courses.courseId", "title description imageUrl");
 
     if (!user) {
       const err = new Error("User not found");
