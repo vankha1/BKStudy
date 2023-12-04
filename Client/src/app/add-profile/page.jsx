@@ -5,6 +5,7 @@ import UploadFile from "@components/UploadFile";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useAuthContext } from "@app/contexts/auth";
 
 const AddProfile = () => {
   const [userInfo, setUserInfo] = useState({
@@ -17,6 +18,8 @@ const AddProfile = () => {
   const [submitting, setSubmitting] = useState(false)
   const [imageFile, setImageFile] = useState(null)
   const router = useRouter()
+  const { setIsLogin } = useAuthContext()
+  
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -38,7 +41,8 @@ const AddProfile = () => {
     }).then((response) => {
       if (response.statusText === 'OK') {
         localStorage.setItem("userInfo", JSON.stringify(response.data.user));
-        router.push('/login')
+        setIsLogin(true);
+        router.push('/')
       }
       else console.log(response)
     }).catch((error) => {alert(error)}).finally(() => {setSubmitting(false)})

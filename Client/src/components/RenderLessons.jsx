@@ -84,11 +84,10 @@ const RenderLessons =
 
         return (
             <div className='w-full'>
-                <div className='w-full mt-8'>
-                    <button className='float-right medium-blue-button' onClick={handleIsAddChapter}>Thêm chương mới</button>
-                    <div className="opacity-0">!!!</div>
+                <div className='w-full flex-end'>
+                    <button className='medium-blue-button' onClick={handleIsAddChapter}>Thêm chương mới</button>
                 </div>
-                <div className='mt-12'>
+                <div className='mt-8'>
                     {
                         course && course.map((chapter, indexChapter) => (
                             <div key={indexChapter} className='w-full'>

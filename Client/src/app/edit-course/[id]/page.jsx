@@ -1,7 +1,6 @@
 'use client';
 import axios from "axios";
-import Link from "next/link";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
 import _ from 'lodash';
 
@@ -55,6 +54,7 @@ const EditCourse = ({ params }) => {
     const [titelCourse, setTitleCourse] = useState('');
     const [dataCourse, setDataCourse] = useState([]);
     const [prevChapterName, setPrevChapterName] = useState([]);
+    const router = useRouter();
 
     useEffect(() => {
         const token = localStorage.getItem("JWT");
@@ -94,6 +94,7 @@ const EditCourse = ({ params }) => {
         }).then((response) => {
             if (response.statusText === 'OK') {
                 successNotifi('Xóa khóa học thành công!.');
+                router.push(`/edit-course/${params?.id}`)
             }
             else {
                 errorNotifi('Xóa khóa học thất bại!.');
