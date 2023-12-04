@@ -8,12 +8,14 @@ import { useRouter } from "next/navigation";
 import { useAuthContext } from "@app/contexts/auth";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import format from "date-fns/format";
 
 const CoursePage = ({ params }) => {
   const [course, setCourse] = useState({});
   const [done, setDone] = useState(false);
   const router = useRouter();
   const { SERVER_URL } = useAuthContext();
+  const [isDropdown, setIsDropdown] = useState([]);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -24,6 +26,9 @@ const CoursePage = ({ params }) => {
             setCourse(response.data.course);
             setDone(true);
           }
+          setIsDropdown(
+            new Array(response.data.course.chapters.length).fill(false)
+          );
         })
         .catch((error) => {
           alert(error);
@@ -32,11 +37,17 @@ const CoursePage = ({ params }) => {
     fetchCourse();
   }, [params.id]);
 
+  const handleToggleClick = (index) => {
+    const newData = [...isDropdown];
+    newData[index] = !newData[index];
+    setIsDropdown(newData);
+  };
+
   const handleRegister = () => {
     const token = localStorage.getItem("JWT");
     axios
       .post(
-        "http://localhost:8080" + `/api/v1/user/register/${params?.id}`,
+        SERVER_URL + `/api/v1/user/register/${params?.id}`,
         {},
         {
           headers: {
@@ -78,7 +89,7 @@ const CoursePage = ({ params }) => {
           </div>
           <div className="font-light">
             <span>Cập nhật lần cuối vào: </span>
-            <span>{Date(course.updatedAt)}</span>
+            <span>{format(new Date(course.updatedAt), "HH:mm:ss dd-MM-yyyy")}</span>
           </div>
         </div>
 
@@ -110,8 +121,10 @@ const CoursePage = ({ params }) => {
                 className="w-6 h-6 mr-4"
               ></Image>
               Tổng số
-              <span className="font-semibold mx-1">31</span>
-              khóa học
+              <span className="font-semibold mx-1">
+                {course.chapters.length}
+              </span>
+              Chương
             </div>
             <div className="flex mb-2">
               <Image
@@ -162,7 +175,7 @@ const CoursePage = ({ params }) => {
                 width={25}
                 height={20}
               ></Image>
-              <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
+              <p className="ml-2">Hiểu biết về khóa học</p>
             </div>
             <div className="flex mb-2">
               <Image
@@ -171,7 +184,7 @@ const CoursePage = ({ params }) => {
                 width={25}
                 height={20}
               ></Image>
-              <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
+              <p className="ml-2">Nhận được tài liệu về khóa học</p>
             </div>
             <div className="flex mb-2">
               <Image
@@ -180,7 +193,7 @@ const CoursePage = ({ params }) => {
                 width={25}
                 height={20}
               ></Image>
-              <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
+              <p className="ml-2">Có chứng chỉ về học thuật</p>
             </div>
             <div className="flex mb-2">
               <Image
@@ -189,7 +202,7 @@ const CoursePage = ({ params }) => {
                 width={25}
                 height={20}
               ></Image>
-              <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
+              <p className="ml-2">Kết nối với các bạn học khác</p>
             </div>
           </div>
 
@@ -201,59 +214,52 @@ const CoursePage = ({ params }) => {
                 width={25}
                 height={20}
               ></Image>
-              <p className="ml-2">Biết về giải thuật ...</p>
+              <p className="ml-2">Giao tiếp với giảng viên</p>
             </div>
-            <div className="flex mb-2">
-              <Image
-                src="/assets/check.png"
-                alt=""
-                width={25}
-                height={20}
-              ></Image>
-              <p className="ml-2">Biết về giải thuật ...</p>
             </div>
-            <div className="flex mb-2">
-              <Image
-                src="/assets/check.png"
-                alt=""
-                width={25}
-                height={20}
-              ></Image>
-              <p className="ml-2">Biết về giải thuật ...</p>
-            </div>
-            <div className="flex mb-2">
-              <Image
-                src="/assets/check.png"
-                alt=""
-                width={25}
-                height={20}
-              ></Image>
-              <p className="ml-2">Biết về giải thuật ...</p>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div className="coursecontent text-black mt-16 ml-32">
+      <div className="text-black mt-16 ml-32">
         <h2 className="text-2xl font-semibold mb-5">Nội dung khóa học</h2>
-        <div className="contentTable w-2/5 bg-secondary border border-border rounded-2xl overflow-hidden shadow-lg">
-          <ul>
-            <li className="h-10 border-b border-border py-2 pl-8 font-semibold">
-              Chương 1: Giới thiệu về ...
-            </li>
-            <li className="h-10 border-b border-border py-2 pl-8 font-semibold">
-              Chương 2: Giới thiệu về ...
-            </li>
-            <li className="h-10 border-b border-border py-2 pl-8 font-semibold">
-              Chương 3: Giới thiệu về ...
-            </li>
-            <li className="h-10 border-b border-border py-2 pl-8 font-semibold">
-              Chương 4: Giới thiệu về ...
-            </li>
-            <li className="h-10 border-b border-border py-2 pl-8 font-semibold">
-              Chương 5: Giới thiệu về ...
-            </li>
-          </ul>
+        <div className="w-2/5 border border-border rounded-lg flex-start flex-col shadow-lg">
+          {course.chapters.map((chapter, indexChapter) => (
+            <div key={indexChapter} className="w-full">
+              <div className="w-7/8 flex cursor-pointer p-2 hover:bg-slate-100" onClick={() => handleToggleClick(indexChapter)}>
+                <Image
+                  className={
+                    isDropdown[indexChapter]
+                      ? "rotate-right-action"
+                      : "rotate-left-action"
+                  }
+                  src="/assets/icons/downward.svg"
+                  alt="Downward"
+                  width={30}
+                  height={30}
+                  priority
+                  
+                />
+                <h3 className="text-xl font-medium p-1">{chapter.name}</h3>
+              </div>
+              <div
+                  className={
+                    isDropdown[indexChapter] ? "hidden-action" : ""
+                  }
+                >
+                  {chapter.lessons.map((lesson) => (
+                    <div className="flex-start flex-row p-1">
+                      <Image 
+                        className="ml-5 mr-2 mt-1"
+                        src="/assets/icons/video_icon.svg"
+                        width={22}
+                        height={22}
+                      />
+                      <p className="text-lg">{lesson.lessonId.title}</p>
+                    </div>
+                  ))}
+                </div>
+            </div>
+          ))}
         </div>
       </div>
 
