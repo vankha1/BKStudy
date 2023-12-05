@@ -140,7 +140,7 @@ const EditLesson = ({ params }) => {
             }
         }).then((response) => {
             console.log(response);
-            if (response.statusText === 'Created') {
+            if (response.statusText === 'Accepted') {
                 successNotifi('Chỉnh sửa bài giảng thành công!.');
             }
             else {

@@ -386,7 +386,7 @@ const updateLesson = async (req, res, next) => {
     else if (!oldVideoURL && lesson.videoURL) course.numberOfVideo += 1; // from "no video" to "have video"
 
     await course.save();
-    res.status(201).json({
+    res.status(202).json({
       message: "Update lesson successfully !!!",
       lesson: lesson,
     });
