@@ -8,6 +8,7 @@ import FilterSearch from '@components/FilterSearch';
 
 const ManageCourses = () => {
     const [courses, setCourses] = useState();
+    console.log(localStorage.getItem("JWT"));
 
     useEffect(() => {
         const token = localStorage.getItem("JWT");

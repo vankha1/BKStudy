@@ -40,15 +40,49 @@ const EditLesson = ({ params }) => {
             input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
         },
     ])
+    const [oldInfos, setOldInfos] = useState([
+        {
+            title: 'Chỉnh sửa tiêu đề bài giảng',
+            data: '',
+            placeholders: 'Nhập tiêu đề bài giảng vào đây',
+            className: 'mb-4 w-full',
+            input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1'
+        },
+        {
+            title: 'Chỉnh sửa bài đọc',
+            data: '',
+            placeholders: 'Nhập bài học tại đây',
+            className: 'mb-4 w-full h-60 ',
+            input_className: 'w-full h-4/5 text-base font-normal border border-solid p-1 align-top'
+        },
+        {
+            title: 'Chỉnh sửa video',
+            data: '',
+            placeholders: 'Đường dẫn video',
+            button_title: 'Tải lên',
+            className: 'mb-4 w-full',
+            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
+        },
+        {
+            title: 'Các tập tin kèm theo',
+            data: null,
+            placeholders: 'Tải lên tập tin kèm theo',
+            button_title: 'Tải lên',
+            fileType: '*',
+            className: 'mb-12 w-full',
+            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
+        },
+    ])
     const [lesson, setLesson] = useState();
     const router = useRouter();
     const searchParams = useSearchParams()
     const courseName = searchParams.get('course');
+    const indexChpater = searchParams.get('chapter');
     const [infoLesson, setInfoLesson] = useState({
-        title: "",
-        contents: "",
-        videoURL: "",
-        files: "",
+        title: " ",
+        contents: " ",
+        videoURL: " ",
+        files: " ",
     })
 
     useEffect(() => {
@@ -63,31 +97,14 @@ const EditLesson = ({ params }) => {
                 newInfos[0].data = responses.data.lesson.title,
                 newInfos[1].data = responses.data.lesson.contents,
                 newInfos[2].data = responses.data.lesson.videoURL,
-                newInfos[3].data = responses.data.lesson.attachedFiles
+                newInfos[3].data = responses.data.lesson.attachedFiles[0].filename
                 setInfos(newInfos);
+                setOldInfos(newInfos);
             })
             .catch(error => {
                 console.log(error)
             });
     }, []);
-
-    useEffect(() => {
-        const token = localStorage.getItem("JWT");
-        const filepath = 'D:/STUDY/HK231/Đồ án/Coding/BKStudy/Server/files/1700893113290.pdf';
-        axios
-            .get('http://localhost:8080' + `/api/v1/lesson/file/${encodeURIComponent(filepath)}`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": 'application/pdf'
-                },
-            })
-            .then((responses) => {
-                console.log(responses)
-            })
-            .catch(error => {
-                console.log(error)
-            });
-    }, [])
 
     const handleDeleteLesson = () => {
         const token = localStorage.getItem("JWT");
@@ -110,16 +127,16 @@ const EditLesson = ({ params }) => {
         const token = localStorage.getItem("JWT")
         const formData = new FormData()
 
-        formData.append("title", data.title)
-        formData.append("contents", data.contents)
-        formData.append("videoURL", data.videoURL)
-        formData.append("files", data.files)
-        // formData.append("chapter", params?.index)
-        console.log('api', data);
-        axios.put('http://localhost:8080' + `/api/v1/lesson/update?courseId=${params?.id}&lessonId=${params?.idlesson}`, formData, {
+        data.title != oldInfos.title ? formData.append("title", data.title) : null;
+        data.contents != oldInfos.contents ? formData.append("contents", data.contents) : null;
+        data.videoURL != oldInfos.videoURL ? formData.append("videoURL", data.videoURL) : null;
+        data.files != oldInfos.files ? formData.append("files", data.files) : null;
+
+        axios.put('http://localhost:8080' + `/api/v1/lesson/update?courseId=${params?.id}&chapter=${indexChpater}&lessonId=${params?.idlesson}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 "Content-Type": `multipart/form-data`,
+                // "Content-Type": 'application/json',
             }
         }).then((response) => {
             console.log(response);

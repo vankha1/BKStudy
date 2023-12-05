@@ -170,7 +170,7 @@ const RenderLessons =
                                     </Link>
                                     {
                                         chapter && chapter.lessons && chapter.lessons.map((item, index) => (
-                                            <Link key={index} href={{ pathname: `/edit-lesson/${courseId}/${item.lessonId._id}`, query: { course: courseName } }} className='w-full flex mb-8 rounded-lg p-2 border border-solid border-grayflex-between hover:bg-gray-100'>
+                                            <Link key={index} href={{ pathname: `/edit-lesson/${courseId}/${item.lessonId._id}`, query: { course: courseName, chapter: indexChapter } }} className='w-full flex mb-8 rounded-lg p-2 border border-solid border-grayflex-between hover:bg-gray-100'>
                                                 <div className='w-full flex'>
                                                     <div className='flex'>
                                                         <Image

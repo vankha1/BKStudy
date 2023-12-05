@@ -32,11 +32,11 @@ const User = ({ params }) => {
   useEffect(() => {
     const token = localStorage.getItem("JWT");
     axios
-      .get('http://localhost:8080' + `/api/v1/course/${params?.id}/${params?.idUser}`, {
+      .get('http://localhost:8080' + `/api/v1/user/profile/${params?.idUser}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((data) => {
-        let user = data.data;
+        let user = data.data.user;
         console.log(data)
         handleDataUSer(user);
         setUserProfile(user);
