@@ -44,6 +44,7 @@ const Profile = () => {
         console.log(data);
         handleDataUSer(user);
         setUserProfile(user);
+        console.log(user);
       })
       .catch(error => {
         console.log('error')
@@ -122,8 +123,8 @@ const Profile = () => {
               userProfile.userType === "STUDENT" ? "Các khóa học đang học" : " "
             )}
           </h4>
-          {userProfile && userProfile.courses && userProfile.courses.slice(0, 3).map((course, index) => (
-            <Link href='/coursepage' key={index} className='flex-between px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action'>
+          {userProfile && userProfile.courses && userProfile.courses.slice(0, 3).filter((course) => (course.courseId != null)).map((course, index) => (
+              <Link href='/coursepage' key={index} className='flex-between px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action'>
               <div className='w-[200px] relative h-[160px]'>
                 <Image
                   className="rounded-2xl py-2"

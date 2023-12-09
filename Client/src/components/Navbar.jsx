@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuthContext } from "@app/contexts/auth";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [showMessage, setShowMessage] = useState(false);
@@ -11,6 +12,7 @@ const Navbar = () => {
   const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
   const [userInfo, setUserInfo] = useState({})
   const { isLogin, setIsLogin } = useAuthContext();
+  const router = useRouter();
 
   useEffect(() => {
     if (localStorage.getItem("userInfo")) setUserInfo(JSON.parse(localStorage.getItem("userInfo")))
@@ -20,6 +22,7 @@ const Navbar = () => {
     localStorage.removeItem("JWT");
     localStorage.removeItem("userInfo");
     setIsLogin(false);
+    router.push('/');
   }
 
   return (
@@ -52,15 +55,15 @@ const Navbar = () => {
       </div>
 
       {isLogin ? (
-        <div className="flex-center flex-row gap-3">
+        <div className="flex-center flex-row gap-4">
           <div>
             {userInfo.userType === "STUDENT" ? (
               <Link href="/student-courses" className="">
                 <Image
                   src="/assets/icons/book_icon.svg"
                   alt="Course"
-                  width={34}
-                  height={34}
+                  width={30}
+                  height={30}
                 />
               </Link>
             ) : (
@@ -68,8 +71,8 @@ const Navbar = () => {
                 <Image
                   src="/assets/icons/book_icon.svg"
                   alt="Course"
-                  width={34}
-                  height={34}
+                  width={30}
+                  height={30}
                 />
               </Link>
             )}
@@ -166,16 +169,16 @@ const Navbar = () => {
             {showAvatarDropdown && (
               <div
                 id="userDropdown"
-                className="z-10 absolute right-0 top-12 bg-white divide-y divide-gray-100 rounded-lg shadow w-40 flex-center flex-col"
+                className="z-10 absolute right-0 top-12 border border-slate-200 bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-40 flex-center flex-col"
               >
                 <ul className="py-2 text-sm text-gray-700 w-full">
                   <li>
-                    <a
-                      href="/profile"
-                      className="px-4 py-2 hover:bg-gray-100 block text-center"
+                    <div
+                      onClick={() => {router.push('/profile')}}
+                      className="px-4 py-2 hover:bg-gray-100 block text-center cursor-pointer"
                     >
                       Trang cá nhân
-                    </a>
+                    </div>
                   </li>
                   <li>
                     <a

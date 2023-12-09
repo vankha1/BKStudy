@@ -150,7 +150,7 @@ const registerCourse = async (req, res, next) => {
     course.numberOfStudent++;
     await user.save();
 
-    course.numberOfStudent++;
+    await user.save();
     await course.save();
 
     res.status(200).json({

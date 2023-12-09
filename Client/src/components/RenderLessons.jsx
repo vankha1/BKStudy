@@ -88,7 +88,7 @@ const RenderLessons =
                     <div className="opacity-0">!!!</div>
                     <button className='medium-blue-button' onClick={handleIsAddChapter}>Thêm chương mới</button>
                 </div>
-                <div className='mt-12'>
+                <div className='mt-8'>
                     {
                         course && course.map((chapter, indexChapter) => (
                             <div key={indexChapter} className='w-full'>

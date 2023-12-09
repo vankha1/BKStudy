@@ -146,6 +146,7 @@ const EditCourse = ({ params }) => {
         }).then((response) => {
             if (response.statusText === 'OK') {
                 successNotifi('Xóa khóa học thành công!.');
+                router.push(`/edit-course/${params?.id}`)
             }
             else {
                 errorNotifi('Xóa khóa học thất bại!.');

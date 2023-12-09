@@ -6,48 +6,72 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@app/contexts/auth";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import format from "date-fns/format";
 
 const CoursePage = ({ params }) => {
   const [course, setCourse] = useState({});
+  const [done, setDone] = useState(false);
   const router = useRouter();
   const { SERVER_URL } = useAuthContext();
+  const [isDropdown, setIsDropdown] = useState([]);
 
   useEffect(() => {
+    const fetchCourse = async () => {
+      await axios
+        .get(SERVER_URL + `/api/v1/course/course-detail/${params?.id}`)
+        .then((response) => {
+          if (response.statusText === "OK") {
+            setCourse(response.data.course);
+            setDone(true);
+          }
+          setIsDropdown(
+            new Array(response.data.course.chapters.length).fill(false)
+          );
+        })
+        .catch((error) => {
+          alert(error);
+        });
+    };
+    fetchCourse();
+  }, [params.id]);
+
+  const handleToggleClick = (index) => {
+    const newData = [...isDropdown];
+    newData[index] = !newData[index];
+    setIsDropdown(newData);
+  };
+
+  const handleRegister = () => {
+    const token = localStorage.getItem("JWT");
     axios
-      .get(
-        SERVER_URL + `/api/v1/course/course-detail/${params?.id}`
+      .post(
+        SERVER_URL + `/api/v1/user/register/${params?.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       )
       .then((response) => {
         if (response.statusText === "OK") {
-          setCourse(response.data.course);
+          console.log(response.data);
+          router.push("/student-courses");
         }
-        console.log(response)
       })
-      .catch((error) => {
-        alert(error);
-      });
-  }, []);
+      .catch((error) => alert(error));
+  };
 
-  const handleRegister = () => {
-    const token = localStorage.getItem("JWT")
-    axios.post('http://localhost:8080' + `/api/v1/user/register/${params?.id}`,{}, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }).then((response) => {
-        if (response.statusText === 'OK') {
-            console.log(response.data)
-            router.push('/student-courses');
-        }
-      }).catch((error) => alert(error))
-  }
-
-  return (
-    <div className="coursepage">
-      <div className="w-screen h-48 bg-footer text-white px-32 py-3">
+  return !done ? (
+    <Skeleton />
+  ) : (
+    <div className="w-[1519px]">
+      <div className="w-full h-48 bg-footer text-white px-32 py-3">
         <div className="description w-3/5">
-          <h1 className="text-3xl font-bold mb-3">{course.title}</h1>
-          <p className="text-xs font-light mb-5">{course.description}</p>
+          <h1 className="text-4xl font-bold mb-3">{course.title}</h1>
+          <p className="font-semibold mb-5">{course.description}</p>
           <div className="flex mb-1">
             <span className="mr-28">
               <span className="font-medium">Đánh giá: </span>
@@ -56,24 +80,20 @@ const CoursePage = ({ params }) => {
               </span>
               <span>/5</span>
             </span>
-            <span>
-              <span className="font-medium">Đã tham gia: </span>
-              <span>{course.number_register}</span>
-            </span>
           </div>
           <div className="mb-1">
             <span className="font-light">Giáo viên: </span>
             <Link href="\" className="font-semibold underline ">
-              {course.lecturer}
+              {course.createdBy}
             </Link>
           </div>
           <div className="font-light">
-            <span>Cập nhật lần cuối vào </span>
-            <span>{course.update_time}</span>
+            <span>Cập nhật lần cuối vào: </span>
+            <span>{format(new Date(course.updatedAt), "HH:mm:ss dd-MM-yyyy")}</span>
           </div>
         </div>
 
-        <div className="video absolute bg-white right-10 top-4 shadow-lg border border-border rounded-2xl text-black">
+        <div className="absolute bg-white right-10 top-4 shadow-lg border border-border rounded-2xl text-black">
           <Image
             width={560}
             height={315}
@@ -81,10 +101,13 @@ const CoursePage = ({ params }) => {
             className="w-80 h-44 m-auto mb-3 rounded-2xl border border-border"
           />
           <h1 className="font-bold text-center text-3xl mb-3">
-            {course.price}
+            {course.price + " vnd"}
           </h1>
           <div className="flex mb-8">
-            <button className="m-auto small-primary-button rounded-full w-40 h-12 text-xl" onClick={handleRegister}>
+            <button
+              className="m-auto small-primary-button rounded-full w-40 h-12 text-xl"
+              onClick={handleRegister}
+            >
               Đăng ký học
             </button>
           </div>
@@ -98,8 +121,10 @@ const CoursePage = ({ params }) => {
                 className="w-6 h-6 mr-4"
               ></Image>
               Tổng số
-              <span className="font-semibold mx-1">31</span>
-              khóa học
+              <span className="font-semibold mx-1">
+                {course.chapters.length}
+              </span>
+              Chương
             </div>
             <div className="flex mb-2">
               <Image
@@ -150,7 +175,7 @@ const CoursePage = ({ params }) => {
                 width={25}
                 height={20}
               ></Image>
-              <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
+              <p className="ml-2">Hiểu biết về khóa học</p>
             </div>
             <div className="flex mb-2">
               <Image
@@ -159,7 +184,7 @@ const CoursePage = ({ params }) => {
                 width={25}
                 height={20}
               ></Image>
-              <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
+              <p className="ml-2">Nhận được tài liệu về khóa học</p>
             </div>
             <div className="flex mb-2">
               <Image
@@ -168,7 +193,7 @@ const CoursePage = ({ params }) => {
                 width={25}
                 height={20}
               ></Image>
-              <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
+              <p className="ml-2">Có chứng chỉ về học thuật</p>
             </div>
             <div className="flex mb-2">
               <Image
@@ -177,7 +202,7 @@ const CoursePage = ({ params }) => {
                 width={25}
                 height={20}
               ></Image>
-              <p className="ml-2">Biết về cấu trúc dữ liệu ...</p>
+              <p className="ml-2">Kết nối với các bạn học khác</p>
             </div>
           </div>
 
@@ -189,59 +214,52 @@ const CoursePage = ({ params }) => {
                 width={25}
                 height={20}
               ></Image>
-              <p className="ml-2">Biết về giải thuật ...</p>
+              <p className="ml-2">Giao tiếp với giảng viên</p>
             </div>
-            <div className="flex mb-2">
-              <Image
-                src="/assets/check.png"
-                alt=""
-                width={25}
-                height={20}
-              ></Image>
-              <p className="ml-2">Biết về giải thuật ...</p>
             </div>
-            <div className="flex mb-2">
-              <Image
-                src="/assets/check.png"
-                alt=""
-                width={25}
-                height={20}
-              ></Image>
-              <p className="ml-2">Biết về giải thuật ...</p>
-            </div>
-            <div className="flex mb-2">
-              <Image
-                src="/assets/check.png"
-                alt=""
-                width={25}
-                height={20}
-              ></Image>
-              <p className="ml-2">Biết về giải thuật ...</p>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div className="coursecontent text-black mt-16 ml-32">
+      <div className="text-black mt-16 ml-32">
         <h2 className="text-2xl font-semibold mb-5">Nội dung khóa học</h2>
-        <div className="contentTable w-2/5 bg-secondary border border-border rounded-2xl overflow-hidden shadow-lg">
-          <ul>
-            <li className="h-10 border-b border-border py-2 pl-8 font-semibold">
-              Chương 1: Giới thiệu về ...
-            </li>
-            <li className="h-10 border-b border-border py-2 pl-8 font-semibold">
-              Chương 2: Giới thiệu về ...
-            </li>
-            <li className="h-10 border-b border-border py-2 pl-8 font-semibold">
-              Chương 3: Giới thiệu về ...
-            </li>
-            <li className="h-10 border-b border-border py-2 pl-8 font-semibold">
-              Chương 4: Giới thiệu về ...
-            </li>
-            <li className="h-10 border-b border-border py-2 pl-8 font-semibold">
-              Chương 5: Giới thiệu về ...
-            </li>
-          </ul>
+        <div className="w-2/5 border border-border rounded-lg flex-start flex-col shadow-lg">
+          {course.chapters.map((chapter, indexChapter) => (
+            <div key={indexChapter} className="w-full">
+              <div className="w-7/8 flex cursor-pointer p-2 hover:bg-slate-100" onClick={() => handleToggleClick(indexChapter)}>
+                <Image
+                  className={
+                    isDropdown[indexChapter]
+                      ? "rotate-right-action"
+                      : "rotate-left-action"
+                  }
+                  src="/assets/icons/downward.svg"
+                  alt="Downward"
+                  width={30}
+                  height={30}
+                  priority
+                  
+                />
+                <h3 className="text-xl font-medium p-1">{chapter.name}</h3>
+              </div>
+              <div
+                  className={
+                    isDropdown[indexChapter] ? "hidden-action" : ""
+                  }
+                >
+                  {chapter.lessons.map((lesson) => (
+                    <div className="flex-start flex-row p-1">
+                      <Image 
+                        className="ml-5 mr-2 mt-1"
+                        src="/assets/icons/video_icon.svg"
+                        width={22}
+                        height={22}
+                      />
+                      <p className="text-lg">{lesson.lessonId.title}</p>
+                    </div>
+                  ))}
+                </div>
+            </div>
+          ))}
         </div>
       </div>
 
