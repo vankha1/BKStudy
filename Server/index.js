@@ -16,7 +16,7 @@ const chapter = require('./routes/chapter')
 const lesson = require('./routes/lesson')
 const discussion = require('./routes/discussion')
 const lessonFileMulter = require('./middleware/lessonFileMulter')
-
+const stripe = require('./routes/stripe');
 //const authMedia1 = require('./routes/authMedia')
 //const authMedia2 = require('./controllers/authMediaController')
 
@@ -61,7 +61,7 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 // }
 // //.single(fieldname) : Accept a single file with the name fieldname. The single file will be stored in req.file.
 // app.use(multer({ storage : storage , fileFilter: fileFilter}).single('image'))
-
+app.use('/api/v1/order', stripe);
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/course', course);
 app.use('/api/v1/discussion', discussion);
