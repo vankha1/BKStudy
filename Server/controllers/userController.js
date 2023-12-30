@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const Course = require("../models/courseModel");
 const Lesson = require("../models/lessonModel");
 const Note = require("../models/noteModel");
+const Order = require("../models/orderModel");
 
 const getProfile = async (req, res, next) => {
   try {
@@ -143,13 +144,13 @@ const registerCourse = async (req, res, next) => {
       throw error;
     }
 
-    user.courses.push({
-      courseId: course._id,
-      enrolledDate: new Date(),
-    });
-    course.numberOfStudent++;
-    await user.save();
-    await course.save();
+    // user.courses.push({
+    //   courseId: course._id,
+    //   enrolledDate: new Date(),
+    // });
+    // course.numberOfStudent++;
+    // await user.save();
+    // await course.save();
 
     res.status(200).json({
       message: "Register course successfully !!!",
