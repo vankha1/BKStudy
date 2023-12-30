@@ -77,7 +77,7 @@ const getDetailUser = async (req, res, next) => {
   try {
     const userId = req.params.userId;
 
-    const user = await User.findById(userId).populate('courses.courseId');
+    const user = await User.findById(userId).populate('courses.courseId', 'title');
     if (!user){
       const error = new Error("User not found");
       error.statusCode = 404;
