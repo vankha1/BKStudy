@@ -11,7 +11,9 @@ router.get('/users', isAuth.authToken, isAuth.authRoles('ADMIN'), adminControlle
 
 router.get('/user/:userId', isAuth.authToken, isAuth.authRoles('ADMIN'), adminController.getDetailUser);
 
-router.delete('/user/delete/:userId', isAuth.authToken, isAuth.authRoles('ADMIN'), adminController.deleteUser)
+router.get('/statistic/:month', isAuth.authToken, isAuth.authRoles('ADMIN'), adminController.statisticsByMonth);
+
+router.delete('/user/delete/:userId', isAuth.authToken, isAuth.authRoles('ADMIN'), adminController.deleteUser);
 
 // router.delete('/course-reject/:courseId', isAuth.authToken, isAuth.authRoles('ADMIN') , adminController.rejectCourse);
 

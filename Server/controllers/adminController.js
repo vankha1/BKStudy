@@ -93,6 +93,27 @@ const getDetailUser = async (req, res, next) => {
   }
 }
 
+// GET /statistic/:month 
+const statisticsByMonth = async (req, res, next) => {
+  try {
+    const users = await User.find({ isAdmin: false }).select("fullname username joinedDate");
+
+    const filteredUsers = users.filter(user => user.joinedDate.toISOString().substring(5, 7) === req.params.month)
+
+    // console.log(filteredUsers);
+    // console.log(filteredUsers.length / users.length);
+
+    res.status(200).json({
+      byMonth: filteredUsers.length / users.length * 100
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
+
 // DELETE /user/delete/:userId
 const deleteUser = async (req, res, next) => {
   try{
@@ -125,28 +146,12 @@ const deleteUser = async (req, res, next) => {
   }
 }
 
-// DELETE /api/v1/admin/course-reject/:courseId
-// const rejectCourse = async (req, res, next) => {
-//   try {
-//     const courseId = req.params.courseId;
-//     await Course.findOneAndDelete({ _id : courseId});
-
-//     res.status(200).json({
-//         message: "Course is not approved"
-//     })
-
-//   } catch (err) {
-//     if (!err.statusCode) {
-//       err.statusCode = 500;
-//     }
-//     next(err);
-//   }
-// };
 
 module.exports = {
   getApprovedCourses,
   approveCourse,
   getAllUsers,
   getDetailUser,
-  deleteUser
+  deleteUser,
+  statisticsByMonth
 };

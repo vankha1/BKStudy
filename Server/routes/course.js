@@ -2,10 +2,17 @@ const express = require("express");
 const { body } = require("express-validator");
 
 const courseController = require("../controllers/courseController");
+const ratingController = require("../controllers/ratingController");
 const isAuth = require("../middleware/isAuth");
 const imageMulterMiddleware = require('../middleware/imageMulter');
 
 const router = express.Router();
+
+// Rating the course
+router.post('/rating', isAuth.authToken, isAuth.authRoles(['STUDENT']), ratingController.postRating)
+
+router.get('/rating-statistics/:courseId', isAuth.authToken, isAuth.authRoles(['LECTURER']), ratingController.getRatingStatistics)
+
 
 // used for home page
 router.get("/", courseController.getAllCourses);
@@ -38,6 +45,7 @@ router.delete(
   isAuth.authRoles(["LECTURER"]),
   courseController.deleteCourse
 );
+
 
 // router.put(
 //   "/:courseId",
