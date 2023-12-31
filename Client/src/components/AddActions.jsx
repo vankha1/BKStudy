@@ -1,14 +1,15 @@
 "use client"; // This is a client component
 import React, { useState, useRef } from 'react'
-
+import { useRouter } from 'next/navigation';
 import UploadImage from '@components/UploadFile'
 
-const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, router, path }) => {
+const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path }) => {
 
     const [isEditing, setIsEditing] = useState(true);
     const [newData, setNewData] = useState([infos]);
     const [image, setImage] = useState();
     const [videoURL, setVideoURL] = useState('');
+    const router = useRouter();
 
     const handleSaveClick = () => {
         setIsEditing(false);

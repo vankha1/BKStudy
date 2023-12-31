@@ -5,17 +5,19 @@ import Image from "next/image";
 import React, { useState, useEffect } from 'react';
 import FilterSearch from "@components/FilterSearch";
 import Notification, { errorNotifi, successNotifi } from "@components/Notification";
+import LoadingState from "./LoadingState";
 
-const RenderReply = ({ id, iddiscussion }) => {
+const RenderReply = ({ courseId, iddiscussion }) => {
     const [discussion, setDiscussion] = useState();
     const [isReply, setIsReply] = useState(false);
     const [reply, setReply] = useState('');
     const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")));
-    
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const token = localStorage.getItem("JWT");
         axios
-            .get('http://localhost:8080' + `/api/v1/discussion/${id}/${iddiscussion}`, {
+            .get('http://localhost:8080' + `/api/v1/discussion/${courseId}/${iddiscussion}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
@@ -30,6 +32,8 @@ const RenderReply = ({ id, iddiscussion }) => {
             .catch(error => {
                 console.log('error');
             });
+
+        setLoading(false);
     }, [])
 
     const handleAddNewReply = () => {
@@ -55,7 +59,7 @@ const RenderReply = ({ id, iddiscussion }) => {
         }
 
         axios
-            .post('http://localhost:8080' + `/api/v1/discussion/${id}/${iddiscussion}/createReply`, data, {
+            .post('http://localhost:8080' + `/api/v1/discussion/${courseId}/${iddiscussion}/createReply`, data, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -79,14 +83,14 @@ const RenderReply = ({ id, iddiscussion }) => {
     const handleDeleteReply = (discussionId, id) => {
         const token = localStorage.getItem("JWT");
         axios
-            .delete('http://localhost:8080' + `/api/v1/discussion/${id}/${discussionId}/deleteReply/${id}`, {
+            .delete('http://localhost:8080' + `/api/v1/discussion/${courseId}/${discussionId}/deleteReply/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
             })
             .then((responses) => {
                 const newData = discussion.replies.filter(item => item._id !== id);
-                setDiscussion({...discussion, replies: newData});
+                setDiscussion({ ...discussion, replies: newData });
                 successNotifi('Xóa bình luận thành công!.');
             })
             .catch(error => {
@@ -96,128 +100,136 @@ const RenderReply = ({ id, iddiscussion }) => {
     }
 
     return (
-        <div className='w-full mt-4'>
-            <div className='w-full mt-10 border border-solid border-gray-200 rounded-lg hover:bg-gray-100'>
-                <div className="flex-start mt-4 mx-4">
-                    <Image
-                        className="rounded-2xl py-2 hover:cursor-pointer mr-2"
-                        src='/assets/images/avatar.svg'
-                        alt="Avatar User"
-                        width={60}
-                        height={60}
-                    />
-                    <div className="w-full mt-2 ml-2 mb-4">
-                        <h1 className="font-medium text-xl">{discussion && discussion.title}</h1>
-                        <div className="flex">
-                            <h2 className="text-base pr-1">Được tạo bởi</h2>
-                            <h2 className="text-base text-blue-500 pr-1">{discussion && discussion.createdBy.fullname}</h2>
-                            <h2 className="text-base pr-1">vào lúc</h2>
-                            <h2 className="text-base text-blue-500 pr-1">{discussion && discussion.createdAt.slice(0, 10)}</h2>
-                        </div>
-                        <div className="w-full flex-between">
-                            <h2 className="w-4/5 text-base mt-4">{discussion && discussion.content}</h2>
-                            <div className="flex">
-                                <button
-                                    className="small-light-blue-button"
-                                    onClick={() => setIsReply(true)}
-                                >
-                                    Trả lời
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <>
-                {
-                    isReply ? (
-                        <div className="mt-4 border border-solid border-gray-200 rounded-lg">
-                            <div className="flex-between mx-4 my-4">
-                                <textarea
-                                    type='text'
-                                    className='w-full h-28 border border-solid border-gray-300 focus:border-gray-300 focus:outline-none pl-2 pt-2 rounded-lg'
-                                    placeholder='Nhập câu trả lời'
-                                    defaultValue={reply}
-                                    onChange={(e) => {
-                                        setReply(e.target.value);
-                                    }}
-                                />
-                            </div>
-                            <div className="flex-between mb-4">
-                                <div className="opacity-0">!!!</div>
-                                <div className='flex mr-4'>
-                                    <button
-                                        className='small-gray-button mr-8'
-                                        onClick={() => {
-                                            setIsReply(false);
-                                        }}
-                                    >
-                                        Hủy bỏ
-                                    </button>
-                                    <button
-                                        className='small-blue-button'
-                                        onClick={() => {
-                                            handleAddNewReply();
-                                            setIsReply(false);
-                                        }}
-                                    >
-                                        Xác nhận
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <></>
-                    )
-                }
-            </>
-            <>
-                {
-                    discussion && discussion.replies.map((item, index) => (
-                        <div key={item._id || index} className='mt-8 ml-16 border border-solid border-gray-200 rounded-lg hover:bg-gray-100'>
+        <div>
+            {
+                loading ? (
+                    <LoadingState title='Đang tải...' />
+                ) : (
+                    <div className='w-full mt-4'>
+                        <div className='w-full mt-10 border border-solid border-gray-200 rounded-lg hover:bg-gray-100'>
                             <div className="flex-start mt-4 mx-4">
                                 <Image
                                     className="rounded-2xl py-2 hover:cursor-pointer mr-2"
                                     src='/assets/images/avatar.svg'
                                     alt="Avatar User"
-                                    width={40}
-                                    height={40}
+                                    width={60}
+                                    height={60}
                                 />
-                                <div className="w-full mt-1 ml-2 mb-2">
+                                <div className="w-full mt-2 ml-2 mb-4">
+                                    <h1 className="font-medium text-xl">{discussion && discussion.title}</h1>
                                     <div className="flex">
-                                        <h1 className="font-medium text-lg pr-1">Trả lời</h1>
-                                        <h1 className="font-medium text-lg text-blue-500">{discussion && discussion.title}</h1>
-                                    </div>
-                                    <div className="flex">
-                                        <h2 className="text-sm pr-1">Được tạo bởi</h2>
-                                        <h2 className="text-sm text-blue-500 pr-1">{item.createdBy.fullname}</h2>
-                                        <h2 className="text-sm pr-1">vào lúc</h2>
-                                        <h2 className="text-sm text-blue-500 pr-1">{item.createdAt.slice(0, 10)}</h2>
+                                        <h2 className="text-base pr-1">Được tạo bởi</h2>
+                                        <h2 className="text-base text-blue-500 pr-1">{discussion && discussion.createdBy.fullname}</h2>
+                                        <h2 className="text-base pr-1">vào lúc</h2>
+                                        <h2 className="text-base text-blue-500 pr-1">{discussion && discussion.createdAt.slice(0, 10)}</h2>
                                     </div>
                                     <div className="w-full flex-between">
-                                        <h2 className="w-4/5 text-sm mt-2">{item.content}</h2>
-                                        {
-                                            userInfo && userInfo._id === item.createdBy._id ? (
-                                                <button
-                                                    className="w-28 bg-gray-300 text-sm text-black font-semibold py-[4px] rounded-md hover:bg-gray-400"
-                                                    onClick={() => {
-                                                        handleDeleteReply(discussion._id, item._id)
-                                                    }}
-                                                >
-                                                    Xóa bình luận
-                                                </button>
-                                            ) : (
-                                                <></>
-                                            )
-                                        }
+                                        <h2 className="w-4/5 text-base mt-4">{discussion && discussion.content}</h2>
+                                        <div className="flex">
+                                            <button
+                                                className="small-light-blue-button"
+                                                onClick={() => setIsReply(true)}
+                                            >
+                                                Trả lời
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    ))
-                }
-            </>
-            <Notification />
+                        <>
+                            {
+                                isReply ? (
+                                    <div className="mt-4 border border-solid border-gray-200 rounded-lg">
+                                        <div className="flex-between mx-4 my-4">
+                                            <textarea
+                                                type='text'
+                                                className='w-full h-28 border border-solid border-gray-300 focus:border-gray-300 focus:outline-none pl-2 pt-2 rounded-lg'
+                                                placeholder='Nhập câu trả lời'
+                                                defaultValue={reply}
+                                                onChange={(e) => {
+                                                    setReply(e.target.value);
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="flex-between mb-4">
+                                            <div className="opacity-0">!!!</div>
+                                            <div className='flex mr-4'>
+                                                <button
+                                                    className='small-gray-button mr-8'
+                                                    onClick={() => {
+                                                        setIsReply(false);
+                                                    }}
+                                                >
+                                                    Hủy bỏ
+                                                </button>
+                                                <button
+                                                    className='small-blue-button'
+                                                    onClick={() => {
+                                                        handleAddNewReply();
+                                                        setIsReply(false);
+                                                    }}
+                                                >
+                                                    Xác nhận
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <></>
+                                )
+                            }
+                        </>
+                        <>
+                            {
+                                discussion && discussion.replies.map((item, index) => (
+                                    <div key={item._id || index} className='mt-8 ml-16 border border-solid border-gray-200 rounded-lg hover:bg-gray-100'>
+                                        <div className="flex-start mt-4 mx-4">
+                                            <Image
+                                                className="rounded-2xl py-2 hover:cursor-pointer mr-2"
+                                                src='/assets/images/avatar.svg'
+                                                alt="Avatar User"
+                                                width={40}
+                                                height={40}
+                                            />
+                                            <div className="w-full mt-1 ml-2 mb-2">
+                                                <div className="flex">
+                                                    <h1 className="font-medium text-lg pr-1">Trả lời</h1>
+                                                    <h1 className="font-medium text-lg text-blue-500">{discussion && discussion.title}</h1>
+                                                </div>
+                                                <div className="flex">
+                                                    <h2 className="text-sm pr-1">Được tạo bởi</h2>
+                                                    <h2 className="text-sm text-blue-500 pr-1">{item.createdBy.fullname}</h2>
+                                                    <h2 className="text-sm pr-1">vào lúc</h2>
+                                                    <h2 className="text-sm text-blue-500 pr-1">{item.createdAt.slice(0, 10)}</h2>
+                                                </div>
+                                                <div className="w-full flex-between">
+                                                    <h2 className="w-4/5 text-sm mt-2">{item.content}</h2>
+                                                    {
+                                                        userInfo && userInfo._id === item.createdBy._id ? (
+                                                            <button
+                                                                className="w-28 bg-gray-300 text-sm text-black font-semibold py-[4px] rounded-md hover:bg-gray-400"
+                                                                onClick={() => {
+                                                                    handleDeleteReply(discussion._id, item._id)
+                                                                }}
+                                                            >
+                                                                Xóa bình luận
+                                                            </button>
+                                                        ) : (
+                                                            <></>
+                                                        )
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </>
+                        <Notification />
+                    </div>
+                )
+            }
         </div>
     )
 }

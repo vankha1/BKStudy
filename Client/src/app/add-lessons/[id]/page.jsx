@@ -47,7 +47,8 @@ const AddLessons = ({ params }) => {
         contents: "",
         videoURL: "",
         files: "",
-    })
+    });
+
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -55,38 +56,36 @@ const AddLessons = ({ params }) => {
     const indexChapter = searchParams.get('chapter');
 
     const handleCallAPI = (data) => {
+        const formData = new FormData();
         const token = localStorage.getItem("JWT")
-        const formData = new FormData()
         formData.append("title", data.title);
-        // formData.append("contents", data.contents);
-        // formData.append("videoURL", data.videoURL);
-        // formData.append("files", data.files);
-        // formData.append("chapter", indexChapter);
+        formData.append("contents", data.contents);
+        formData.append("videoURL", data.videoURL);
+        formData.append("files", data.files);
+        formData.append("chapter", indexChapter);
 
-        console.log(data, formData);
-
-        // axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
-        //     headers: {
-        //         'Authorization': `Bearer ${token}`,
-        //         "Content-Type": `multipart/form-data`,
-        //     }
-        // }).then((response) => {
-        //     if (response.statusText === 'Created') {
-        //         successNotifi('Tạo bài giảng thành công!.');
-        //     }
-        //     else {
-        //         warningNotifi('Có lỗi xảy ra, thử lại sau!.');
-        //     }
-        //     setTimeout(() => {
-        //         router.push(`/edit-course/${params?.id}`);
-        //     }, 1000);
-        // }).catch((error) => {
-        //     if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
-        //         errorNotifi('Vui lòng đăng nhập lại!.');
-        //     } else {
-        //         errorNotifi('Tạo bài giảng thất bại!.');
-        //     }
-        // })
+        axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                "Content-Type": `multipart/form-data`,
+            }
+        }).then((response) => {
+            if (response.statusText === 'Created') {
+                successNotifi('Tạo bài giảng thành công!.');
+            }
+            else {
+                warningNotifi('Có lỗi xảy ra, thử lại sau!.');
+            }
+            setTimeout(() => {
+                router.push(`/edit-course/${params?.id}`);
+            }, 1000);
+        }).catch((error) => {
+            if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
+                errorNotifi('Vui lòng đăng nhập lại!.');
+            } else {
+                errorNotifi('Tạo bài giảng thất bại!.');
+            }
+        })
     }
 
     return (

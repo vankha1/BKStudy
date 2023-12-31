@@ -355,7 +355,7 @@ const updateLesson = async (req, res, next) => {
       : lesson.videoURL;
 
     // Remove old attachedFiles
-    if (req.body.files) {
+    if (req.files) {
       lesson.attachedFiles.forEach((file) => {
         try {
           fs.unlinkSync(file.filepath);
@@ -365,7 +365,7 @@ const updateLesson = async (req, res, next) => {
       });
     }
 
-    const attachedFiles = req.body.files
+    const attachedFiles = req.files
       ? req.files.map((file) => ({
           filename: file.originalname,
           filepath: file.path.replace(/\\\\/g, "/").replace(/\\/g, "/"),

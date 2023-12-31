@@ -114,7 +114,7 @@ const RenderDiscussion = ({
             <>
                 {
                     isShowReply ? (
-                        <RenderReply iddiscussion={discussionID} id={courseId} />
+                        <RenderReply iddiscussion={discussionID} courseId={courseId} />
                     ) : (
                         <div className='w-full'>
                             <div className='flex-between h-8 border-b-2 border-solid border-gray-300'>

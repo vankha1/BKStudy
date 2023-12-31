@@ -31,7 +31,7 @@ const RenderAccount = ({ accounts, courseId }) => {
                                     <th className='font-normal py-2'>{account.username}</th>
                                     <th className='font-normal py-2'>Đã tham gia vào ngày {account.joinedDate.slice(0, 10)}</th>
                                     <th className='font-normal py-2'>
-                                        <Link href={`profile/${account._id}`} className="hover:opacity-70">
+                                        <Link href={`/profile/${account._id}`} className="hover:opacity-70">
                                             Xem thêm
                                         </Link>
                                     </th>
