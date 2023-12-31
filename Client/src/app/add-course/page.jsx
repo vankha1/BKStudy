@@ -15,14 +15,14 @@ const AddCourse = () => {
             value: '',
             placeholders: 'Nhập tên khóa học vào đây',
             className: 'mb-4 w-3/4',
-            input_className: 'w-5/6 h-[36px] text-base font-normal border border-solid p-1'
+            input_className: 'w-5/6 h-[36px] text-base font-normal border border-solid p-1 rounded-lg'
         },
         {
             title: 'Giá tiền',
             value: '',
             placeholders: 'Giá tiền của khóa học',
             className: 'mb-4 w-1/4',
-            input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1'
+            input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1 rounded-lg'
         },
         {
             title: 'Hình ảnh kèm theo',
@@ -30,15 +30,16 @@ const AddCourse = () => {
             placeholders: 'Đường dẫn hình ảnh',
             button_title: 'Tải lên',
             fileType: 'image',
+            type: 'single-file',
             className: 'mb-4 w-full',
-            input_className: 'w-4/5 h-[36px] text-base font-normal border border-solid p-1'
+            input_className: 'w-4/5 h-[36px] text-base font-normal border border-solid p-1 rounded-lg'
         },
         {
             title: 'Mô tả kèm theo',
             value: '',
             placeholders: 'Nhập mô tả khóa học',
             className: 'mb-4 w-full h-60 ',
-            input_className: 'w-full h-4/5 text-base font-normal border border-solid p-1 align-top'
+            input_className: 'w-full h-4/5 text-base font-normal border border-solid p-1 align-top rounded-lg'
         },
     ]
 
@@ -53,7 +54,6 @@ const AddCourse = () => {
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
         const formData = new FormData()
-
         formData.append("title", data.title)
         formData.append("price", Number(data.price))
         formData.append("image", data.image, data.image.name)
@@ -66,7 +66,7 @@ const AddCourse = () => {
             }
         }).then((response) => {
             if (response.statusText === 'OK') {
-                successNotifi('Tạo khóa học thành công!.');
+                successNotifi('Gửi yêu cầu thành công!.');
             }
             else {
                 warningNotifi('Có lỗi xảy ra, thử lại sau!.')
@@ -78,7 +78,7 @@ const AddCourse = () => {
             if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
                 errorNotifi('Vui lòng đăng nhập lại!.');
             } else {
-                errorNotifi('Tạo khóa học thất bại!.');
+                errorNotifi('Gửi yêu cầu thất bại!.');
             }
         })
     }
@@ -89,8 +89,8 @@ const AddCourse = () => {
                 <FilterSearch title="KHÓA HỌC ĐANG GIẢNG DẠY" />
             </div>
             <div className='mx-32 mt-10'>
-                <h2 className='text-xl font-medium'>Thêm khóa học</h2>
-                <div className='border border-solid border-black'>
+                <h2 className='text-2xl font-medium mb-2'>Thêm khóa học</h2>
+                <div className='border border-solid border-black rounded-xl pb-1 px-1'>
                     <div className='px-8 bg-white'>
                         <div className='w-full mt-4'>
                             <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI} router={router} path='lecturer-manage' />
