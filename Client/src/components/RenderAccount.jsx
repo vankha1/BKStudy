@@ -2,12 +2,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import React, { useState } from 'react';
+import PagingNation from "./PagingNation";
 
 const RenderAccount = ({ accounts, courseId }) => {
     const [pageSize, setPageSize] = useState(10);
     const [pagingInfo, setPagingInfo] = useState({
-        maxPage: Math.ceil(accounts.length / pageSize) - 1,
-        curPage: 0
+        maxPage: Math.ceil(accounts.length / pageSize),
+        curPage: 1
     })
 
     return (
@@ -45,35 +46,7 @@ const RenderAccount = ({ accounts, courseId }) => {
                 <div className='opacity-0'>!!!</div>
                 <div className='mt-4 flex-between'>
                     <div className='flex-between ml-4'>
-                        <Image
-                            className={pagingInfo.curPage == 0 ? 'cursor-pointer transform rotate-[90deg] opacity-50' : 'cursor-pointer transform rotate-[90deg]'}
-                            src='/assets/icons/downward.svg'
-                            alt="Downward"
-                            width={24}
-                            height={24}
-                            priority
-                            onClick={() => {
-                                if (pagingInfo.curPage != 0) {
-                                    setPagingInfo({ ...pagingInfo, curPage: pagingInfo.curPage - 1 })
-                                }
-                            }}
-                        />
-                        <div className='py-1 px-2 mx-2 bg-blue-700 text-white rounded-md'>
-                            {pagingInfo.curPage}
-                        </div>
-                        <Image
-                            className={pagingInfo.curPage == pagingInfo.maxPage ? 'cursor-pointer transform rotate-[-90deg] opacity-50' : 'cursor-pointer transform rotate-[-90deg]'}
-                            src='/assets/icons/downward.svg'
-                            alt="Downward"
-                            width={24}
-                            height={24}
-                            priority
-                            onClick={() => {
-                                if (pagingInfo.curPage != pagingInfo.maxPage) {
-                                    setPagingInfo({ ...pagingInfo, curPage: pagingInfo.curPage + 1 })
-                                }
-                            }}
-                        />
+                        <PagingNation pagingInfo={pagingInfo} setPagingInfo={setPagingInfo} />
                     </div>
                 </div>
             </div>
