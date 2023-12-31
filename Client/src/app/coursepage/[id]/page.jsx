@@ -57,7 +57,6 @@ const CoursePage = ({ params }) => {
       )
       .then((response) => {
         if (response.statusText === "OK") {
-          console.log(response.data);
           router.push("/student-courses");
         }
       })

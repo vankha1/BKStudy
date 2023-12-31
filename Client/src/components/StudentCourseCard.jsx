@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const StudentCourseCard = ({ id, tittle, author, image }) => {
   return (
@@ -8,7 +9,7 @@ const StudentCourseCard = ({ id, tittle, author, image }) => {
           <p className="text-3xl w-full font-bold truncate">{tittle}</p>
           <p className="text-sm">Giáo viên: {author}</p>
         </div>
-        <button className="medium-blue-button w-2/12">Vào học ngay</button>
+        <Link href={"/lesson/" + id}><button className="medium-blue-button w-2/12">Vào học ngay</button></Link>
     </div>
   );
 };
