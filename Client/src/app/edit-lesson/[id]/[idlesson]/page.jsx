@@ -13,14 +13,14 @@ const EditLesson = ({ params }) => {
             data: '',
             placeholders: 'Nhập tiêu đề bài giảng vào đây',
             className: 'mb-4 w-full',
-            input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1'
+            input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1 rounded-lg'
         },
         {
             title: 'Chỉnh sửa bài đọc',
             data: '',
             placeholders: 'Nhập bài học tại đây',
             className: 'mb-4 w-full h-60 ',
-            input_className: 'w-full h-4/5 text-base font-normal border border-solid p-1 align-top'
+            input_className: 'w-full h-4/5 text-base font-normal border border-solid p-1 align-top rounded-lg'
         },
         {
             title: 'Chỉnh sửa video',
@@ -28,7 +28,7 @@ const EditLesson = ({ params }) => {
             placeholders: 'Đường dẫn video',
             button_title: 'Tải lên',
             className: 'mb-4 w-full',
-            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
+            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1 rounded-lg'
         },
         {
             title: 'Các tập tin kèm theo',
@@ -36,8 +36,9 @@ const EditLesson = ({ params }) => {
             placeholders: 'Tải lên tập tin kèm theo',
             button_title: 'Tải lên',
             fileType: '*',
+            type: 'mutil-file',
             className: 'mb-12 w-full',
-            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
+            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1 rounded-lg'
         },
     ])
     const [oldInfos, setOldInfos] = useState([
@@ -92,14 +93,15 @@ const EditLesson = ({ params }) => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((responses) => {
-                setLesson(responses.data.lesson);
                 const newInfos = [...infos];
                 newInfos[0].data = responses.data.lesson.title,
                 newInfos[1].data = responses.data.lesson.contents,
                 newInfos[2].data = responses.data.lesson.videoURL,
                 newInfos[3].data = responses.data.lesson.attachedFiles[0].filename
+                setLesson(responses.data.lesson);
                 setInfos(newInfos);
                 setOldInfos(newInfos);
+                console.log(responses);
             })
             .catch(error => {
                 console.log(error)
@@ -166,10 +168,10 @@ const EditLesson = ({ params }) => {
             </div>
             <div className='mx-32 mt-10'>
                 <div className='flex flex-between'>
-                    <h2 className='text-xl font-semibold mb-2'>CHỈNH SỬA BÀI GIẢNG</h2>
-                    <button className='medium-red-button mb-2' onClick={handleDeleteLesson}>Xóa bài giảng</button>
+                    <h2 className='text-2xl font-semibold mb-4'>CHỈNH SỬA BÀI GIẢNG</h2>
+                    <button className='medium-red-button mb-4' onClick={handleDeleteLesson}>Xóa bài giảng</button>
                 </div>
-                <div className='border border-solid border-black'>
+                <div className='border border-solid border-black rounded-lg px-1 pb-2'>
                     <div className='px-8 bg-white'>
                         <div className='w-full mt-4'>
                             <AddCourses infos={infos} infoCourse={infoLesson} setInfoCourse={setInfoLesson} handlGetDataForAPI={handleCallAPI} />

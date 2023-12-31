@@ -61,7 +61,7 @@ const EditCourse = ({ params }) => {
     const router = useRouter();
     const [discussions, setDiscussions] = useState();
     const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")));
-
+    const [ratingCourse, setRatingCourse] = useState();
     useEffect(() => {
         const token = localStorage.getItem("JWT");
         axios
@@ -119,6 +119,21 @@ const EditCourse = ({ params }) => {
             })
             .then((responses) => {
                 setForums(responses.data.discussions);
+            })
+            .catch(error => {
+                console.log('error')
+            });
+    }, [])
+
+    useEffect(() => {
+        const token = localStorage.getItem("JWT");
+        axios
+            .get('http://localhost:8080' + `/api/v1/course/rating-statistics/${params?.id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((responses) => {
+                // setRatingCourse(responses.data.discussions);
+                // console.log(responses);
             })
             .catch(error => {
                 console.log('error')
@@ -319,7 +334,7 @@ const EditCourse = ({ params }) => {
             <div className='w-full mt-8'>
                 {buttonStates[0] ? <RenderLessons course={dataCourse} setCourse={setDataCourse} courseId={params?.id} handleAddNewChapter={handleAddNewChapter} handleDeleteChapter={handleDeleteChapter} prevChapterName={prevChapterName} handleEditChapter={handleEditChapter} courseName={titelCourse} /> : ''}
                 {buttonStates[1] ? <RenderAccount accounts={listUsers} courseId={params?.id} /> : ''}
-                {buttonStates[2] ? <RenderDiscussion courseId={params?.id} courseName={titelCourse} discussions={discussions} handleAddNewDiscussion={handleAddNewDiscussion} /> : ''}
+                {buttonStates[2] ? <RenderDiscussion courseId={params?.id} discussions={discussions} handleAddNewDiscussion={handleAddNewDiscussion} /> : ''}
                 {buttonStates[3] ? <RatingCourses users={USERS_RATING} /> : ''}
             </div>
             <Notification />

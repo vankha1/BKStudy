@@ -1,7 +1,7 @@
 "use client"; // This is a client component
 import React, { useState } from 'react';
 
-function EditData({ infos, onlyView }) {
+function EditData({ infos, onlyView, handleChangeInfoUser }) {
   const [isEditing, setIsEditing] = useState(false);
   const [newData, setNewData] = useState([infos]);
 
@@ -10,6 +10,7 @@ function EditData({ infos, onlyView }) {
   };
 
   const handleSaveClick = () => {
+    handleChangeInfoUser(infos);
     setIsEditing(false);
   };
 

@@ -8,7 +8,6 @@ import FilterSearch from '@components/FilterSearch';
 
 const ManageCourses = () => {
     const [courses, setCourses] = useState();
-    console.log(localStorage.getItem("JWT"));
 
     useEffect(() => {
         const token = localStorage.getItem("JWT");
@@ -19,7 +18,7 @@ const ManageCourses = () => {
             .then((response) => {
                 const data = response.data.courses;
                 const courseData = data;
-
+                console.log(response)
                 setCourses(courseData);
             })
             .catch((error) => {
