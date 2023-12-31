@@ -1,76 +1,86 @@
+require("dotenv").config();
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-require("dotenv").config();
-
-const jwt = require('jsonwebtoken');
+const FacebookStrategy = require("passport-facebook").Strategy;
 const User = require("../models/userModel");
 
-
-const configGoogleAuth = () => {
-    passport.use(new GoogleStrategy({
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:8080/google/redirect"
+// const configGoogleAuth = () => {
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:8080/auth/google/callback",
     },
-        async (accessToken, refreshToken, profile, cb) => {
-            //need to return callback (cb) so that fuction can end and move to callback URL
-            console.log("check user: ", profile);
-            /*
-            const origin = "GOOGLE";
-            const dataRaw = {
-                fullname: profile.name, 
-                email: profile.email   
-            }
-            let user = await loginMedia(origin, dataRaw);
-            */
-            return cb(err, null);
+    async (accessToken, refreshToken, profile, done) => {
+      //need to return callback (done) so that fuction can end and move to callback URL
+      console.log("check user: ", profile);
+      const newUser = {
+        googleId: profile.id,
+        username: profile.displayName,
+        fullname: profile.name.givenName + profile.name.familyName,
+        avatar: profile.photos[0].value,
+        joinedDate: new Date(),
+        email: profile.emails[0].value
+      };
+
+      try {
+        let user = await User.findOne({ googleId: profile.id });
+
+        if (user) {
+          done(null, user)
+        } else {
+          user = await User.create(newUser);
+          done(null, user);
         }
-    ));
-}
-
-const loginMedia = async (origin, dataRaw) => {
-    //findOne user, key = email
-    //if user exists in db, return user
-    //if user doesnt exist in db, create new user to db, return user 
-    try{
-        let user
-        if(origin == "GOOGLE") {
-            user = User.findOne({email: dataRaw.email});
-
-        }
-
-        if(!user) {
-            //create new user
-            const username = dataRaw.name
-            const email = dataRaw.email
-            const password = "";
-            const origin = origin
-            const userType = "STUDENT"; //placeholder, to be changed later 
-            const joinedDate = new Date();
-            const isAdmin = false;
-
-            user = await new User({
-                username,
-                email,
-                password: "",
-                userOrigin: origin,
-                joinedDate,
-                userType,
-                isAdmin
-              });
-             
-            const result = await user.save();
-        }
-        else {
-            return user
-        }
-
-    } catch (error) {
-        console.log(error)
+      } catch (err) {
+        console.error(err);
+      }
     }
-}
+  )
+);
 
-module.exports = {
-    configGoogleAuth,
-    loginMedia
-}
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL: "http://localhost:8080/auth/facebook/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      //need to return callback (done) so that fuction can end and move to callback URL
+      console.log("check user: ", profile);
+      const newUser = {
+        googleId: profile.id,
+        username: profile.displayName,
+        fullname: profile.name.givenName + profile.name.familyName,
+        avatar: profile.photos[0].value,
+        joinedDate: new Date(),
+        email: profile.emails[0].value
+      };
+
+      try {
+        let user = await User.findOne({ googleId: profile.id });
+
+        if (user) {
+          done(null, user)
+        } else {
+          user = await User.create(newUser);
+          done(null, user);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  )
+);
+// };
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+

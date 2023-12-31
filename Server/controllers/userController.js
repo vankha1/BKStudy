@@ -109,10 +109,10 @@ const updateProfile = async (req, res, next) => {
       throw error;
     }
 
-    user.fullname = fullname ? fullname : user.fullname;
-    user.avatar = imageUrl ? imageUrl : user.avatar;
-    user.dateOfBirth = dateOfBirth ? dateOfBirth : user.dateOfBirth;
-    user.phoneNumber = phoneNumber ? phoneNumber : user.phoneNumber;
+    user.fullname = fullname ? user.fullname : fullname;
+    user.avatar = avatar ? user.avatar : avatar;
+    user.dateOfBirth = dateOfBirth ? user.dateOfBirth : dateOfBirth;
+    user.phoneNumber = phoneNumber ? user.phoneNumber : phoneNumber;
 
     await user.save();
 
@@ -152,7 +152,6 @@ const registerCourse = async (req, res, next) => {
     // });
     // course.numberOfStudent++;
     // await user.save();
-
     // await course.save();
 
     res.status(200).json({
