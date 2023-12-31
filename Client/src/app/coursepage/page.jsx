@@ -69,7 +69,7 @@ const CoursePage = () => {
         }).then((response) => {
             if(response.statusText === 'OK') {
                 console.log(response);
-                router.push('/student-courses');
+                router.push('/pay');
             } else console.log(response);
         }).catch((error) => {alert(error)}).finally(() => {setRegistering(false)});
     }
@@ -93,7 +93,7 @@ const CoursePage = () => {
                 </div>
                 <div className="mb-1">
                     <span className="font-light">Giáo viên: </span>
-                    <Link href="\" className="font-semibold underline ">{course.lecturer}</Link>
+                    <Link href="/" className='font-semibold underline'>{course.lecturer}</Link>
                 </div>
                 <div className="font-light">
                     <span>Cập nhật lần cuối vào </span>
