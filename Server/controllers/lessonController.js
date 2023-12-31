@@ -84,24 +84,24 @@ const getLesson = async (req, res, next) => {
 
     const lesson = await Lesson.findById(lessonId);
 
-    if (user.userType == "LECTURE") {
+    if (user.userType == "LECTURER") {
       res.status(200).json({
         lesson: lesson,
       });
+    } else {
+      const note = await Note.findOne({ userId: userId, lessonId: lessonId });
+
+      if (!note) {
+        const error = new Error("Note not found");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      res.status(200).json({
+        lesson: lesson,
+        note: note,
+      });
     }
-
-    const note = await Note.findOne({ userId: userId, lessonId: lessonId });
-
-    if (!note) {
-      const error = new Error("Note not found");
-      error.statusCode = 404;
-      throw error;
-    }
-
-    res.status(200).json({
-      lesson: lesson,
-      note: note,
-    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -201,6 +201,114 @@ const createLesson = async (req, res, next) => {
 };
 
 // PUT /update?courseId=...&chapter=...&lessonId=...
+// const updateLesson = async (req, res, next) => {
+//   try {
+//     const userId = req.userId;
+//     const { courseId, chapter, lessonId } = req.query;
+
+//     const user = await User.findOne({
+//       _id: userId,
+//       "courses.courseId": courseId,
+//     });
+
+//     if (!user) {
+//       const error = new Error("Course not matching");
+//       error.statusCode = 401;
+//       throw error;
+//     }
+
+//     const course = await Course.findOne({
+//       _id: courseId,
+//       "chapters.lessons.lessonId": lessonId,
+//     });
+
+//     const isMatchedLesson = course.chapters[chapter].lessons.some(
+//       (lesson) => lesson.lessonId.toString() === lessonId
+//     );
+
+//     if (!course || !isMatchedLesson) {
+//       const error = new Error("Lesson not matching");
+//       error.statusCode = 404;
+//       throw error;
+//     }
+
+//     const lesson = await Lesson.findById(lessonId);
+
+//     //before change
+//     const oldVideoURL = lesson.videoURL;
+//     lesson.attachedFiles.forEach((file) => {
+//       try {
+//         fs.unlinkSync(file.filepath);
+//       } catch (err) {
+//         console.log(err);
+//       }
+//     });
+//     //after change
+//     const title = req.body.title;
+//     const contents = req.body.contents;
+//     const videoURL = req.body.videoURL != "" ? req.body.videoURL : null;
+//     const attachedFiles = [];
+
+//     for (let prop in req.files) {
+//       const file = {
+//         filename: req.files[prop].originalname,
+//         filepath: req.files[prop].path
+//           .replace(/\\\\/g, "/")
+//           .replace(/\\/g, "/"),
+//       };
+//       //console.log(file);
+//       attachedFiles.push(file);
+//     }
+
+//     lesson.title = title;
+//     lesson.contents = contents;
+//     lesson.videoURL = videoURL;
+//     /* case in which lesson moves from one chapter to another
+//     if (chapter !== lesson.chapter) {
+//       const foundLesson = course.chapters[lesson.chapter].lessons.filter(
+//         (lesson) => lesson.lessonId.toString() !== lessonId
+//       );
+
+//       console.log(foundLesson);
+
+//       course.chapters[lesson.chapter].lessons = foundLesson;
+
+//       if (course.chapters[chapter]) {
+//         course.chapters[chapter].lessons.push({
+//           lessonId: lesson._id,
+//         });
+//       } else {
+//         course.chapters.splice(chapter, 0, {
+//           name: nameOfChapter,
+//           lessons: [{ lessonId: lesson._id }],
+//         });
+//       }
+//     }
+//     lesson.chapter = chapter;
+//     */
+//     lesson.attachedFiles = attachedFiles;
+
+//     await lesson.save();
+
+//     if (oldVideoURL && !lesson.videoURL)
+//       course.numberOfVideo =
+//         course.numberOfVideo <= 0 ? 0 : course.numberOfVideo - 1;
+//     // from "have video" to "no video"
+//     else if (!oldVideoURL && lesson.videoURL) course.numberOfVideo += 1; //from "no video" to "have video"
+
+//     await course.save();
+//     res.status(201).json({
+//       message: "Update lesson successfully !!!",
+//       lesson: lesson,
+//     });
+//   } catch (err) {
+//     if (!err.statusCode) {
+//       err.statusCode = 500;
+//     }
+//     next(err);
+//   }
+// };
+
 const updateLesson = async (req, res, next) => {
   try {
     const userId = req.userId;
@@ -234,58 +342,39 @@ const updateLesson = async (req, res, next) => {
 
     const lesson = await Lesson.findById(lessonId);
 
-    //before change
+    // Before change
     const oldVideoURL = lesson.videoURL;
-    lesson.attachedFiles.forEach((file) => {
-      try {
-        fs.unlinkSync(file.filepath);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-    //after change
-    const title = req.body.title;
-    const contents = req.body.contents;
-    const videoURL = req.body.videoURL != "" ? req.body.videoURL : null;
-    const attachedFiles = [];
 
-    for (let prop in req.files) {
-      const file = {
-        filename: req.files[prop].originalname,
-        filepath: req.files[prop].path
-          .replace(/\\\\/g, "/")
-          .replace(/\\/g, "/"),
-      };
-      //console.log(file);
-      attachedFiles.push(file);
+    // After change
+    const title = req.body.title || lesson.title;
+    const contents = req.body.contents || lesson.contents;
+    const videoURL = req.body.videoURL
+      ? req.body.videoURL !== ""
+        ? req.body.videoURL
+        : null
+      : lesson.videoURL;
+
+    // Remove old attachedFiles
+    if (req.files) {
+      lesson.attachedFiles.forEach((file) => {
+        try {
+          fs.unlinkSync(file.filepath);
+        } catch (err) {
+          console.log(err);
+        }
+      });
     }
+
+    const attachedFiles = req.files
+      ? req.files.map((file) => ({
+          filename: file.originalname,
+          filepath: file.path.replace(/\\\\/g, "/").replace(/\\/g, "/"),
+        }))
+      : lesson.attachedFiles;
 
     lesson.title = title;
     lesson.contents = contents;
     lesson.videoURL = videoURL;
-    /* case in which lesson moves from one chapter to another
-    if (chapter !== lesson.chapter) {
-      const foundLesson = course.chapters[lesson.chapter].lessons.filter(
-        (lesson) => lesson.lessonId.toString() !== lessonId
-      );
-
-      console.log(foundLesson);
-
-      course.chapters[lesson.chapter].lessons = foundLesson;
-
-      if (course.chapters[chapter]) {
-        course.chapters[chapter].lessons.push({
-          lessonId: lesson._id,
-        });
-      } else {
-        course.chapters.splice(chapter, 0, {
-          name: nameOfChapter,
-          lessons: [{ lessonId: lesson._id }],
-        });
-      }
-    } 
-    lesson.chapter = chapter;
-    */
     lesson.attachedFiles = attachedFiles;
 
     await lesson.save();
@@ -294,10 +383,10 @@ const updateLesson = async (req, res, next) => {
       course.numberOfVideo =
         course.numberOfVideo <= 0 ? 0 : course.numberOfVideo - 1;
     // from "have video" to "no video"
-    else if (!oldVideoURL && lesson.videoURL) course.numberOfVideo += 1; //from "no video" to "have video"
+    else if (!oldVideoURL && lesson.videoURL) course.numberOfVideo += 1; // from "no video" to "have video"
 
     await course.save();
-    res.status(201).json({
+    res.status(202).json({
       message: "Update lesson successfully !!!",
       lesson: lesson,
     });
@@ -423,18 +512,18 @@ const updateNote = async (req, res, next) => {
 // GET /file/:filepath
 const getFile = async (req, res, next) => {
   try {
-      const filepath = decodeURIComponent(req.params.filepath);
-      res.sendFile(filepath, (err) => {
-          if (err) throw err;
-          //console.log("send file successfully");
-      })
+    const filepath = decodeURIComponent(req.params.filepath);
+    res.sendFile(filepath, (err) => {
+      if (err) throw err;
+      //console.log("send file successfully");
+    });
   } catch (err) {
-      if (!err.statusCode) {
-          err.statusCode = 500;
-      }
-      next(err);
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
-}
+};
 
 //GET /download/:filepath
 const downloadFile = async (req, res, next) => {

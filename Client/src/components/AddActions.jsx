@@ -1,14 +1,15 @@
 "use client"; // This is a client component
 import React, { useState, useRef } from 'react'
-
+import { useRouter } from 'next/navigation';
 import UploadImage from '@components/UploadFile'
 
-const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, router, path }) => {
+const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path }) => {
 
     const [isEditing, setIsEditing] = useState(true);
     const [newData, setNewData] = useState([infos]);
     const [image, setImage] = useState();
     const [videoURL, setVideoURL] = useState('');
+    const router = useRouter();
 
     const handleSaveClick = () => {
         setIsEditing(false);
@@ -22,14 +23,6 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, rout
 
     const handleImage = (fileUrl, selectedFile) => {
         setImage(selectedFile);
-    }
-
-    const handleVideoURL = (value) => {
-        setVideoURL(value);
-    }
-
-    const handleGetVideoURL = () => {
-
     }
 
     const handleValueObj = () => {
@@ -56,7 +49,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, rout
                                             type='text'
                                             className={`${info.input_className} resize-none`}
                                             placeholder={info.placeholders}
-                                            value={image ? image.name : info.data}
+                                            defaultValue={image ? image.name : info.data}
                                             disabled
                                         />
                                         <UploadImage
@@ -78,7 +71,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, rout
                                                         type='text'
                                                         className={`${info.input_className} resize-none`}
                                                         placeholder={info.placeholders}
-                                                        value={info.data}
+                                                        defaultValue={info.data}
                                                         onChange={(e) => handleInputChange(e.target.value, index)}
                                                     />
                                                     <button
@@ -93,7 +86,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, rout
                                                     type='text'
                                                     className={`${info.input_className} resize-none`}
                                                     placeholder={info.placeholders}
-                                                    value={info.data}
+                                                    defaultValue={info.data}
                                                     onChange={(e) => handleInputChange(e.target.value, index)}
                                                 />
                                             )
@@ -111,10 +104,10 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, rout
                                             type='text'
                                             className={`${info.input_className} resize-none`}
                                             placeholder={info.placeholders}
-                                            value={info.data}
+                                            defaultValue={info.data}
                                             disabled
                                         />
-                                        <UploadImage title={info.button_title} className='py-2 px-4 ml-8 small-second-button' fileType={info.fileType} />
+                                        <UploadImage title={info.button_title} className='py-2 px-4 ml-8 small-second-button' fileType={info.fileType} type={info.type} />
                                     </div>
                                 ) : (
                                     <textarea
