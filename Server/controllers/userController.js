@@ -107,10 +107,10 @@ const updateProfile = async (req, res, next) => {
       throw error;
     }
 
-    user.fullname = fullname;
-    user.avatar = avatar;
-    user.dateOfBirth = dateOfBirth;
-    user.phoneNumber = phoneNumber;
+    user.fullname = fullname ? user.fullname : fullname;
+    user.avatar = avatar ? user.avatar : avatar;
+    user.dateOfBirth = dateOfBirth ? user.dateOfBirth : dateOfBirth;
+    user.phoneNumber = phoneNumber ? user.phoneNumber : phoneNumber;
 
     await user.save();
 
