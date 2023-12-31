@@ -1,5 +1,5 @@
 const fs = require("fs");
-
+const path = require("path");
 const User = require("../models/userModel");
 const Course = require("../models/courseModel");
 const Lesson = require("../models/lessonModel");
@@ -423,24 +423,47 @@ const updateNote = async (req, res, next) => {
 // GET /file/:filepath
 const getFile = async (req, res, next) => {
   try {
-      const filepath = decodeURIComponent(req.params.filepath);
-      res.sendFile(filepath, (err) => {
-          if (err) throw err;
-          //console.log("send file successfully");
-      })
+    const filepath = decodeURIComponent(req.params.filepath);
+    res.sendFile(filepath, (err) => {
+      if (err) throw err;
+      //console.log("send file successfully");
+    })
   } catch (err) {
-      if (!err.statusCode) {
-          err.statusCode = 500;
-      }
-      next(err);
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
 }
 
 //GET /download/:filepath
 const downloadFile = async (req, res, next) => {
   try {
-    const filepath = decodeURIComponent(req.params.filepath);
-    res.download(filepath);
+    const fileNameString = decodeURIComponent(req.params.fileName);
+
+    // handle two string format:
+    // 1: <<new file name>>*<<old file name>>.<<extender>>
+    // 2: <<old file name>>.<<extender>>
+    let newName, oldName, ext;
+    if (fileNameString.includes('*')) {
+      // first format - split string to get new file name and concat to <<new file name>>.<<extender>>
+      ext = fileNameString.split('.')[1];
+      newName = fileNameString.split('*')[0].concat(".", ext);
+      oldName = fileNameString.split('*')[1];
+    }
+    else {
+      // second format
+      newName = oldName = fileNameString;
+    }
+
+    // attach old name to server's files system
+    const filePath = path.join(__dirname, "../files/", oldName);
+
+    res.download(filePath, newName, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

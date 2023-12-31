@@ -62,7 +62,7 @@ router.get('/file/:filepath',
     lessonController.getFile
 )
 
-router.get('/download/:filepath',
+router.get('/download/:fileName',
     isAuth.authToken,
     isAuth.authRoles(["STUDENT"]),
     lessonController.downloadFile
