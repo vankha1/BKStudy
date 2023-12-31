@@ -15,12 +15,12 @@ const userSchema = new Schema(
     },
     email: {
       type: String,
-      required: true,
+      // required: true,
       unique: true,
     },
     password: {
       type: String,
-      required: true,
+      // required: true,
     },
     avatar: {
       type: String,
@@ -38,7 +38,7 @@ const userSchema = new Schema(
     userType: {
       type: String,
       enum: ["LECTURER", "STUDENT", "ADMIN"],
-      required: true,
+      // required: true,
     },
     isAdmin: {
       type: Boolean,
@@ -63,6 +63,9 @@ const userSchema = new Schema(
       ],
       required: true,
     },
+    googleId: {
+      type: String
+    }
   },
   { timestamps: true }
 );
