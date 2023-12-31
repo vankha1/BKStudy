@@ -1,5 +1,5 @@
-const { default: mongoose } = require("mongoose");
 const Rating = require("../models/ratingModel");
+const Course = require("../models/courseModel");
 
 // POST /rating
 const postRating = async (req, res, next) => {
@@ -55,6 +55,12 @@ const getRatingStatistics = async (req, res, next) => {
       });
 
       const avgRating = Math.ceil(sumRating / rates.length);
+
+      const course = await Course.findById(courseId);
+
+      course.rating = avgRating;
+      await course.save();
+
       res.status(200).json({
         avgRating: avgRating >= 5 ? 5 : avgRating,
         rates,
