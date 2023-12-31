@@ -5,26 +5,61 @@ import { useRouter, useSearchParams } from "next/navigation"
 import AddCourses from '@components/AddActions';
 
 import Notification, { errorNotifi, successNotifi, warningNotifi } from '@components/Notification';
+import LoadingState from '@components/LoadingState';
 
 const EditLesson = ({ params }) => {
-    const infos = [
+    const [infos, setInfos] = useState([
         {
             title: 'Chỉnh sửa tiêu đề bài giảng',
-            value: '',
+            data: '',
+            placeholders: 'Nhập tiêu đề bài giảng vào đây',
+            className: 'mb-4 w-full',
+            input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1 rounded-lg'
+        },
+        {
+            title: 'Chỉnh sửa bài đọc',
+            data: '',
+            placeholders: 'Nhập bài học tại đây',
+            className: 'mb-4 w-full h-60 ',
+            input_className: 'w-full h-4/5 text-base font-normal border border-solid p-1 align-top rounded-lg'
+        },
+        {
+            title: 'Chỉnh sửa video',
+            data: '',
+            placeholders: 'Đường dẫn video',
+            button_title: 'Tải lên',
+            className: 'mb-4 w-full',
+            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1 rounded-lg'
+        },
+        {
+            title: 'Các tập tin kèm theo',
+            data: null,
+            placeholders: 'Tải lên tập tin kèm theo',
+            button_title: 'Tải lên',
+            fileType: '*',
+            type: 'mutil-file',
+            className: 'mb-12 w-full',
+            input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1 rounded-lg'
+        },
+    ])
+    const [oldInfos, setOldInfos] = useState([
+        {
+            title: 'Chỉnh sửa tiêu đề bài giảng',
+            data: '',
             placeholders: 'Nhập tiêu đề bài giảng vào đây',
             className: 'mb-4 w-full',
             input_className: 'w-full h-[36px] text-base font-normal border border-solid p-1'
         },
         {
             title: 'Chỉnh sửa bài đọc',
-            value: '',
+            data: '',
             placeholders: 'Nhập bài học tại đây',
             className: 'mb-4 w-full h-60 ',
             input_className: 'w-full h-4/5 text-base font-normal border border-solid p-1 align-top'
         },
         {
             title: 'Chỉnh sửa video',
-            value: '',
+            data: '',
             placeholders: 'Đường dẫn video',
             button_title: 'Tải lên',
             className: 'mb-4 w-full',
@@ -32,24 +67,26 @@ const EditLesson = ({ params }) => {
         },
         {
             title: 'Các tập tin kèm theo',
-            value: '',
+            data: null,
             placeholders: 'Tải lên tập tin kèm theo',
             button_title: 'Tải lên',
             fileType: '*',
             className: 'mb-12 w-full',
             input_className: 'w-3/4 h-[36px] text-base font-normal border border-solid p-1'
         },
-    ]
-
+    ])
+    const [lesson, setLesson] = useState();
     const router = useRouter();
     const searchParams = useSearchParams()
     const courseName = searchParams.get('course');
-    const [infoCourse, setInfoCourse] = useState({
-        title: "",
-        contents: "",
-        videoURL: "",
-        files: "",
-    })
+    const indexChpater = searchParams.get('chapter');
+    const [infoLesson, setInfoLesson] = useState({
+        title: " ",
+        contents: " ",
+        videoURL: " ",
+        files: " ",
+    });
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const token = localStorage.getItem("JWT");
@@ -57,14 +94,22 @@ const EditLesson = ({ params }) => {
             .get('http://localhost:8080' + `/api/v1/lesson/course?courseId=${params?.id}&lessonId=${params?.idlesson}`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
-            .then((data) => {
-                console.log(data)
+            .then((responses) => {
+                setLesson(responses.data.lesson);
+                const newInfos = [...infos];
+                newInfos[0].data = responses.data.lesson.title;
+                newInfos[1].data = responses.data.lesson.contents;
+                newInfos[2].data = responses.data.lesson.videoURL;
+                newInfos[3].data = responses.data.lesson.attachedFiles[0] && responses.data.lesson.attachedFiles[0].filename ? responses.data.lesson.attachedFiles[0].filename : '';
+                setInfos(newInfos);
+                setOldInfos(newInfos);
             })
             .catch(error => {
-                console.log('error')
+                console.log(error)
             });
+        setLoading(false);
     }, []);
-    
+
     const handleDeleteLesson = () => {
         const token = localStorage.getItem("JWT");
         axios.delete('http://localhost:8080' + `/api/v1/lesson/delete?courseId=${params?.id}&lessonId=${params?.idlesson}`, {
@@ -78,29 +123,31 @@ const EditLesson = ({ params }) => {
             else {
                 errorNotifi('Xóa bài học thất bại!.');
             }
-            router.push(`edit-course/${params?.id}`)
-        }).catch((error) => errorNotifi('Có lỗi xảy ra, vui lòng thử lại!.'))  
+            setTimeout(() => {
+                router.push(`/edit-course/${params?.id}`);
+            }, 1000);
+        }).catch((error) => errorNotifi('Có lỗi xảy ra, vui lòng thử lại!.'))
     }
 
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
         const formData = new FormData()
 
-        formData.append("title", data.title)
-        formData.append("contents", data.contents)
-        formData.append("videoURL", data.videoURL)
-        formData.append("files", data.files)
-        formData.append("chapter", params?.index)
-        
-        axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
+        data.title != oldInfos.title ? formData.append("title", data.title) : null;
+        data.contents != oldInfos.contents ? formData.append("contents", data.contents) : null;
+        data.videoURL != oldInfos.videoURL ? formData.append("videoURL", data.videoURL) : null;
+        data.files != oldInfos.files ? formData.append("files", data.files) : null;
+
+        axios.put('http://localhost:8080' + `/api/v1/lesson/update?courseId=${params?.id}&chapter=${indexChpater}&lessonId=${params?.idlesson}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 "Content-Type": `multipart/form-data`,
             }
         }).then((response) => {
             console.log(response);
-            if (response.statusText === 'Created') {
+            if (response.statusText === 'Accepted') {
                 successNotifi('Chỉnh sửa bài giảng thành công!.');
+                console.log(response);
             }
             else {
                 warningNotifi('Có lỗi xảy ra, thử lại sau!.')
@@ -109,6 +156,7 @@ const EditLesson = ({ params }) => {
                 router.push(`/edit-course/${params?.id}`);
             }, 1000);
         }).catch((error) => {
+            console.log(error);
             if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
                 errorNotifi('Vui lòng đăng nhập lại!.');
             } else {
@@ -118,24 +166,32 @@ const EditLesson = ({ params }) => {
     }
 
     return (
-        <div className='relative w-full mt-4'>
-            <div className='w-full flex flex-col'>
-                <div className='text-2xl font-bold top-0 left-0 mb-2 border-b border-solid border-black'>{courseName.toUpperCase()}</div>
-            </div>
-            <div className='mx-32 mt-10'>
-                <div className='flex flex-between'>
-                <h2 className='text-xl font-semibold mb-2'>CHỈNH SỬA BÀI GIẢNG</h2>
-                <button className='medium-red-button mb-2' onClick={handleDeleteLesson}>Xóa bài giảng</button>
-                </div>
-                <div className='border border-solid border-black'>
-                    <div className='px-8 bg-white'>
-                        <div className='w-full mt-4'>
-                            <AddCourses infos={infos} infoCourse={infoCourse} setInfoCourse={setInfoCourse} handlGetDataForAPI={handleCallAPI} />
+        <div>
+            {
+                loading ? (
+                    <LoadingState title='Đang tải...' />
+                ) : (
+                    <div className='relative w-full mt-4'>
+                        <div className='w-full flex flex-col'>
+                            <div className='text-2xl font-bold top-0 left-0 mb-2 border-b border-solid border-black'>{courseName.toUpperCase()}</div>
                         </div>
+                        <div className='mx-32 mt-10'>
+                            <div className='flex flex-between'>
+                                <h2 className='text-2xl font-semibold mb-4'>CHỈNH SỬA BÀI GIẢNG</h2>
+                                <button className='medium-red-button mb-4' onClick={handleDeleteLesson}>Xóa bài giảng</button>
+                            </div>
+                            <div className='border border-solid border-black rounded-lg px-1 pb-2'>
+                                <div className='px-8 bg-white'>
+                                    <div className='w-full mt-4'>
+                                        <AddCourses infos={infos} infoCourse={infoLesson} setInfoCourse={setInfoLesson} handlGetDataForAPI={handleCallAPI} path={`/edit-course/${params?.id}`} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <Notification />
                     </div>
-                </div>
-            </div>
-            <Notification />
+                )
+            }
         </div>
     )
 }
