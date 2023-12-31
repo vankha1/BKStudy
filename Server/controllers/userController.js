@@ -94,7 +94,9 @@ const updateProfile = async (req, res, next) => {
     const userId = req.userId;
 
     const { fullname, dateOfBirth, phoneNumber } = req.body;
-    const avatar = req.body.image;
+    let avatar = req.body.image;
+    const temp = req.file.path.replace(/\\/g, "/").split("images");
+    const imageUrl = "images" + temp[1];
 
     if (req.file) {
       avatar = req.file.path.replace("\\", "/");
