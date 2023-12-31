@@ -163,12 +163,12 @@ const createCourse = async (req, res, next) => {
 
     await course.save();
 
-    const user = await User.findById(req.userId);
-    user.courses.push({
-      courseId: course._id,
-      enrolledDate: new Date(),
-    });
-    await user.save();
+    // const user = await User.findById(req.userId);
+    // user.courses.push({
+    //   courseId: course._id,
+    //   enrolledDate: new Date(),
+    // });
+    // await user.save();
 
     res.status(200).json({
       message: "Course is sent to admin",

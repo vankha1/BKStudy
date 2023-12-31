@@ -1,3 +1,4 @@
+const Course = require("../models/courseModel");
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
@@ -7,7 +8,7 @@ const userSchema = new Schema(
     username: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     fullname: {
       type: String,
@@ -15,7 +16,7 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     password: {
       type: String,
@@ -23,12 +24,12 @@ const userSchema = new Schema(
     },
     avatar: {
       type: String,
-      default: ""
+      default: "",
     },
-    phoneNumber : {
+    phoneNumber: {
       type: String,
     },
-    dateOfBirth : {
+    dateOfBirth: {
       type: String,
     },
     background: {
@@ -36,16 +37,16 @@ const userSchema = new Schema(
     },
     userType: {
       type: String,
-      enum: ['LECTURER', 'STUDENT'],
-      required: true
+      enum: ["LECTURER", "STUDENT", "ADMIN"],
+      required: true,
     },
-    isAdmin : {
-      type : Boolean,
-      default: false
+    isAdmin: {
+      type: Boolean,
+      default: false,
     },
     joinedDate: {
       type: Date,
-      required: true
+      required: true,
     },
     courses: {
       type: [
@@ -56,7 +57,7 @@ const userSchema = new Schema(
           },
           enrolledDate: {
             type: Date,
-            require: true
+            require: true,
           },
         },
       ],
@@ -64,6 +65,16 @@ const userSchema = new Schema(
     },
   },
   { timestamps: true }
+);
+
+userSchema.pre(
+  "deleteOne",
+  { query: true, document: false },
+  async function (next) {
+    const user = this;
+    await Course.deleteMany({ createdBy: user._id.toString() });
+    next();
+  }
 );
 
 module.exports = mongoose.model("User", userSchema);
