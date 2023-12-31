@@ -53,7 +53,7 @@ const AdminUserPage = () => {
                   </div>
                   <div className="w-60 text-center">
                     <Link
-                      href="/profile"
+                      href={`/profile/${user._id}`}
                       className="text-primary font-semibold hover:text-blue-300"
                     >
                       Xem chi tiết
