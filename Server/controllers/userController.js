@@ -108,11 +108,11 @@ const updateProfile = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
-    user.fullname = fullname ? fullname : user.fullname;
-    user.avatar = imageUrl ? imageUrl : user.avatar;
-    user.dateOfBirth = dateOfBirth ? dateOfBirth : user.dateOfBirth;
-    user.phoneNumber = phoneNumber ? phoneNumber : user.phoneNumber;
+    
+    user.fullname = fullname ? user.fullname : fullname;
+    user.avatar = avatar ? user.avatar : avatar;
+    user.dateOfBirth = dateOfBirth ? user.dateOfBirth : dateOfBirth;
+    user.phoneNumber = phoneNumber ? user.phoneNumber : phoneNumber;
 
     await user.save();
 
