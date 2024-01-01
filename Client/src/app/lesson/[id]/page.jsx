@@ -53,8 +53,9 @@ const LessonPage = ({ params }) => {
 
   const handleDownloadFile = async (path) => {
     const token = localStorage.getItem("JWT");
-    console.log(path.replaceAll("/", "%2F"));
-    await axios.get(SERVER_URL + `/api/v1/lesson/download/${path.replaceAll("/", "%2F")}`, {
+    const temp = path.split("/");
+    const data = temp[temp.length-1];
+    await axios.get(SERVER_URL + `/api/v1/lesson/download/${encodeURI(data)}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -236,7 +237,7 @@ const LessonPage = ({ params }) => {
               <p className="font-bold text-2xl text-start mb-2">Tài liệu</p>
               {
                 curLesson.attachedFiles.map((file) => (
-                  <div onClick={() => {handleDownloadFile(file.filepath)}} key={file._id} className="rounded-md hover:bg-slate-200 cursor-pointer font-semibold p-1">
+                  <div onClick={() => {{handleDownloadFile(file.filepath)}}} key={file._id} className="rounded-md hover:bg-slate-200 cursor-pointer font-semibold p-1">
                     {file.filename}
                   </div>
                 ))
