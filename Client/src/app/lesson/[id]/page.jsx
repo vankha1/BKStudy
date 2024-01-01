@@ -51,7 +51,7 @@ const LessonPage = ({ params }) => {
     setIsDropdown(newData);
   };
 
-  const handleDownloadFile = async (path) => {
+  const handleDownloadFile = async (path, filename) => {
     const token = localStorage.getItem("JWT");
     const temp = path.split("/");
     const data = temp[temp.length-1];
@@ -59,11 +59,14 @@ const LessonPage = ({ params }) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      responseType: 'blob',
     }).then((response) => {
-      console.log(response);
-      if (response.statusText === "OK") {
-        successNotifi("Tải file thành công")
-      }
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${filename}`);
+      document.body.appendChild(link);
+      link.click();
     }).catch((error) => {errorNotifi("Có lỗi xảy ra"); console.log(error)})
   }
 
@@ -237,7 +240,7 @@ const LessonPage = ({ params }) => {
               <p className="font-bold text-2xl text-start mb-2">Tài liệu</p>
               {
                 curLesson.attachedFiles.map((file) => (
-                  <div onClick={() => {{handleDownloadFile(file.filepath)}}} key={file._id} className="rounded-md hover:bg-slate-200 cursor-pointer font-semibold p-1">
+                  <div onClick={() => {{handleDownloadFile(file.filepath, file.filename)}}} key={file._id} className="rounded-md hover:bg-slate-200 cursor-pointer font-semibold p-1">
                     {file.filename}
                   </div>
                 ))

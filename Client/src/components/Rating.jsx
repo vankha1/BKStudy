@@ -46,7 +46,7 @@ const Rating = ({ name, id, closePopUp, server }) => {
                 <div class="text-center">
                   <span class="flex flex-row-reverse">
                     {(ratingScore > 0) ? (
-                      a.map((i) => ((i<=ratingScore) ? (<svg
+                      a.map((i) => ((i>=6-ratingScore) ? (<svg
                         class="text-yellow-400"
                         width="40"
                         height="40"
