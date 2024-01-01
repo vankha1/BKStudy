@@ -20,6 +20,7 @@ export default function Pay() {
   const { courseId } = useParams();
 
   const token = localStorage.getItem("JWT");
+
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
     const makeRequest = async () => {
