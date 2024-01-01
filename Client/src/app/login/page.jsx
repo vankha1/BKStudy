@@ -34,6 +34,14 @@ const LogInPage = () => {
     }).catch((error) => { alert(error) }).finally(() => { setSubmitting(false) })
   }
 
+  const handleGoogle = () => {
+    window.open('http://localhost:8080/auth/google', '_self')
+  }
+
+  const handleFacebook = () => {
+    window.open('http://localhost:8080/auth/facebook', '_self')
+  }
+
   return (
     <section className="flex-center flex-col drop-shadow-md mt-3 px-8 py-5 bg-white rounded-md">
       {console.log('re-render')}
@@ -81,7 +89,7 @@ const LogInPage = () => {
         <div className="text-slate-400 text-xs px-2">or</div>
         <span className="w-full border bg-slate-400" />
       </div>
-      <button className="big-white-button mb-4 inline-flex items-center">
+      <button onClick={handleGoogle} className="big-white-button mb-4 inline-flex items-center">
         <Image
           src="/assets/icons/google_icon.svg"
           alt="google icon"
@@ -91,7 +99,7 @@ const LogInPage = () => {
         />
         <span>Đăng nhập bằng Google</span>
       </button>
-      <button className="big-white-button inline-flex items-center">
+      <button onClick={handleFacebook} className="big-white-button inline-flex items-center">
         <Image
           src="/assets/icons/fb_icon.svg"
           alt="facebook icon"

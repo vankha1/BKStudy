@@ -172,7 +172,13 @@ const getCourses = async (req, res, next) => {
     const userId = req.userId;
 
     const user = await User.findById(userId)
-      .populate("courses.courseId")
+      .populate({
+        path: "courses.courseId",
+        populate: {
+          path: 'createdBy',
+          select: 'fullname'
+        }
+      })
       .exec();
 
     if (!user) {
