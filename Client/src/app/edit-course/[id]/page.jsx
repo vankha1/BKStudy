@@ -211,16 +211,16 @@ const EditCourse = ({ params }) => {
 
             return `${year}-${month}-${day}`;
         }
-        const newData = {
-            title: dataAddDiscussion.title,
-            content: dataAddDiscussion.content,
-            createdBy: {
-                fullname: userInfo ? userInfo.fullname : undefined
-            },
-            createdAt: formatDate(date),
-            updatedAt: formatDate(date),
-        }
-        setDiscussions([...discussions, newData]);
+        // const newData = {
+        //     title: dataAddDiscussion.title,
+        //     content: dataAddDiscussion.content,
+        //     createdBy: {
+        //         fullname: userInfo ? userInfo.fullname : undefined
+        //     },
+        //     createdAt: formatDate(date),
+        //     updatedAt: formatDate(date),
+        // }
+        // setDiscussions([...discussions, newData]);
         axios
             .post('http://localhost:8080' + `/api/v1/discussion/${params?.id}/create`, data, {
                 headers: {
@@ -230,6 +230,17 @@ const EditCourse = ({ params }) => {
             })
             .then((responses) => {
                 successNotifi('Thêm thảo luận thành công!.');
+                const newData = {
+                    _id: responses.data.discussion._id,
+                    title: dataAddDiscussion.title,
+                    content: dataAddDiscussion.content,
+                    createdBy: {
+                        fullname: userInfo ? userInfo.fullname : undefined
+                    },
+                    createdAt: formatDate(date),
+                    updatedAt: formatDate(date),
+                }
+                setDiscussions([...discussions, newData]);
             })
             .catch(error => {
                 errorNotifi('Thêm thảo luận thất bại');
