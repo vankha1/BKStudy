@@ -39,6 +39,7 @@ const AddProfile = () => {
         "Content-Type": `multipart/form-data`
       }
     }).then((response) => {
+      console.log(response);
       if (response.statusText === 'OK') {
         localStorage.setItem("userInfo", JSON.stringify(response.data.user));
         setIsLogin(true);

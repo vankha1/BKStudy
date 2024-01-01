@@ -14,7 +14,7 @@ router.get('/search', courseController.searchCourses);
 // Rating the course
 router.post('/rating', isAuth.authToken, isAuth.authRoles(['STUDENT']), ratingController.postRating)
 
-router.get('/rating-statistics/:courseId', isAuth.authToken, isAuth.authRoles(['LECTURER']), ratingController.getRatingStatistics)
+router.get('/rating-statistics/:courseId', isAuth.authToken, ratingController.getRatingStatistics)
 
 
 // used for home page
@@ -45,7 +45,7 @@ router.post(
 router.delete(
   "/:courseId",
   isAuth.authToken,
-  isAuth.authRoles(["LECTURER"]),
+  isAuth.authRoles(["LECTURER", "ADMIN"]),
   courseController.deleteCourse
 );
 
