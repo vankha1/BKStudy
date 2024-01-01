@@ -95,11 +95,13 @@ const updateProfile = async (req, res, next) => {
 
     const { fullname, dateOfBirth, phoneNumber } = req.body;
     let avatar = req.body.image;
-    const temp = req.file.path.replace(/\\/g, "/").split("images");
-    const imageUrl = "images" + temp[1];
+    const temp = req.file ? req.file.path.replace(/\\/g, "/").split("images") : null;
+    const imageUrl = temp ? "images" + temp[1] : null;
 
     if (req.file) {
-      avatar = req.file.path.replace("\\", "/");
+      // avatar = req.file.path.replace("\\", "/");
+      const temp = req.file.path.replace(/\\/g, "/").split("images");
+      temp.length >= 2 ? avatar = "images" + temp[1] : null;
     }
     const user = await User.findById(userId);
 
@@ -109,10 +111,10 @@ const updateProfile = async (req, res, next) => {
       throw error;
     }
 
-    user.fullname = fullname ? user.fullname : fullname;
-    user.avatar = avatar ? user.avatar : avatar;
-    user.dateOfBirth = dateOfBirth ? user.dateOfBirth : dateOfBirth;
-    user.phoneNumber = phoneNumber ? user.phoneNumber : phoneNumber;
+    user.fullname = fullname ? fullname : user.fullname;
+    user.avatar = avatar ? avatar : user.avatar;
+    user.dateOfBirth = dateOfBirth ? dateOfBirth : user.dateOfBirth;
+    user.phoneNumber = phoneNumber ? phoneNumber : user.phoneNumber;
 
     await user.save();
 
@@ -170,7 +172,13 @@ const getCourses = async (req, res, next) => {
     const userId = req.userId;
 
     const user = await User.findById(userId)
-      .populate("courses.courseId")
+      .populate({
+        path: "courses.courseId",
+        populate: {
+          path: 'createdBy',
+          select: 'fullname'
+        }
+      })
       .exec();
 
     if (!user) {

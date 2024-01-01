@@ -68,6 +68,12 @@ const User = ({ params }) => {
     }
   }
 
+  const openExternalImage = (imageURL) => {
+    const externalImagePath = imageURL.includes('https') ? imageURL : `http://localhost:8080/${imageURL}`;
+    const newWindow = window.open();
+    newWindow.location.href = externalImagePath;
+  };
+
   return (
     <div>
       {
@@ -79,15 +85,34 @@ const User = ({ params }) => {
               <div className='h-72 mx-8 rounded-3xl bg-blue-300'>
               </div>
               <div className='absolute bottom-0 left-40 flex justify-between'>
-                <div className='w-40 h-40 rounded-full flex-center bg-white cursor-pointer' onClick={() => setViewAvatar(!viewAvatar)}>
+                <div className='w-40 h-40 relative rounded-full flex-center bg-white cursor-pointer' onClick={() => setViewAvatar(!viewAvatar)}>
                   <Image
                     className="w-32 h-32 rounded-full"
-                    src={'http://localhost:8080/' + userProfile.avatar}
+                    src={userProfile.avatar ? (userProfile.avatar.includes('https') ? userProfile.avatar : `http://localhost:8080/${userProfile.avatar}`) : '/assets/images/avatar.svg'}
                     alt="Profile Picture"
                     width={130}
                     height={130}
+                    onClick={() => setViewAvatar(!viewAvatar)}
                     priority
                   />
+                  {
+                    viewAvatar ? (
+                      <div className='z-10 absolute top-40 border border-slate-200 bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-48 flex-center flex-col'>
+                        <ul className="py-2 text-base text-gray-700 w-full">
+                          <li>
+                            <div
+                              onClick={() => userProfile.avatar && openExternalImage(userProfile.avatar)}
+                              className="px-4 py-2 hover:bg-gray-100 block text-center cursor-pointer"
+                            >
+                              Xem ảnh đại diện
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    ) : (
+                      <></>
+                    )
+                  }
                 </div>
                 <h2 className='pl-8 mt-20 text-3xl font-medium'>
                   {userProfile.fullname}
@@ -119,12 +144,12 @@ const User = ({ params }) => {
                     userProfile.userType === "STUDENT" ? "Các khóa học đang học" : " "
                   )}
                 </h4>
-                {userProfile && userProfile.courses && userProfile.courses.slice(0, 3).map((course, index) => (
-                  <Link href='/coursepage' key={index} className='flex-between px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action'>
+                {userProfile && userProfile.courses && userProfile.courses.filter((course) => (course.courseId != null)).slice(0, 3).map((course, index) => (
+                  <Link href={`/coursepage/${course?.courseId?._id}`} key={course?.courseId?._id} className='flex-between px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action'>
                     <div className='w-[200px] relative h-[160px]'>
                       <Image
                         className="rounded-2xl py-2"
-                        src={'http://localhost:8080/' + course.courseId.imageUrl}
+                        src={course.courseId ? `http://localhost:8080/${course.courseId.imageUrl}` : '/assets/images/course_image.jpg'}
                         alt="Courses Picture"
                         fill
                         objectFit="cover"

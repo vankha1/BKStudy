@@ -57,7 +57,8 @@ const CoursePage = ({ params }) => {
       )
       .then((response) => {
         if (response.statusText === "OK") {
-          router.push("/student-courses");
+          console.log(response.data);
+          router.push(`/pay/${params?.id}`);
         }
       })
       .catch((error) => alert(error));

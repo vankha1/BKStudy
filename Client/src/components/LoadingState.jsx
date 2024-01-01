@@ -1,13 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
 
-const LoadingState = ({ title }) => {
+const LoadingState = ({ title, width = 20, height = 20 }) => {
     return (
         <div className="flex-center flex-row w-full">
             <Image
                 src='/assets/icons/loading_icon.svg'
-                width={20}
-                height={20}
+                width={width}
+                height={height}
                 alt="loading icon"
                 className="animate-spin mr-2"
             />

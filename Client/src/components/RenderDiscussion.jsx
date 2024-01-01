@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import RenderReply from './RenderReply';
+import PagingNation from './PagingNation';
 
 const RenderDiscussion = ({
     courseId,
@@ -17,10 +18,10 @@ const RenderDiscussion = ({
     });
     const [isShowReply, setIsShowReply] = useState(false);
     const [discussionID, setDiscussionID] = useState();
-    const [pageSize, setPageSize] = useState(6);
+    const [pageSize, setPageSize] = useState(5);
     const [pagingInfo, setPagingInfo] = useState({
-        maxPage: Math.ceil(discussions.length / pageSize) - 1,
-        curPage: 0,
+        maxPage: discussions ? Math.ceil(discussions.length / pageSize) : 1,
+        curPage: 1,
     })
 
 
@@ -133,10 +134,9 @@ const RenderDiscussion = ({
                             </div>
                             <div className={`h-${12 * pageSize}`}>
                                 {
-                                    discussions && discussions.slice(pagingInfo.curPage * pageSize, pagingInfo.curPage * pageSize + pageSize).map((discussion) => (
+                                    discussions && discussions.slice(pagingInfo.curPage * pageSize - pageSize, Math.min(pagingInfo.curPage * pageSize, discussions.length)).map((discussion) => (
                                         <div
                                             key={discussion._id}
-                                            // href={{ pathname: `/discussion/${courseId}/${discussion._id}`, query: { course: courseName } }}
                                             className='flex-between h-12 hover:cursor-pointer hover:bg-gray-100 border-b border-solid border-gray-300'
                                             onClick={() => {
                                                 setIsShowReply(true);
@@ -176,7 +176,7 @@ const RenderDiscussion = ({
                                                 id="pageSize"
                                                 onChange={(e) => {
                                                     setPageSize(e.target.value)
-                                                    setPagingInfo({...pagingInfo, maxPage: Math.ceil(discussions.length / e.target.value) - 1})
+                                                    setPagingInfo({ ...pagingInfo, maxPage: Math.ceil(discussions.length / e.target.value) })
                                                 }}
                                                 className="input text-sm text-black"
                                             >
@@ -187,36 +187,8 @@ const RenderDiscussion = ({
                                             </select>
                                         </div>
                                     </div>
-                                    <div className='flex-between ml-4'>
-                                        <Image
-                                            className={pagingInfo.curPage == 0 ? 'cursor-pointer transform rotate-[90deg] opacity-50' : 'cursor-pointer transform rotate-[90deg]'}
-                                            src='/assets/icons/downward.svg'
-                                            alt="Downward"
-                                            width={24}
-                                            height={24}
-                                            priority
-                                            onClick={() => {
-                                                if (pagingInfo.curPage != 0) {
-                                                    setPagingInfo({ ...pagingInfo, curPage: pagingInfo.curPage - 1 })
-                                                }
-                                            }}
-                                        />
-                                        <div className='py-1 px-2 mx-2 bg-blue-700 text-white rounded-md'>
-                                            {pagingInfo.curPage}
-                                        </div>
-                                        <Image
-                                            className={pagingInfo.curPage == pagingInfo.maxPage ? 'cursor-pointer transform rotate-[-90deg] opacity-50' : 'cursor-pointer transform rotate-[-90deg]'}
-                                            src='/assets/icons/downward.svg'
-                                            alt="Downward"
-                                            width={24}
-                                            height={24}
-                                            priority
-                                            onClick={() => {
-                                                if (pagingInfo.curPage != pagingInfo.maxPage) {
-                                                    setPagingInfo({ ...pagingInfo, curPage: pagingInfo.curPage + 1 })
-                                                }
-                                            }}
-                                        />
+                                    <div className='w-[160px] flex-between ml-4'>
+                                        <PagingNation pagingInfo={pagingInfo} setPagingInfo={setPagingInfo} />
                                     </div>
                                 </div>
                             </div>
@@ -224,7 +196,7 @@ const RenderDiscussion = ({
                     )
                 }
             </>
-        </div>
+        </div >
     )
 }
 
