@@ -10,6 +10,7 @@ import format from "date-fns/format";
 import RatingCourses from "@components/RatingCourses";
 import StarRating from "@components/StarRating";
 import LoadingState from "@components/LoadingState";
+import Notification, { warningNotifi, errorNotifi, successNotifi } from "@components/Notification";
 
 const CoursePage = ({ params }) => {
   const [course, setCourse] = useState({});
@@ -18,6 +19,7 @@ const CoursePage = ({ params }) => {
   const { SERVER_URL } = useAuthContext();
   const [isDropdown, setIsDropdown] = useState([]);
   const [ratingCourse, setRatingCourse] = useState();
+  const [video, setVideo] = useState(0)
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -26,8 +28,8 @@ const CoursePage = ({ params }) => {
         .get(SERVER_URL + `/api/v1/course/course-detail/${params?.id}`)
         .then((response) => {
           if (response.statusText === "OK") {
-            console.log(response);
             setCourse(response.data.course);
+            response.data.course.chapters.map((course) => {setVideo(video + course.lessons.length)})
           }
           setIsDropdown(
             new Array(response.data.course.chapters.length).fill(false)
@@ -65,7 +67,12 @@ const CoursePage = ({ params }) => {
 
   const handleRegister = () => {
     const token = localStorage.getItem("JWT");
-    axios
+    const data = JSON.parse(localStorage.getItem("userInfo"));
+    let flag = false;
+    data.courses.map((course) => {if (course.courseId==params?.id) flag = true;});
+    if (flag) {errorNotifi("Bạn đã đăng ký khóa này rồi!")}
+    else {
+      axios
       .post(
         SERVER_URL + `/api/v1/user/register/${params?.id}`,
         {},
@@ -82,13 +89,14 @@ const CoursePage = ({ params }) => {
         }
       })
       .catch((error) => alert(error));
+    }
   };
 
   return !done ? (
     <LoadingState title="Đang tải" width={40} height={40} />
   ) : (
     <div className="w-[1519px]">
-      <div className="w-full h-48 bg-footer text-white px-32 py-3">
+      <div className="w-full bg-footer text-white px-32 py-3">
         <div className="description w-3/5">
           <h1 className="text-4xl font-bold mb-3">{course.title}</h1>
           <p className="font-semibold mb-5">{course.description}</p>
@@ -152,7 +160,7 @@ const CoursePage = ({ params }) => {
                 className="w-6 h-6 mr-4"
               ></Image>
               Bao gồm
-              <span className="font-semibold mx-1"> 20 </span>
+              <span className="font-semibold mx-1"> {video} </span>
               video
             </div>
             <div className="flex mb-2">
@@ -163,9 +171,7 @@ const CoursePage = ({ params }) => {
                 height={20}
                 className="w-6 h-6 mr-4"
               ></Image>
-              Thời lượng hơn
-              <span className="font-semibold mx-1"> 30 </span>
-              giờ
+              Học tập bất kể thời gian
             </div>
             <div className="flex mb-2">
               <Image
@@ -278,6 +284,7 @@ const CoursePage = ({ params }) => {
         </div>
         <RatingCourses ratingCourse={ratingCourse} />
       </div>
+      <Notification />
     </div>
   );
 };
