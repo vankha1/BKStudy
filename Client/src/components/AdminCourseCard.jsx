@@ -13,8 +13,7 @@ const AdminCourseCard = ({ _id, tittle, author, image, price, description }) => 
 
   const approveCourse = (courseId) => {
     const token = localStorage.getItem("JWT");
-    console.log(`http://localhost:8080/api/v1/admin/course-approve/${courseId}`);
-    console.log(token);
+
     axios
       .post(`http://localhost:8080/api/v1/admin/course-approve/${courseId}`, [] ,{
       headers: {

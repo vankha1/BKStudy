@@ -8,7 +8,7 @@ const User = require("../models/userModel");
 // GET /
 const getAllCourses = async (req, res, next) => {
   try {
-    const courses = await Course.find();
+    const courses = await Course.find().populate('createdBy', 'fullname');
 
     res.status(200).json({
       message: "Fetched courses successfully !!",

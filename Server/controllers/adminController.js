@@ -81,7 +81,7 @@ const getDetailUser = async (req, res, next) => {
     const userId = req.params.userId;
 
     const user = await User.findById(userId).populate('courses.courseId', 'title');
-    if (!user){
+    if (!user) {
       const error = new Error("User not found");
       error.statusCode = 404;
       throw error;
@@ -117,9 +117,95 @@ const statisticsByMonth = async (req, res, next) => {
   }
 }
 
+// GET /statistic of user
+const getStatUser = async (req, res, next) => {
+  try {
+    const allCount = await User.countDocuments({ isAdmin: false });
+
+    // get the current date when this function is called
+    const currentDate = new Date();
+
+    const currCount = await User.countDocuments({
+      isAdmin: false,
+      createdAt: {
+        // greater than - first day of the current month
+        $gt: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1, 0, 0, 0),
+        // less than - last day of the current month  
+        $lt: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 24, 0, 0)
+      }
+    })
+
+    const prevCount = await User.countDocuments({
+      isAdmin: false,
+      createdAt: {
+        // greater than - first day of the previous month  
+        $gt: new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1, 0, 0, 0),
+        // less than - last day of the previous month  
+        $lt: new Date(currentDate.getFullYear(), currentDate.getMonth() - 0, 0, 24, 0, 0)
+      }
+    })
+
+    res.status(200).json({
+      allUseCount: allCount,
+      newUserThisMonth: currCount,
+      newUserLastMonth: prevCount
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
+
+const getStatCourse = async (req, res, next) => {
+  try {
+    console.log("get statistic from controller");
+    const allCount = await Course.countDocuments({});
+
+    const approvedCount = await Course.countDocuments({
+      isApproved: true
+    });
+
+    const currentDate = new Date();
+
+    const currCount = await Course.countDocuments({
+      isApproved: true,
+      createdAt: {
+        // greater than - first day of the current month
+        $gt: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1, 0, 0, 0),
+        // less than - last day of the current month  
+        $lt: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 24, 0, 0)
+      }
+    })
+
+    const prevCount = await Course.countDocuments({
+      isApproved: true,
+      createdAt: {
+        // greater than - first day of the previous month  
+        $gt: new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1, 0, 0, 0),
+        // less than - last day of the previous month  
+        $lt: new Date(currentDate.getFullYear(), currentDate.getMonth() - 0, 0, 24, 0, 0)
+      }
+    })
+
+    res.status(200).json({
+      allCourseCount: allCount,
+      approvedCourseCount: approvedCount,
+      newCourseThisMonth: currCount,
+      newCourseLastMonth: prevCount
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
+
 // DELETE /user/delete/:userId
 const deleteUser = async (req, res, next) => {
-  try{
+  try {
     const userId = req.params.userId;
 
     // await User.findById(userId).deleteOne();
@@ -127,7 +213,7 @@ const deleteUser = async (req, res, next) => {
     await Course.deleteMany({ createdBy: userId });
 
     const user = await User.findById(userId);
-    if (!user){
+    if (!user) {
       const error = new Error("User not found");
       error.statusCode = 404;
       throw error;
@@ -156,5 +242,7 @@ module.exports = {
   getAllUsers,
   getDetailUser,
   deleteUser,
-  statisticsByMonth
+  statisticsByMonth,
+  getStatUser,
+  getStatCourse
 };

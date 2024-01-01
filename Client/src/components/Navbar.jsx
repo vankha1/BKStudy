@@ -5,25 +5,53 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuthContext } from "@app/contexts/auth";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const Navbar = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
-  const [userInfo, setUserInfo] = useState({})
+  const [userInfo, setUserInfo] = useState(null)
   const { isLogin, setIsLogin } = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {
-    if (localStorage.getItem("userInfo")) setUserInfo(JSON.parse(localStorage.getItem("userInfo")))
+    if (localStorage.getItem("userInfo")) setUserInfo((localStorage.getItem("userInfo")))
   }, [isLogin])
 
   const handleLogout = () => {
     localStorage.removeItem("JWT");
     localStorage.removeItem("userInfo");
     setIsLogin(false);
+    setUserInfo(null);
     router.push('/');
   }
+
+  useEffect(() => {
+    const getUser = () => {
+      fetch("http://localhost:8080/auth/login/success", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true,
+        },
+      })
+        .then((response) => {
+          if (response.status === 200) return response.json();
+          throw new Error("authentication has been failed!");
+        })
+        .then((resObject) => {
+          console.log(resObject);
+          setUserInfo(resObject.user);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    getUser();
+  }, [])
 
   return (
     <nav className="px-8 py-1 flex-between flex-row border-b border-borderline">
@@ -54,7 +82,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      {isLogin ? (
+      {userInfo ? (
         <div className="flex-center flex-row gap-4">
           <div>
             {userInfo.userType === "STUDENT" ? (
@@ -159,7 +187,7 @@ const Navbar = () => {
           <div className="z-50 flex-center relative">
             <button onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}>
               <Image
-                src={"http://localhost:8080/" + userInfo.avatar}
+                src={userInfo.avatar}
                 alt="Avatar"
                 width={40}
                 height={40}
