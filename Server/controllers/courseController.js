@@ -22,12 +22,42 @@ const getAllCourses = async (req, res, next) => {
   }
 };
 
+// POST /search
+const searchCourse = async (req, res, next) => {
+  try{
+    const { title } = req.query;
+
+    if (!title) {
+      const error = new Error('Title parameter is missing');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const courses = await Course.find({
+      title: { $regex: new RegExp(title, 'i') }}, // case-insensitive
+      { _id: 1, title: 1, price: 1, description: 1, imageUrl: 1 } // only includes these fields
+    );
+
+    res.status(200).json({
+      message: 'Courses found successfully!',
+      courses,
+    });
+  }catch (err){
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
+
 // GET /course-detail/:courseId
 const getCourse = async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
 
-    const course = await Course.findById(courseId).populate(
+    const course = await Course.findById(courseId)
+    .populate('createdBy', 'fullname')  
+    .populate(
       "chapters.lessons.lessonId",
       "title -_id"
     );
@@ -286,6 +316,7 @@ const clearImage = (filePath) => {
 
 module.exports = {
   getAllCourses,
+  searchCourse,
   getCourse,
   getStudents,
   getStudent,

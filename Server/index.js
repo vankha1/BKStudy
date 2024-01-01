@@ -48,7 +48,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use(
-  cookieSession({ name: "session", keys: ["bkstudy"], maxAge: 24 * 60 * 60 * 100 })
+  cookieSession({ name: "session", keys: ["bkstudy"], maxAge: 5 * 60 * 1000 })
 );
 
 app.use(passport.initialize());

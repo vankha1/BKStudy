@@ -18,6 +18,9 @@ router.get('/rating-statistics/:courseId', isAuth.authToken, isAuth.authRoles(['
 router.get("/", courseController.getAllCourses);
 
 // used for guest
+router.post('/search', courseController.searchCourse);
+
+// used for guest
 router.get("/course-detail/:courseId", courseController.getCourse)
 
 // get students in course

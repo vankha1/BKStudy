@@ -7,14 +7,12 @@ router.get("/auth/login/success", (req, res) => {
     res.status(200).json({
       success: true,
       message: "successfull",
-      user: req.user,
-      //   cookies: req.cookies
+      user: req.user
     });
-  }
-  else{
+  } else {
     res.status(401).json({
-      message: "Error"
-    })
+      message: "Error",
+    });
   }
 });
 
@@ -26,8 +24,8 @@ router.get("/auth/login/failed", (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect(CLIENT_URL);
+  res.clearCookie('bkstudy', { path: '/' });
+  res.redirect('http://localhost:3000/')
 });
 
 router.get(
@@ -37,9 +35,11 @@ router.get(
 
 router.get(
   "/auth/google/callback",
-  passport.authenticate("google", { successRedirect: 'http://localhost:3000/', failureRedirect: "/auth/login/failed" })
+  passport.authenticate("google", {
+    successRedirect: "http://localhost:3000/add-profile",
+    failureRedirect: "/auth/login/failed",
+  })
 );
-
 
 router.get(
   "/auth/facebook",
@@ -48,7 +48,10 @@ router.get(
 
 router.get(
   "/auth/facebook/callback",
-  passport.authenticate("facebook", { successRedirect: 'http://localhost:3000/', failureRedirect: "/auth/login/failed" })
+  passport.authenticate("facebook", {
+    successRedirect: "http://localhost:3000/",
+    failureRedirect: "/auth/login/failed",
+  })
 );
 
 module.exports = router;

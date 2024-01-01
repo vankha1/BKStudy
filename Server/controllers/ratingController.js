@@ -9,10 +9,12 @@ const postRating = async (req, res, next) => {
 
     const existRating = await Rating.find({ userId: userId, courseId: courseId})
 
-    if (existRating){
-        const error = new Error('You have already rated')
-        error.statusCode = 404;
-        throw error;
+    console.log(existRating);
+
+    if (existRating.length){
+      const error = new Error('You have already rated')
+      error.statusCode = 404;
+      throw error;
     }
 
     const newRating = new Rating({
