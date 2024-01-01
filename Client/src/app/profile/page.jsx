@@ -47,7 +47,6 @@ const Profile = () => {
         let user = data.data.user;
         handleDataUSer(user);
         setUserProfile(user);
-        console.log(user);
       })
       .catch(error => {
         console.log(error)
@@ -79,11 +78,11 @@ const Profile = () => {
   const handleDataUSer = (user) => {
     if (user) {
       const newDataInfo = [...userInfo];
-      newDataInfo[0].data = user.email;
-      newDataInfo[1].data = user.fullname;
-      newDataInfo[2].data = user.dateOfBirth ? user.dateOfBirth : '';
-      newDataInfo[3].data = user.joinedDate.slice(0, 10);
-      newDataInfo[4].data = user.phoneNumber;
+      newDataInfo[0].data = user.email ? user.email : '';
+      newDataInfo[1].data = user.fullname ? user.fullname : '';
+      newDataInfo[2].data = user.dateOfBirth ? user.dateOfBirth.slice(0, 10) : '';
+      newDataInfo[3].data = user.joinedDate ? user.joinedDate.slice(0, 10) : '';
+      newDataInfo[4].data = user.phoneNumber ? user.phoneNumber : '';
       setUserInfo(newDataInfo);
     }
   }

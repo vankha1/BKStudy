@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuthContext } from "@app/contexts/auth";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import useDebounce from "@utilities/useDebounce";
 
 const Navbar = () => {
   const [showMessage, setShowMessage] = useState(false);
@@ -13,6 +14,9 @@ const Navbar = () => {
   const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
   const [userInfo, setUserInfo] = useState(null)
   const { isLogin, setIsLogin } = useAuthContext();
+  const [coursesFounded, setCoursesFounded] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const searchData = useDebounce(searchValue, 500);
   const router = useRouter();
 
   useEffect(() => {
@@ -53,6 +57,26 @@ const Navbar = () => {
     getUser();
   }, [])
 
+  useEffect(() => {
+    if (!searchData.trim()) {
+      setCoursesFounded([]);
+      return;
+    }
+    const token = localStorage.getItem("JWT");
+    axios
+      .get('http://localhost:8080' + `/api/v1/course/search?title=${searchData}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then((response) => {
+        setCoursesFounded(response.data.courses);
+        console.log(response)
+      })
+      .catch((error) => {
+        console.error(`Error when call API: ${error}`);
+      });
+  }, [searchData]);
+
+
   return (
     <nav className="px-8 py-1 flex-between flex-row border-b border-borderline">
       <Link href="/" className="flex-center flex-row gap-1">
@@ -66,11 +90,15 @@ const Navbar = () => {
         <h2 className="font-semibold text-2xl leading-10">BKStudy</h2>
       </Link>
 
-      <div className="flex-between flex-row justify-between w-[400px] h-[35px] border rounded-3xl border-borderline">
+      <div className="flex-between flex-row relative justify-between w-[400px] h-[35px] border rounded-3xl border-borderline">
         <input
           type="text"
           className="w-full ml-5 outline-none"
           placeholder="Search..."
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.target.value)
+          }}
         />
         <button className="mr-5">
           <Image
@@ -80,6 +108,33 @@ const Navbar = () => {
             height={20}
           />
         </button>
+        {
+          searchData ? (
+            <div className="absolute w-full z-50 top-[55px] bg-slate-100 rounded-lg">
+              {
+                coursesFounded && coursesFounded.map(course => (
+                  <Link key={course._id} href={`coursepage/${course._id}`} className='px-4 py-2 rounded-lg shadow-lg cursor-pointer transfrom-action flex flex-row'>
+                    <div className='w-[100px] relative h-[60px]'>
+                      <Image
+                        className="rounded-lg py-1"
+                        src={'http://localhost:8080/' + course.imageUrl}
+                        alt="Courses Picture"
+                        fill
+                        objectFit="cover"
+                      />
+                    </div>
+                    <div className='pl-4 pt-2 w-[300px]'>
+                      <h3 className='text-base font-medium'>{course.title}</h3>
+                      <h3 className='text-base font-normal'>Giá tiền: {course.price} vnd</h3>
+                    </div>
+                  </Link>
+                ))
+              }
+            </div>
+          ) : (
+            <></>
+          )
+        }
       </div>
 
       {userInfo ? (
@@ -202,7 +257,7 @@ const Navbar = () => {
                 <ul className="py-2 text-sm text-gray-700 w-full">
                   <li>
                     <div
-                      onClick={() => {router.push('/profile')}}
+                      onClick={() => { router.push('/profile') }}
                       className="px-4 py-2 hover:bg-gray-100 block text-center cursor-pointer"
                     >
                       Trang cá nhân
