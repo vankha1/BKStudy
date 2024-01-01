@@ -42,6 +42,7 @@ const HomePage = () => {
               imageUrl={course.imageUrl}
               price={course.price}
               desc={course.description}
+              rating={course.rating}
             />
           ))}
         </div>

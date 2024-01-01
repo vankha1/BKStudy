@@ -46,7 +46,8 @@ const CoursePage = ({ params }) => {
         )
         .then((responses) => {
           console.log(responses)
-          setRatingCourse(responses.data);
+          if (responses.data.message=="Course not rated") setRatingCourse(0);
+          else setRatingCourse(responses.data);
         })
         .catch((error) => {
           console.log(error);
@@ -94,7 +95,7 @@ const CoursePage = ({ params }) => {
           <div className="flex mb-1">
             <span className="mr-28">
               <span className="font-medium">Đánh giá: </span>
-              <StarRating rating={ratingCourse.avgRating} />
+              {(ratingCourse===0) ? (<p className="text-orange-500">Chưa có đánh giá</p>) : (<StarRating rating={ratingCourse.avgRating} />)}
             </span>
           </div>
           <div className="mb-1">
