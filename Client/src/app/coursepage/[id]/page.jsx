@@ -45,23 +45,27 @@ const CoursePage = ({ params }) => {
 
   const handleRegister = () => {
     const token = localStorage.getItem("JWT");
-    axios
-      .post(
-        SERVER_URL + `/api/v1/user/register/${params?.id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        if (response.statusText === "OK") {
-          console.log(response.data);
-          router.push(`/pay/${params?.id}`);
-        }
-      })
-      .catch((error) => alert(error));
+    if (token) {
+      axios
+        .post(
+          SERVER_URL + `/api/v1/user/register/${params?.id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          if (response.statusText === "OK") {
+            console.log(response.data);
+            router.push(`/pay/${params?.id}`);
+          }
+        })
+        .catch((error) => alert(error));
+    } else {
+      router.push('/login');
+    }
   };
 
   return !done ? (
@@ -216,7 +220,7 @@ const CoursePage = ({ params }) => {
               ></Image>
               <p className="ml-2">Giao tiếp với giảng viên</p>
             </div>
-            </div>
+          </div>
         </div>
       </div>
 
@@ -237,27 +241,27 @@ const CoursePage = ({ params }) => {
                   width={30}
                   height={30}
                   priority
-                  
+
                 />
                 <h3 className="text-xl font-medium p-1">{chapter.name}</h3>
               </div>
               <div
-                  className={
-                    isDropdown[indexChapter] ? "hidden-action" : ""
-                  }
-                >
-                  {chapter.lessons.map((lesson) => (
-                    <div className="flex-start flex-row p-1">
-                      <Image 
-                        className="ml-5 mr-2 mt-1"
-                        src="/assets/icons/video_icon.svg"
-                        width={22}
-                        height={22}
-                      />
-                      <p className="text-lg">{lesson.lessonId.title}</p>
-                    </div>
-                  ))}
-                </div>
+                className={
+                  isDropdown[indexChapter] ? "hidden-action" : ""
+                }
+              >
+                {chapter.lessons.map((lesson) => (
+                  <div className="flex-start flex-row p-1">
+                    <Image
+                      className="ml-5 mr-2 mt-1"
+                      src="/assets/icons/video_icon.svg"
+                      width={22}
+                      height={22}
+                    />
+                    <p className="text-lg">{lesson.lessonId.title}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
