@@ -9,7 +9,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
 
     const [isEditing, setIsEditing] = useState(true);
     const [newData, setNewData] = useState([infos]);
-    const [image, setImage] = useState();
+    const [image, setImage] = useState([]);
     useEffect(() => {
         if (infos[3]?.data && Symbol.iterator in Object(infos[3].data)) {
             setImage([...infos[3].data]);

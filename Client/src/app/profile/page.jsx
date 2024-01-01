@@ -111,7 +111,7 @@ const Profile = () => {
   }
 
   const openExternalImage = (imageURL) => {
-    const externalImagePath = `http://localhost:8080/${imageURL}`;
+    const externalImagePath = imageURL.includes('https') ? imageURL : `http://localhost:8080/${imageURL}`;
     const newWindow = window.open();
     newWindow.location.href = externalImagePath;
   };
@@ -130,7 +130,7 @@ const Profile = () => {
                 <div className='w-40 h-40 relative rounded-full flex-center bg-white cursor-pointer'>
                   <Image
                     className="w-32 h-32 rounded-full"
-                    src={userProfile.avatar ? `http://localhost:8080/${userProfile.avatar}` : '/assets/images/avatar.svg'}
+                    src={userProfile.avatar ? (userProfile.avatar.includes('https') ? userProfile.avatar : `http://localhost:8080/${userProfile.avatar}`) : '/assets/images/avatar.svg'}
                     alt="Profile Picture"
                     width={130}
                     height={130}
