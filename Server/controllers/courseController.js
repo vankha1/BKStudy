@@ -281,7 +281,8 @@ const deleteCourse = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    if (course.createdBy.toString() !== req.userId) {
+    console.log(req.userType);
+    if (course.createdBy.toString() !== req.userId && req.userType == 'LECTURER') {
       const error = new Error("Not authenticated");
       error.statusCode = 403;
       throw error;

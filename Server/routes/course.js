@@ -45,7 +45,7 @@ router.post(
 router.delete(
   "/:courseId",
   isAuth.authToken,
-  isAuth.authRoles(["LECTURER"]),
+  isAuth.authRoles(["LECTURER", "ADMIN"]),
   courseController.deleteCourse
 );
 

@@ -58,34 +58,40 @@ const AddLessons = ({ params }) => {
     const handleCallAPI = (data) => {
         const formData = new FormData();
         const token = localStorage.getItem("JWT")
-        formData.append("title", data.title);
-        formData.append("contents", data.contents);
-        formData.append("videoURL", data.videoURL);
-        formData.append("files", data.files);
+        data.title ? formData.append("title", data.title) : warningNotifi('Bạn chưa nhập tên bài giảng!.');
+        data.contents ? formData.append("contents", data.contents) : warningNotifi('Bạn chưa nhập nội dung bài đọc!.');
+        data.videoURL ? formData.append("videoURL", data.videoURL) : null;
+        if (data?.files?.length) {
+            for (let i = 0; i < data.files.length; i++) {
+                formData.append('files', data.files[i]);
+            }
+        }
         formData.append("chapter", indexChapter);
-
-        axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                "Content-Type": `multipart/form-data`,
-            }
-        }).then((response) => {
-            if (response.statusText === 'Created') {
-                successNotifi('Tạo bài giảng thành công!.');
-            }
-            else {
-                warningNotifi('Có lỗi xảy ra, thử lại sau!.');
-            }
-            setTimeout(() => {
-                router.push(`/edit-course/${params?.id}`);
-            }, 1000);
-        }).catch((error) => {
-            if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
-                errorNotifi('Vui lòng đăng nhập lại!.');
-            } else {
-                errorNotifi('Tạo bài giảng thất bại!.');
-            }
-        })
+        if (data.title && data.contents) {
+            axios.post('http://localhost:8080' + `/api/v1/lesson/create/${params?.id}`, formData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    "Content-Type": `multipart/form-data`,
+                }
+            }).then((response) => {
+                console.log(response)
+                if (response.statusText === 'Created') {
+                    successNotifi('Tạo bài giảng thành công!.');
+                }
+                else {
+                    warningNotifi('Có lỗi xảy ra, thử lại sau!.');
+                }
+                setTimeout(() => {
+                    router.push(`/edit-course/${params?.id}`);
+                }, 1000);
+            }).catch((error) => {
+                if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
+                    errorNotifi('Vui lòng đăng nhập lại!.');
+                } else {
+                    errorNotifi('Tạo bài giảng thất bại!.');
+                }
+            })
+        }
     }
 
     return (

@@ -26,7 +26,7 @@ const AddCourse = () => {
         },
         {
             title: 'Hình ảnh kèm theo',
-            value: '',
+            value: 'Hình ảnh nè',
             placeholders: 'Đường dẫn hình ảnh',
             button_title: 'Tải lên',
             fileType: 'image',
@@ -54,33 +54,35 @@ const AddCourse = () => {
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
         const formData = new FormData()
-        formData.append("title", data.title)
-        formData.append("price", Number(data.price))
-        formData.append("image", data.image, data.image.name)
-        formData.append("description", data.description)
-
-        axios.post(`http://localhost:8080/api/v1/course/create`, formData, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                "Content-Type": `multipart/form-data`,
-            }
-        }).then((response) => {
-            if (response.statusText === 'OK') {
-                successNotifi('Gửi yêu cầu thành công!.');
-            }
-            else {
-                warningNotifi('Có lỗi xảy ra, thử lại sau!.')
-            }
-            setTimeout(() => {
-                router.push('/lecturer-manage');
-            }, 1000);
-        }).catch((error) => {
-            if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
-                errorNotifi('Vui lòng đăng nhập lại!.');
-            } else {
-                errorNotifi('Gửi yêu cầu thất bại!.');
-            }
-        })
+        data.title ? formData.append("title", data.title) : warningNotifi('Chưa nhập tên khóa!.');
+        data.price ? formData.append("price", Number(data.price)) : warningNotifi('Chưa nhập giá tiền!.');
+        data.image ? formData.append("image", data.image, data.image.name) : warningNotifi('Chưa tải lên hình ảnh!.');
+        data.description ? formData.append("description", data.description) : warningNotifi('Chưa có mô tả khóa học!.');
+        console.log(data);
+        // if (data.title && data.image && data.price && data.description) {
+        //     axios.post(`http://localhost:8080/api/v1/course/create`, formData, {
+        //         headers: {
+        //             'Authorization': `Bearer ${token}`,
+        //             "Content-Type": `multipart/form-data`,
+        //         }
+        //     }).then((response) => {
+        //         if (response.statusText === 'OK') {
+        //             successNotifi('Gửi yêu cầu thành công!.');
+        //         }
+        //         else {
+        //             warningNotifi('Có lỗi xảy ra, thử lại sau!.')
+        //         }
+        //         setTimeout(() => {
+        //             router.push('/lecturer-manage');
+        //         }, 1000);
+        //     }).catch((error) => {
+        //         if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
+        //             errorNotifi('Vui lòng đăng nhập lại!.');
+        //         } else {
+        //             errorNotifi('Gửi yêu cầu thất bại!.');
+        //         }
+        //     })
+        // }
     }
 
     return (

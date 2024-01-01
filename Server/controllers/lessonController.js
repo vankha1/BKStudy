@@ -1,5 +1,5 @@
 const fs = require("fs");
-
+const path = require("path");
 const User = require("../models/userModel");
 const Course = require("../models/courseModel");
 const Lesson = require("../models/lessonModel");
@@ -141,7 +141,6 @@ const createLesson = async (req, res, next) => {
 
     //handle attach files
     const attachedFiles = [];
-
     //append file
     let count = 0;
     for (let prop in req.files) {
@@ -152,7 +151,6 @@ const createLesson = async (req, res, next) => {
           .replace(/\\\\/g, "/")
           .replace(/\\/g, "/"),
       };
-      //console.log(file);
       attachedFiles.push(file);
     }
 
@@ -164,7 +162,6 @@ const createLesson = async (req, res, next) => {
       courseId: course._id,
       chapter,
     });
-    //console.log(lesson);
 
     await lesson.save();
 
@@ -353,9 +350,31 @@ const updateLesson = async (req, res, next) => {
         ? req.body.videoURL
         : null
       : lesson.videoURL;
-
+    const oldFiles = req.body.oldFiles ? JSON.parse(req.body.oldFiles) : [];
+    let filesToDelete = []
     // Remove old attachedFiles
-    if (req.files) {
+    if (oldFiles.length) {
+      // lesson.attachedFiles.forEach((file) => {
+      //   try {
+      //     fs.unlinkSync(file.filepath);
+      //   } catch (err) {
+      //     console.log(err);
+      //   }
+      // });
+      filesToDelete = lesson.attachedFiles.filter(
+        item1 => !oldFiles.some(item2 => item2.filename === item1.filename)
+      );
+      lesson.attachedFiles = lesson.attachedFiles.filter(
+        item1 => oldFiles.some(item2 => item2.filename === item1.filename)
+      );
+      filesToDelete && filesToDelete.forEach((file) => {
+        try {
+          fs.unlinkSync(file.filepath);
+        } catch (err) {
+          console.log(err);
+        }
+      });
+    } else {
       lesson.attachedFiles.forEach((file) => {
         try {
           fs.unlinkSync(file.filepath);
@@ -365,12 +384,25 @@ const updateLesson = async (req, res, next) => {
       });
     }
 
-    const attachedFiles = req.files
-      ? req.files.map((file) => ({
-          filename: file.originalname,
-          filepath: file.path.replace(/\\\\/g, "/").replace(/\\/g, "/"),
-        }))
-      : lesson.attachedFiles;
+    let attachedFiles = lesson.attachedFiles;
+
+    if (req.files.length) {
+      for (let prop in req.files) {
+        const file = {
+          filename: req.files[prop].originalname,
+          filepath: req.files[prop].path
+            .replace(/\\\\/g, "/")
+            .replace(/\\/g, "/"),
+        };
+        attachedFiles.push(file);
+      }
+    }
+    // const attachedFiles = req.files
+    //   ? req.files.map((file) => ({
+    //       filename: file.originalname,
+    //       filepath: file.path.replace(/\\\\/g, "/").replace(/\\/g, "/"),
+    //     }))
+    //   : lesson.attachedFiles;
 
     lesson.title = title;
     lesson.contents = contents;
@@ -528,8 +560,31 @@ const getFile = async (req, res, next) => {
 //GET /download/:filepath
 const downloadFile = async (req, res, next) => {
   try {
-    const filepath = decodeURIComponent(req.params.filepath);
-    res.download(filepath);
+    const fileNameString = decodeURIComponent(req.params.fileName);
+
+    // handle two string format:
+    // 1: <<new file name>>*<<old file name>>.<<extender>>
+    // 2: <<old file name>>.<<extender>>
+    let newName, oldName, ext;
+    if (fileNameString.includes('*')) {
+      // first format - split string to get new file name and concat to <<new file name>>.<<extender>>
+      ext = fileNameString.split('.')[1];
+      newName = fileNameString.split('*')[0].concat(".", ext);
+      oldName = fileNameString.split('*')[1];
+    }
+    else {
+      // second format
+      newName = oldName = fileNameString;
+    }
+
+    // attach old name to server's files system
+    const filePath = path.join(__dirname, "../files/", oldName);
+
+    res.download(filePath, newName, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
