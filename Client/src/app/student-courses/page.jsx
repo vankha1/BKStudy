@@ -7,11 +7,20 @@ import axios from "axios";
 import { useAuthContext } from "@app/contexts/auth";
 import Image from "next/image";
 import LoadingState from "@components/LoadingState";
+import Rating from "@components/Rating";
+
 
 const StudentCourses = () => {
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState([]);
+  const [isRating, setIsRating] = useState(false);
+  const [ratingData, setRatingData] = useState(["", ""])
   const { SERVER_URL } = useAuthContext();
+
+  const handleRating = async (tittle, id) => {
+    setRatingData([tittle, id]);
+    setIsRating(true);
+  }
 
   useEffect(() => {
     const token = localStorage.getItem("JWT");
@@ -23,6 +32,7 @@ const StudentCourses = () => {
       })
       .then((response) => {
         if (response.statusText === "OK") {
+          console.log(response.data.courses);
           setCourses(response.data.courses.filter((course) => (course.courseId != null)));
           setLoading(false);
         }
@@ -41,6 +51,7 @@ const StudentCourses = () => {
               tittle={course.courseId.title}
               author={course.courseId.createdBy}
               image={SERVER_URL + "/" + course.courseId.imageUrl}
+              handleRating={handleRating}
             />
           </div>))) : (
             <div className="font-bold text-2xl w-full text-center">Chưa có khóa học nào được đăng ký</div>
@@ -48,6 +59,9 @@ const StudentCourses = () => {
       ) : (
         <LoadingState title='Đang tải khóa' />
       )}
+      {isRating ? (
+        <Rating name={ratingData[0]} id={ratingData[1]} closePopUp={() => {setIsRating(false)}} server={SERVER_URL}/>
+      ) : ("")}
     </section>
   );
 };
