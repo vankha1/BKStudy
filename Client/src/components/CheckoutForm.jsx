@@ -84,12 +84,13 @@ const CheckoutForm = () => {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
+      
       <LinkAuthenticationElement
         id="link-authentication-element"
         onChange={(e) => setEmail(e.target.value)}
       />
       <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <button disabled={isLoading || !stripe || !elements} id="submit">
+      <button disabled={isLoading || !stripe || !elements} id="submit" className="w-full h-12 bg-blue-600 hover:bg-blue-800 text-white mt-24 rounded-lg">
         <span id="button-text">
           {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
         </span>
