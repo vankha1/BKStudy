@@ -78,11 +78,11 @@ const Profile = () => {
   const handleDataUSer = (user) => {
     if (user) {
       const newDataInfo = [...userInfo];
-      newDataInfo[0].data = user.email;
-      newDataInfo[1].data = user.fullname;
-      newDataInfo[2].data = user.dateOfBirth ? user.dateOfBirth : '';
-      newDataInfo[3].data = user.joinedDate.slice(0, 10);
-      newDataInfo[4].data = user.phoneNumber;
+      newDataInfo[0].data = user.email ? user.email : '';
+      newDataInfo[1].data = user.fullname ? user.fullname : '';
+      newDataInfo[2].data = user.dateOfBirth ? user.dateOfBirth.slice(0, 10) : '';
+      newDataInfo[3].data = user.joinedDate ? user.joinedDate.slice(0, 10) : '';
+      newDataInfo[4].data = user.phoneNumber ? user.phoneNumber : '';
       setUserInfo(newDataInfo);
     }
   }
@@ -94,7 +94,6 @@ const Profile = () => {
       dateOfBirth: infos[2].data,
       phoneNumber: infos[4].data,
     }
-    console.log(data);
     axios
       .put("http://localhost:8080/api/v1/user/update-profile", data, {
         headers: {
@@ -130,7 +129,7 @@ const Profile = () => {
                 <div className='w-40 h-40 relative rounded-full flex-center bg-white cursor-pointer'>
                   <Image
                     className="w-32 h-32 rounded-full"
-                    src={userProfile.avatar ? (userProfile.avatar.includes('https') ? userProfile.avatar : `http://localhost:8080/${userProfile.avatar}`) : '/assets/images/avatar.svg'}
+                    src={userProfile?.avatar ? (userProfile.avatar.includes('https') ? userProfile.avatar : `http://localhost:8080/${userProfile.avatar}`) : '/assets/images/avatar.svg'}
                     alt="Profile Picture"
                     width={130}
                     height={130}

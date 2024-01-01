@@ -8,6 +8,9 @@ const imageMulterMiddleware = require('../middleware/imageMulter');
 
 const router = express.Router();
 
+
+router.get('/search', courseController.searchCourses);
+
 // Rating the course
 router.post('/rating', isAuth.authToken, isAuth.authRoles(['STUDENT']), ratingController.postRating)
 
