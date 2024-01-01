@@ -5,6 +5,34 @@ const { validationResult } = require("express-validator");
 const Course = require("../models/courseModel");
 const User = require("../models/userModel");
 
+
+const searchCourses = async (req, res, next) => {
+  try {
+    const { title } = req.query;
+
+    if (!title) {
+      const error = new Error('Title parameter is missing');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const courses = await Course.find({
+      title: { $regex: new RegExp(title, 'i') }},
+      { _id: 1, title: 1, price: 1, description: 1, imageUrl: 1 }
+    );
+
+    res.status(200).json({
+      message: 'Courses found successfully!',
+      courses,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
 // GET /
 const getAllCourses = async (req, res, next) => {
   try {
@@ -323,4 +351,5 @@ module.exports = {
   getStudent,
   createCourse,
   deleteCourse,
+  searchCourses,
 };

@@ -40,12 +40,13 @@ const StudentCourses = () => {
             <StudentCourseCard
               id={course.courseId._id}
               tittle={course.courseId.title}
-              author={course.courseId.createdBy}
+              author={course.courseId.createdBy.fullname}
               image={SERVER_URL + "/" + course.courseId.imageUrl}
             />
-          </div>))) : (
-            <div className="font-bold text-2xl w-full text-center">Chưa có khóa học nào được đăng ký</div>
-          )
+          </div>
+        ))) : (
+          <div className="font-bold text-2xl w-full text-center">Chưa có khóa học nào được đăng ký</div>
+        )
       ) : (
         <LoadingState title='Đang tải khóa' />
       )}

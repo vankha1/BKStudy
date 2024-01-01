@@ -237,6 +237,7 @@ const EditCourse = ({ params }) => {
         setIsAddDiscussion(false);
     }
 
+
     return (
         <div className="w-full">
             {
