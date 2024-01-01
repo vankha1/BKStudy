@@ -23,6 +23,7 @@ const getApprovedCourses = async (req, res, next) => {
 // POST /api/v1/admin/course-approve/:courseId
 const approveCourse = async (req, res, next) => {
   try {
+    console.log(req.params);
     const courseId = req.params.courseId;
     const course = await Course.findById(courseId);
 
@@ -37,9 +38,11 @@ const approveCourse = async (req, res, next) => {
         message: "Course is already approved !!!",
       });
     } else {
+      
       course.isApproved = true;
       await course.save();
 
+      
       const user = await User.findById(course.createdBy.toString());
       user.courses.push({
         courseId: course._id,
