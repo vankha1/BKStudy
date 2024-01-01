@@ -11,6 +11,10 @@ const Dashboard = () => {
 
     const [course, setCourse] = useState();
     const [user, setUser] = useState();
+    const [rate, setRate] = useState();
+    const [por1, setPor1] = useState();
+    const [por2, setPor2] = useState();
+    const [por3, setPor3] = useState();
 
     useEffect(() => {
       const token = localStorage.getItem("JWT");
@@ -22,7 +26,11 @@ const Dashboard = () => {
           const data = response.data.allCourseCount;
           const courseData = data;
   
+          setRate(response.data.ratingCount);
           setCourse(courseData);
+          setPor1(response.data.piePortion1);
+          setPor2(response.data.piePortion2);
+          setPor3(response.data.piePortion3);
         }
         )
         .catch((error) => {
@@ -34,7 +42,7 @@ const Dashboard = () => {
             headers: { Authorization: `Bearer ${token}` }
         })
         .then((response) => {
-          const data = response.data.allUseCount;
+          const data = response.data.allUserCount;
           const userData = data;
   
           setUser(userData);
@@ -65,7 +73,7 @@ const Dashboard = () => {
             <div className='w-1/4 h-56 border border-primary rounded-2xl pt-7 text-center'>
                 <Image src='/assets/icons/star_icon.svg' alt="" width={36} height={36} className='m-auto'></Image>
                 <h1 className='mt-3 font-semibold text-2xl'>Tổng số lượt đánh giá</h1>
-                <h1 className='mt-6 font-semibold text-5xl text-primary'>10000</h1>
+                <h1 className='mt-6 font-semibold text-5xl text-primary'>{rate}</h1>
             </div>
         </div>
 
@@ -87,7 +95,7 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-            <PieChart quan1={40} quan2={40} quan3={20}/>
+            <PieChart quan1={por1} quan2={por2} quan3={por3}/>
         </div>
     </div>
     
