@@ -226,10 +226,10 @@ const RenderReply = ({ courseId, iddiscussion }) => {
                                 ))
                             }
                         </>
-                        <Notification />
                     </div>
                 )
             }
+            <Notification />
         </div>
     )
 }

@@ -17,7 +17,7 @@ const stripePromise = loadStripe(
 export default function Pay() {
   const [clientSecret, setClientSecret] = useState("");
 
-  const {courseId} = useParams();
+  const { courseId } = useParams();
 
   const token = localStorage.getItem("JWT");
   useEffect(() => {
@@ -53,12 +53,17 @@ export default function Pay() {
   };
 
   return (
-    <div className="pay">
-      {clientSecret && (
-        <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm />
-        </Elements>
-      )}
+    <div className="w-full flex">
+      <div className="w-[28rem] h-[36rem] mx-auto mt-8 bg-gray-100 rounded-2xl">
+        <div className="mx-8 mt-4 font-medium text-lg">THANH TOÁN KHÓA HỌC</div>
+        <div className="mx-8 my-12">
+          {clientSecret && (
+            <Elements options={options} stripe={stripePromise}>
+              <CheckoutForm />
+            </Elements>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

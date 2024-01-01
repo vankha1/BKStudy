@@ -100,9 +100,9 @@ const EditLesson = ({ params }) => {
                 newInfos[0].data = responses.data.lesson.title;
                 newInfos[1].data = responses.data.lesson.contents;
                 newInfos[2].data = responses.data.lesson.videoURL;
-                newInfos[3].data = responses.data.lesson.attachedFiles[0] && responses.data.lesson.attachedFiles[0].filename ? responses.data.lesson.attachedFiles[0].filename : '';
-                setInfos(newInfos);
-                setOldInfos(newInfos);
+                newInfos[3].data = responses.data.lesson && responses.data.lesson.attachedFiles ? responses.data.lesson.attachedFiles : '';
+                setInfos(_.cloneDeep(newInfos));
+                setOldInfos(_.cloneDeep(newInfos));
             })
             .catch(error => {
                 console.log(error)
@@ -132,37 +132,63 @@ const EditLesson = ({ params }) => {
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
         const formData = new FormData()
+        let oldFiles = []
+        data.title == oldInfos[0].data ? null : formData.append("title", data.title);
+        data.contents == oldInfos[1].data ? null : formData.append("contents", data.contents);
+        data.videoURL == oldInfos[2].data ? null : formData.append("videoURL", data.videoURL);
 
-        data.title != oldInfos.title ? formData.append("title", data.title) : null;
-        data.contents != oldInfos.contents ? formData.append("contents", data.contents) : null;
-        data.videoURL != oldInfos.videoURL ? formData.append("videoURL", data.videoURL) : null;
-        data.files != oldInfos.files ? formData.append("files", data.files) : null;
+        if (JSON.stringify(data.files) === JSON.stringify(oldInfos[3].data)) {
+            
+        } else {
+            let isAddNewFile = false;
+            for (let i in data.files) {
+                if (data.files[i].filename) {
 
-        axios.put('http://localhost:8080' + `/api/v1/lesson/update?courseId=${params?.id}&chapter=${indexChpater}&lessonId=${params?.idlesson}`, formData, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                "Content-Type": `multipart/form-data`,
+                } else {
+                    isAddNewFile = true
+                }
             }
-        }).then((response) => {
-            console.log(response);
-            if (response.statusText === 'Accepted') {
-                successNotifi('Chỉnh sửa bài giảng thành công!.');
-                console.log(response);
-            }
-            else {
-                warningNotifi('Có lỗi xảy ra, thử lại sau!.')
-            }
-            setTimeout(() => {
-                router.push(`/edit-course/${params?.id}`);
-            }, 1000);
-        }).catch((error) => {
-            console.log(error);
-            if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
-                errorNotifi('Vui lòng đăng nhập lại!.');
+            if (isAddNewFile) {
+                for (let i in data.files) {
+                    data.files[i].filename ? oldFiles.push(data.files[i]) : formData.append("files", data.files[i]);;
+                }
             } else {
-                errorNotifi('Chỉnh sửa bài giảng thất bại!.');
+                oldFiles = data.files;
             }
-        })
+        }
+
+        oldFiles.length ? formData.append("oldFiles", JSON.stringify(oldFiles)) : null;
+
+        data.title != ' ' ? null : warningNotifi('Bạn chưa nhập tiêu đề bài giảng!.');
+        data.contents != ' ' ? null : warningNotifi('Bạn chưa nhập nội dung bài giảng!.');
+
+        if (data.title != ' ' && data.contents != ' ') {
+            axios.put('http://localhost:8080' + `/api/v1/lesson/update?courseId=${params?.id}&chapter=${indexChpater}&lessonId=${params?.idlesson}`, formData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    "Content-Type": `multipart/form-data`,
+                }
+            }).then((response) => {
+                console.log(response);
+                if (response.statusText === 'Accepted') {
+                    successNotifi('Chỉnh sửa bài giảng thành công!.');
+                    console.log(response);
+                }
+                else {
+                    warningNotifi('Có lỗi xảy ra, thử lại sau!.')
+                }
+                setTimeout(() => {
+                    router.push(`/edit-course/${params?.id}`);
+                }, 1000);
+            }).catch((error) => {
+                console.log(error);
+                if (error.response && error.response.status === 401 && error.response.data.message === 'jwt expired') {
+                    errorNotifi('Vui lòng đăng nhập lại!.');
+                } else {
+                    errorNotifi('Chỉnh sửa bài giảng thất bại!.');
+                }
+            })
+        }
     }
 
     return (

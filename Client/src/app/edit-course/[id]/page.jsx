@@ -124,26 +124,31 @@ const EditCourse = ({ params }) => {
     }
 
     const handleAddNewChapter = (newChapter, handleSaveChapter) => {
-        const token = localStorage.getItem("JWT");
-        const data = {
-            name: newChapter
+        if (newChapter.length) {
+            const token = localStorage.getItem("JWT");
+            const data = {
+                name: newChapter
+            }
+            const newDataCourse = [...dataCourse];
+            newDataCourse.push(data);
+            axios.post('http://localhost:8080' + `/api/v1/chapter/create?courseId=${params?.id}`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            }).then((response) => {
+                if (response.statusText === 'OK') {
+                    successNotifi('Thêm chương mới thành công!.');
+                    setDataCourse(newDataCourse);
+                    setPrevChapterName([...prevChapterName, data]);
+                    handleSaveChapter();
+                }
+                else {
+                    errorNotifi('Thêm chương mới thất bại!.');
+                }
+            }).catch((error) => errorNotifi('Có lỗi xảy ra, thử lại sau!.'))
+        } else {
+            warningNotifi('Bạn chưa nhập tên chương!.');
         }
-        const newDataCourse = [...dataCourse];
-        newDataCourse.push(data);
-        axios.post('http://localhost:8080' + `/api/v1/chapter/create?courseId=${params?.id}`, data, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            }
-        }).then((response) => {
-            if (response.statusText === 'OK') {
-                successNotifi('Thêm chương mới thành công!.');
-                setDataCourse(newDataCourse);
-                handleSaveChapter();
-            }
-            else {
-                errorNotifi('Thêm chương mới thất bại!.');
-            }
-        }).catch((error) => errorNotifi('Có lỗi xảy ra, thử lại sau!.'))
     }
 
     const handleDeleteChapter = (indexChapter) => {
@@ -162,7 +167,8 @@ const EditCourse = ({ params }) => {
             .catch(error => {
                 errorNotifi('Có lỗi xảy ra!.');
             });
-        setDataCourse(dataCourse.filter((course, index) => index != indexChapter))
+        setDataCourse(dataCourse.filter((course, index) => index != indexChapter));
+        setPrevChapterName(prevChapterName.filter((course, index) => index != indexChapter));
     }
 
     const handleEditChapter = (indexChapter) => {
