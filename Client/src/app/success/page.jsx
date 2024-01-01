@@ -53,7 +53,7 @@ const Success = () => {
         <div className="flex-between">
           <LoadingState width={60} height={60}/>
           <div className="text-xl">
-            Payment successful. You are being redirected to the orders page. Please do
+            Payment successful. You are being redirected to the course page. Please do
             not close the page.
           </div>
         </div>
