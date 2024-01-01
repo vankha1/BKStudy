@@ -132,7 +132,7 @@ const EditLesson = ({ params }) => {
     const handleCallAPI = (data) => {
         const token = localStorage.getItem("JWT")
         const formData = new FormData()
-
+        let oldFiles = []
         data.title == oldInfos[0].data ? null : formData.append("title", data.title);
         data.contents == oldInfos[1].data ? null : formData.append("contents", data.contents);
         data.videoURL == oldInfos[2].data ? null : formData.append("videoURL", data.videoURL);
@@ -140,13 +140,27 @@ const EditLesson = ({ params }) => {
         if (JSON.stringify(data.files) === JSON.stringify(oldInfos[3].data)) {
             
         } else {
+            let isAddNewFile = false;
             for (let i in data.files) {
-                formData.append("files", data.files[i]);
+                if (data.files[i].filename) {
+
+                } else {
+                    isAddNewFile = true
+                }
+            }
+            if (isAddNewFile) {
+                for (let i in data.files) {
+                    data.files[i].filename ? oldFiles.push(data.files[i]) : formData.append("files", data.files[i]);;
+                }
+            } else {
+                oldFiles = data.files;
             }
         }
 
-        data.title == ' ' ? null : warningNotifi('Bạn chưa nhập tiêu đề bài giảng!.');
-        data.contents == ' ' ? null : warningNotifi('Bạn chưa nhập nội dung bài giảng!.');
+        oldFiles.length ? formData.append("oldFiles", JSON.stringify(oldFiles)) : null;
+
+        data.title != ' ' ? null : warningNotifi('Bạn chưa nhập tiêu đề bài giảng!.');
+        data.contents != ' ' ? null : warningNotifi('Bạn chưa nhập nội dung bài giảng!.');
 
         if (data.title != ' ' && data.contents != ' ') {
             axios.put('http://localhost:8080' + `/api/v1/lesson/update?courseId=${params?.id}&chapter=${indexChpater}&lessonId=${params?.idlesson}`, formData, {

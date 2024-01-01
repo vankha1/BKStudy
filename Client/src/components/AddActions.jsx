@@ -15,6 +15,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
             setImage([...infos[3].data]);
         }
     }, [infos[3]?.data]);
+    const [multiFiles, setMultiFiles] = useState();
 
     const [isSettingFile, setIsSettingFile] = useState(false);
     const router = useRouter();
@@ -28,8 +29,12 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
         setNewData(updatedInfo);
     };
 
-    const handleImage = (fileUrl, selectedFile) => {
-        setImage(selectedFile);
+    const handleImage = (fileUrl, selectedFile, type) => {
+        if (type == 'single-file') {
+            setImage(selectedFile);
+        } else {
+            setImage([...image, selectedFile])
+        }
     }
 
     const handleValueObj = () => {
@@ -41,10 +46,15 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
         handlGetDataForAPI(updatedInfoCourse)
     }
 
-    const handleDeleteFileName = (fileName) => {
+    const handleDeleteFileName = (fileName, index) => {
         let fileData = [...image];
-        fileData = fileData.filter(file => (file.name !== fileName && file.filename !== fileName));
+        fileData = fileData.filter(file => (file.name !== fileName));
+        fileData = fileData.filter(file => (file.filename !== fileName));
         setImage(fileData);
+        const updatedInfo = [...infos];
+        updatedInfo[index].data = fileData;
+        setNewData(updatedInfo);
+        console.log(fileData, updatedInfo);
     }
 
 
@@ -74,9 +84,9 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
                                                         title={info.button_title}
                                                         className='w-32 py-1 flex items-center justify-center hover:cursor-pointer hover:bg-slate-200 px-4 rounded-lg'
                                                         fileType={info.fileType}
-                                                        onFileSelected={(fileUrl, selectedFile) => {
-                                                            handleImage(fileUrl, selectedFile);
-                                                            handleInputChange(selectedFile, index);
+                                                        onFileSelected={(fileUrl, selectedFile, type) => {
+                                                            handleImage(fileUrl, selectedFile, type);
+                                                            handleInputChange([...image, selectedFile], index);
                                                         }}
                                                         type={info.type}
                                                     />
@@ -89,8 +99,8 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
                                     </div>
                                     <div className='flex'>
                                         {
-                                            image && image.map((item, index) => (
-                                                <div key={index} className='w-24 py-2 px-2 rounded-lg bg-gray-200 mx-4 hover:cursor-pointer'>
+                                            image && image.map((item, indexFile) => (
+                                                <div key={indexFile} className='w-24 py-2 px-2 rounded-lg bg-gray-200 mx-4 hover:cursor-pointer'>
                                                     <div className='flex-between'>
                                                         <div className='opacity-0'>!!!</div>
                                                         <Image
@@ -100,8 +110,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
                                                             width={16}
                                                             height={16}
                                                             onClick={() => {
-                                                                handleDeleteFileName(item.name ? item.name : item.filename);
-                                                                console.log(item.filename);
+                                                                handleDeleteFileName(item.name ? item.name : item.filename, index);
                                                             }}
                                                         />
                                                     </div>
@@ -132,15 +141,15 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
                                         type='text'
                                         className={`${info.input_className} resize-none`}
                                         placeholder={info.placeholders}
-                                        defaultValue={image ? image.name : info.data}
+                                        defaultValue={image ? info.data.name : info.data}
                                         disabled
                                     />
                                     <UploadFiles
                                         title={info.button_title}
                                         className='py-2 px-4 ml-8 small-second-button'
                                         fileType={info.fileType}
-                                        onFileSelected={(fileUrl, selectedFile) => {
-                                            handleImage(fileUrl, selectedFile);
+                                        onFileSelected={(fileUrl, selectedFile, type) => {
+                                            handleImage(fileUrl, selectedFile, type);
                                             handleInputChange(selectedFile, index);
                                         }}
                                         type={info.type}

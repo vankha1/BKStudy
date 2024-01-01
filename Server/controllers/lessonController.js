@@ -350,9 +350,31 @@ const updateLesson = async (req, res, next) => {
         ? req.body.videoURL
         : null
       : lesson.videoURL;
-
+    const oldFiles = req.body.oldFiles ? JSON.parse(req.body.oldFiles) : [];
+    let filesToDelete = []
     // Remove old attachedFiles
-    if (req.files) {
+    if (oldFiles.length) {
+      // lesson.attachedFiles.forEach((file) => {
+      //   try {
+      //     fs.unlinkSync(file.filepath);
+      //   } catch (err) {
+      //     console.log(err);
+      //   }
+      // });
+      filesToDelete = lesson.attachedFiles.filter(
+        item1 => !oldFiles.some(item2 => item2.filename === item1.filename)
+      );
+      lesson.attachedFiles = lesson.attachedFiles.filter(
+        item1 => oldFiles.some(item2 => item2.filename === item1.filename)
+      );
+      filesToDelete && filesToDelete.forEach((file) => {
+        try {
+          fs.unlinkSync(file.filepath);
+        } catch (err) {
+          console.log(err);
+        }
+      });
+    } else {
       lesson.attachedFiles.forEach((file) => {
         try {
           fs.unlinkSync(file.filepath);
@@ -362,8 +384,9 @@ const updateLesson = async (req, res, next) => {
       });
     }
 
+    let attachedFiles = lesson.attachedFiles;
+
     if (req.files.length) {
-      attachedFiles = []
       for (let prop in req.files) {
         const file = {
           filename: req.files[prop].originalname,
@@ -373,8 +396,6 @@ const updateLesson = async (req, res, next) => {
         };
         attachedFiles.push(file);
       }
-    } else {
-      attachedFiles = lesson.attachedFiles;
     }
     // const attachedFiles = req.files
     //   ? req.files.map((file) => ({
@@ -400,8 +421,6 @@ const updateLesson = async (req, res, next) => {
     res.status(202).json({
       message: "Update lesson successfully !!!",
       lesson: lesson,
-      files: req.files,
-      test: req.body.files
     });
   } catch (err) {
     if (!err.statusCode) {
