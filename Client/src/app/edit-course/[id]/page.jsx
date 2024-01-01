@@ -190,6 +190,11 @@ const EditCourse = ({ params }) => {
             .catch(error => {
                 errorNotifi('Có lỗi xảy ra, thử lại sau.')
             });
+
+        const newData = [...prevChapterName];
+        newData[indexChapter].name = dataCourse[indexChapter].name;
+        setPrevChapterName(_.cloneDeep(newData));
+
     }
 
     const handleAddNewDiscussion = (dataAddDiscussion, setIsAddDiscussion, setDataAddDiscussion) => {
