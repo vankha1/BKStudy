@@ -84,7 +84,8 @@ const RenderLessons =
 
         return (
             <div className='w-full'>
-                <div className='w-full flex-end'>
+                <div className='w-full mt-8 flex-between'>
+                    <div className="opacity-0">!!!</div>
                     <button className='medium-blue-button' onClick={handleIsAddChapter}>Thêm chương mới</button>
                 </div>
                 <div className='mt-8'>
@@ -169,7 +170,7 @@ const RenderLessons =
                                     </Link>
                                     {
                                         chapter && chapter.lessons && chapter.lessons.map((item, index) => (
-                                            <Link key={index} href={{ pathname: `/edit-lesson/${courseId}/${item.lessonId._id}`, query: { course: courseName } }} className='w-full flex mb-8 rounded-lg p-2 border border-solid border-grayflex-between hover:bg-gray-100'>
+                                            <Link key={index} href={{ pathname: `/edit-lesson/${courseId}/${item.lessonId._id}`, query: { course: courseName, chapter: indexChapter } }} className='w-full flex mb-8 rounded-lg p-2 border border-solid border-grayflex-between hover:bg-gray-100'>
                                                 <div className='w-full flex'>
                                                     <div className='flex'>
                                                         <Image

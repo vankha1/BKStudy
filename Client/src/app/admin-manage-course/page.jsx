@@ -6,43 +6,6 @@ import Link from "next/link";
 import AdminCourseCard from "@components/AdminCourseCard";
 import FilterSearch from "@components/FilterSearch";
 
-const data = [
-  {
-    title: "Giải tích 1",
-    createdBy: "Nguyễn Văn A",
-    imageUrl: "/assets/images/course_image.jpg",
-    price: "500",
-    description: "Học xong 10 chấm",
-  },
-  {
-    title: "Giải tích 1",
-    createdBy: "Nguyễn Văn A",
-    imageUrl: "/assets/images/course_image.jpg",
-    price: "500",
-    description: "Học xong 10 chấm",
-  },
-  {
-    title: "Giải tích 1",
-    createdBy: "Nguyễn Văn A",
-    imageUrl: "/assets/images/course_image.jpg",
-    price: "500",
-    description: "Học xong 10 chấm",
-  },
-  {
-    title: "Giải tích 1",
-    createdBy: "Nguyễn Văn A",
-    imageUrl: "/assets/images/course_image.jpg",
-    price: "500",
-    description: "Học xong 10 chấm",
-  },
-  {
-    title: "Giải tích 1",
-    createdBy: "Nguyễn Văn A",
-    imageUrl: "/assets/images/course_image.jpg",
-    price: "500",
-    description: "Học xong 10 chấm",
-  },
-];
 
 const AdminPage = () => {
   const [courses, setCourses] = useState();
@@ -57,7 +20,7 @@ const AdminPage = () => {
         const data = response.data.courses;
         const courseData = data;
 
-        setUsers(courseData);
+        setCourses(courseData);
       }
       )
       .catch((error) => {
@@ -68,14 +31,18 @@ const AdminPage = () => {
   return (
     <div className="w-full">
       <div>
-        <Link href='\admin-manage-user' className="absolute right-16 text-footer font-semibold text-xl hover:text-primary">Quản lý người dùng</Link>
+        <div className="absolute right-16">
+          <Link href='\admin-manage-user' className="text-footer font-semibold text-xl hover:text-primary mr-10">Quản lý người dùng</Link>
+          <Link href='\admin-dashboard' className="text-footer font-semibold text-xl hover:text-primary">Thống kê</Link>
+        </div>
         <FilterSearch title="YÊU CẦU PHÊ DUYỆT" />
         {courses && courses.map((course, index) => (
           <div key={index} className="w-full flex-center">
             <AdminCourseCard
+              _id={course._id}
               tittle={course.title}
-              author={course.createdBy}
-              image={course.imageUrl}
+              author={course.createdBy.fullname}
+              image={'http://localhost:8080/' + course.imageUrl}
               price={course.price}
               description={course.description}
             />

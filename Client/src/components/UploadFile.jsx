@@ -1,20 +1,21 @@
 "use client"; // This is a client component
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
-const UploadFile = ({ title, className, fileType, onFileSelected}) => {
+const UploadFile = ({ title, className, fileType, onFileSelected, type='single-file'}) => {
   const fileInputRef = useRef(null);
-
+  const [filesUpload, setFilesUpload] = useState([]);
   const handleFileUpload = () => {
     fileInputRef.current.click();
   };
 
   const handleFileSelected = (event) => {
     const selectedFile = event.target.files[0];
+    setFilesUpload([...filesUpload, selectedFile]);
     if (selectedFile) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const fileUrl = e.target.result;
-        onFileSelected(fileUrl, selectedFile);
+        type === 'single-file' ?  onFileSelected(fileUrl, selectedFile) : onFileSelected(fileUrl, filesUpload)
       };
       reader.readAsDataURL(selectedFile);
     };
