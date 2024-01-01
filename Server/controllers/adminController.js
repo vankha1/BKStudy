@@ -1,5 +1,6 @@
 const Course = require("../models/courseModel");
 const User = require("../models/userModel");
+const Rating = require("../models/ratingModel");
 
 // GET /api/v1/admin/courses
 const getApprovedCourses = async (req, res, next) => {
@@ -157,7 +158,6 @@ const getStatUser = async (req, res, next) => {
 
 const getStatCourse = async (req, res, next) => {
   try {
-    console.log("get statistic from controller");
     const allCount = await Course.countDocuments({});
 
     const approvedCount = await Course.countDocuments({
@@ -186,11 +186,47 @@ const getStatCourse = async (req, res, next) => {
       }
     })
 
+    // find course with the most student enrolled in
+    const popCourse = await Course.findOne({
+      isApproved: true
+    })
+      .sort("-numberOfStudent")
+      .exec();
+
+    //pie 1: >= 4
+    //pie 2: <4 && >=3
+    //pie 3: <3
+    const pie1Tier = await Rating.countDocuments({
+      'courseId': popCourse.id,
+      rate: {
+        $gte: 4
+      }
+    })
+    const pie2Tier = await Rating.countDocuments({
+      'courseId': popCourse.id,
+      rate: {
+        $gte: 3,
+        $lt: 4
+      }
+    })
+    const pie3Tier = await Rating.countDocuments({
+      'courseId': popCourse.id,
+      rate: {
+        $lt: 3
+      }
+    })
+
+    const ratingCount = await Rating.countDocuments({});
+
     res.status(200).json({
       allCourseCount: allCount,
       approvedCourseCount: approvedCount,
       newCourseThisMonth: currCount,
-      newCourseLastMonth: prevCount
+      newCourseLastMonth: prevCount,
+      ratingCount: ratingCount,
+      piePortion1: pie1Tier,
+      piePortion2: pie2Tier,
+      piePortion3: pie3Tier
     })
   } catch (err) {
     if (!err.statusCode) {
