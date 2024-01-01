@@ -11,21 +11,28 @@ const Navbar = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
-  const [userInfo, setUserInfo] = useState(null)
+  const [userInfo, setUserInfo] = useState(null);
   const { isLogin, setIsLogin } = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {
-    if (localStorage.getItem("userInfo")) setUserInfo((localStorage.getItem("userInfo")))
-  }, [isLogin])
+    if (localStorage.getItem("userInfo"))
+      setUserInfo(JSON.parse(localStorage.getItem("userInfo")));
+  }, [isLogin]);
 
   const handleLogout = () => {
-    localStorage.removeItem("JWT");
-    localStorage.removeItem("userInfo");
-    setIsLogin(false);
-    setUserInfo(null);
-    router.push('/');
-  }
+      axios.get('http://localhost:8080/logout')
+      .then(response => {
+        
+      })
+      .catch(err => console.log(err))
+      localStorage.removeItem("JWT");
+      localStorage.removeItem("userInfo");
+
+      setIsLogin(false);
+      setUserInfo(null);
+      router.push("/");
+  };
 
   useEffect(() => {
     const getUser = () => {
@@ -43,15 +50,19 @@ const Navbar = () => {
           throw new Error("authentication has been failed!");
         })
         .then((resObject) => {
-          console.log(resObject);
-          setUserInfo(resObject.user);
+          localStorage.setItem("JWT", resObject.user.token)
+          localStorage.setItem("userInfo", JSON.stringify(resObject.user))
+          setUserInfo(resObject.user)
+          setIsLogin(true);
         })
         .catch((err) => {
           console.log(err);
         });
-    }
+    };
     getUser();
-  }, [])
+  }, []);
+
+  // console.log(userInfo.googleId);
 
   return (
     <nav className="px-8 py-1 flex-between flex-row border-b border-borderline">
@@ -85,7 +96,7 @@ const Navbar = () => {
       {userInfo ? (
         <div className="flex-center flex-row gap-4">
           <div>
-            {userInfo.userType === "STUDENT" ? (
+            {userInfo?.userType === "STUDENT" ? (
               <Link href="/student-courses" className="">
                 <Image
                   src="/assets/icons/book_icon.svg"
@@ -187,7 +198,11 @@ const Navbar = () => {
           <div className="z-50 flex-center relative">
             <button onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}>
               <Image
-                src={userInfo.avatar}
+                src={
+                  !userInfo.avatar.startsWith("http")
+                    ? "http://localhost:3000/" + userInfo.avatar
+                    : userInfo.avatar
+                }
                 alt="Avatar"
                 width={40}
                 height={40}
@@ -202,7 +217,9 @@ const Navbar = () => {
                 <ul className="py-2 text-sm text-gray-700 w-full">
                   <li>
                     <div
-                      onClick={() => {router.push('/profile')}}
+                      onClick={() => {
+                        router.push("/profile");
+                      }}
                       className="px-4 py-2 hover:bg-gray-100 block text-center cursor-pointer"
                     >
                       Trang cá nhân
@@ -245,8 +262,12 @@ const Navbar = () => {
       )}
 
       <div className="flex items-center hidden">
-        <Link href="/admin-manage-user" className="font-semibold text-lg mr-5">Người dùng</Link>
-        <Link href="admin-manage-course" className="font-semibold text-lg mr-5">Phê duyệt</Link>
+        <Link href="/admin-manage-user" className="font-semibold text-lg mr-5">
+          Người dùng
+        </Link>
+        <Link href="admin-manage-course" className="font-semibold text-lg mr-5">
+          Phê duyệt
+        </Link>
         <div>
           <Image
             src="/assets/avatar.png"

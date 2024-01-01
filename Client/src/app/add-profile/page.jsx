@@ -39,8 +39,9 @@ const AddProfile = () => {
         "Content-Type": `multipart/form-data`
       }
     }).then((response) => {
+      console.log(response)
       if (response.statusText === 'OK') {
-        localStorage.setItem("userInfo", JSON.stringify(response.data.user));
+        localStorage.setItem("userInfo", JSON.stringify(response.data.user ? response.data.user : response.user));
         setIsLogin(true);
         router.push('/')
       }
@@ -53,6 +54,8 @@ const AddProfile = () => {
     setImageUrl(fileUrl);
     setImageFile(file)
   };
+
+  console.log(userInfo.user)
 
   return (
     <section className="w-full flex-center flex-col gap-4">
@@ -116,6 +119,20 @@ const AddProfile = () => {
             placeholder="xxxxxxxxxx"
           />
         </div>
+        {userInfo.googleId ? <div className="w-full flex-start flex-col mt-1 mb-3">
+          <label className="text-xs font-semibold mb-1">Vai trò</label>
+          <select
+            id="role"
+            onChange={(e) => {
+              setUserInfo({ ...userInfo, userType: e.target.value });
+            }}
+            className="input min-w-[20rem] text-sm text-slate-500"
+          >
+            <option>Chọn vai trò của bạn</option>
+            <option value="STUDENT">Sinh viên</option>
+            <option value="LECTURER">Giáo viên</option>
+          </select>
+        </div> : ''}
         <button type="submit" disabled={submitting} className="big-blue-button mt-6">Xác nhận</button>
       </form>
     </section>

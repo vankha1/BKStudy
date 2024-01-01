@@ -30,6 +30,7 @@ const StudentCourses = () => {
       .catch((error) => console.log(error));
   }, []);
 
+  console.log(courses);
   return (
     <section className="w-full">
       <FilterSearch title="KHÓA HỌC ĐÃ ĐĂNG KÝ" />
