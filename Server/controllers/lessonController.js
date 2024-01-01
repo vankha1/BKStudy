@@ -141,7 +141,6 @@ const createLesson = async (req, res, next) => {
 
     //handle attach files
     const attachedFiles = [];
-
     //append file
     let count = 0;
     for (let prop in req.files) {
@@ -152,7 +151,6 @@ const createLesson = async (req, res, next) => {
           .replace(/\\\\/g, "/")
           .replace(/\\/g, "/"),
       };
-      //console.log(file);
       attachedFiles.push(file);
     }
 
@@ -164,7 +162,6 @@ const createLesson = async (req, res, next) => {
       courseId: course._id,
       chapter,
     });
-    //console.log(lesson);
 
     await lesson.save();
 
@@ -365,12 +362,26 @@ const updateLesson = async (req, res, next) => {
       });
     }
 
-    const attachedFiles = req.files
-      ? req.files.map((file) => ({
-          filename: file.originalname,
-          filepath: file.path.replace(/\\\\/g, "/").replace(/\\/g, "/"),
-        }))
-      : lesson.attachedFiles;
+    if (req.files.length) {
+      attachedFiles = []
+      for (let prop in req.files) {
+        const file = {
+          filename: req.files[prop].originalname,
+          filepath: req.files[prop].path
+            .replace(/\\\\/g, "/")
+            .replace(/\\/g, "/"),
+        };
+        attachedFiles.push(file);
+      }
+    } else {
+      attachedFiles = lesson.attachedFiles;
+    }
+    // const attachedFiles = req.files
+    //   ? req.files.map((file) => ({
+    //       filename: file.originalname,
+    //       filepath: file.path.replace(/\\\\/g, "/").replace(/\\/g, "/"),
+    //     }))
+    //   : lesson.attachedFiles;
 
     lesson.title = title;
     lesson.contents = contents;
@@ -389,6 +400,8 @@ const updateLesson = async (req, res, next) => {
     res.status(202).json({
       message: "Update lesson successfully !!!",
       lesson: lesson,
+      files: req.files,
+      test: req.body.files
     });
   } catch (err) {
     if (!err.statusCode) {

@@ -15,7 +15,7 @@ const UploadFile = ({ title, className, fileType, onFileSelected, type='single-f
       const reader = new FileReader();
       reader.onload = (e) => {
         const fileUrl = e.target.result;
-        type === 'single-file' ?  onFileSelected(fileUrl, selectedFile) : onFileSelected(fileUrl, filesUpload)
+        type === 'single-file' ?  onFileSelected(fileUrl, selectedFile) : onFileSelected(fileUrl, [...filesUpload, selectedFile])
       };
       reader.readAsDataURL(selectedFile);
     };

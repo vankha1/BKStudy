@@ -6,6 +6,7 @@ import PagingNation from "./PagingNation";
 
 const RenderAccount = ({ accounts, courseId }) => {
     const [pageSize, setPageSize] = useState(10);
+    const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")));
     const [pagingInfo, setPagingInfo] = useState({
         maxPage: Math.ceil(accounts.length / pageSize),
         curPage: 1
@@ -32,9 +33,17 @@ const RenderAccount = ({ accounts, courseId }) => {
                                     <th className='font-normal py-2'>{account.username}</th>
                                     <th className='font-normal py-2'>Đã tham gia vào ngày {account.joinedDate.slice(0, 10)}</th>
                                     <th className='font-normal py-2'>
-                                        <Link href={`/profile/${account._id}`} className="hover:opacity-70">
-                                            Xem thêm
-                                        </Link>
+                                        {
+                                            userInfo && userInfo._id == account._id ? (
+                                                <Link href={`/profile`} className="hover:opacity-70">
+                                                    Xem thêm
+                                                </Link>
+                                            ) : (
+                                                <Link href={`/profile/${account._id}`} className="hover:opacity-70">
+                                                    Xem thêm
+                                                </Link>
+                                            )
+                                        }
                                     </th>
                                 </tr>
                             </tbody>
