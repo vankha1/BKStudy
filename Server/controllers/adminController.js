@@ -143,7 +143,7 @@ const getStatUser = async (req, res, next) => {
     })
 
     res.status(200).json({
-      allUseCount: allCount,
+      allUserCount: allCount,
       newUserThisMonth: currCount,
       newUserLastMonth: prevCount
     })
