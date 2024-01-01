@@ -74,7 +74,6 @@ const AddLessons = ({ params }) => {
                     "Content-Type": `multipart/form-data`,
                 }
             }).then((response) => {
-                console.log(response)
                 if (response.statusText === 'Created') {
                     successNotifi('Tạo bài giảng thành công!.');
                 }

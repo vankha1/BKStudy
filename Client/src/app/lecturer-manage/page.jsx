@@ -20,6 +20,7 @@ const ManageCourses = () => {
                 const data = response.data.courses;
                 const courseData = data;
                 setCourses(courseData);
+                console.log(data)
             })
             .catch((error) => {
                 console.error(`Error when call API: ${error}`);
