@@ -12,11 +12,11 @@ const Navbar = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
   const [userInfo, setUserInfo] = useState(null)
-  const { isLogin, setIsLogin } = useAuthContext();
+  const { isLogin, setIsLogin, SERVER_URL } = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {
-    if (localStorage.getItem("userInfo")) setUserInfo((localStorage.getItem("userInfo")))
+    if (localStorage.getItem("userInfo")) setUserInfo(JSON.parse(localStorage.getItem("userInfo")))
   }, [isLogin])
 
   const handleLogout = () => {
@@ -187,7 +187,7 @@ const Navbar = () => {
           <div className="z-50 flex-center relative">
             <button onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}>
               <Image
-                src={userInfo.avatar}
+                src={SERVER_URL + "/" + userInfo.avatar}
                 alt="Avatar"
                 width={40}
                 height={40}

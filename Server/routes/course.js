@@ -11,7 +11,7 @@ const router = express.Router();
 // Rating the course
 router.post('/rating', isAuth.authToken, isAuth.authRoles(['STUDENT']), ratingController.postRating)
 
-router.get('/rating-statistics/:courseId', isAuth.authToken, isAuth.authRoles(['LECTURER']), ratingController.getRatingStatistics)
+router.get('/rating-statistics/:courseId', isAuth.authToken, ratingController.getRatingStatistics)
 
 
 // used for home page

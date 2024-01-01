@@ -5,10 +5,9 @@ import { useEffect, useState } from "react";
 import { useAuthContext } from "@app/contexts/auth";
 import Image from "next/image";
 import YouTube from "react-youtube";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import { useRouter } from "next/navigation";
 import Notification, { warningNotifi, errorNotifi, successNotifi } from "@components/Notification";
+import LoadingState from "@components/LoadingState";
 
 const LessonPage = ({ params }) => {
   const { SERVER_URL } = useAuthContext();
@@ -110,7 +109,7 @@ const LessonPage = ({ params }) => {
   };
 
   return !done ? (
-    <Skeleton />
+    <LoadingState title="Đang tải" width={40} height={40} />
   ) : (
     <section className="flex-center flex-col p-3 w-[1400px]">
       <p className="font-bold text-3xl mb-3">{courseName}</p>

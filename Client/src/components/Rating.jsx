@@ -22,8 +22,9 @@ const Rating = ({ name, id, closePopUp, server }) => {
         Authorization: `Bearer ${token}`,
       },
     }).then((response) => {
+      console.log(ratingScore);
       console.log(response)
-      if (response.statusText == "OK") {successNotifi("Đánh giá thành công!")}
+      if (response.statusText == "OK") {successNotifi("Đánh giá thành công!"); closePopUp();}
     }).catch((error) => {errorNotifi("Có lỗi xảy ra"); console.log(error)})
   }
 
@@ -45,7 +46,7 @@ const Rating = ({ name, id, closePopUp, server }) => {
                 <div class="text-center">
                   <span class="flex flex-row-reverse">
                     {(ratingScore > 0) ? (
-                      a.map((i) => ((i>=ratingScore) ? (<svg
+                      a.map((i) => ((i<=ratingScore) ? (<svg
                         class="text-yellow-400"
                         width="40"
                         height="40"
@@ -88,7 +89,7 @@ const Rating = ({ name, id, closePopUp, server }) => {
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                         tabIndex={0}
-                        onClick={() => {setRatingScore(i)}}
+                        onClick={() => {setRatingScore(6-i)}}
                       >
                         <path
                           stroke-linecap="round"
