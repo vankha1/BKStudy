@@ -13,7 +13,7 @@ const Navbar = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
   const [userInfo, setUserInfo] = useState(null)
-  const { isLogin, setIsLogin } = useAuthContext();
+  const { isLogin, setIsLogin, SERVER_URL } = useAuthContext();
   const [coursesFounded, setCoursesFounded] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const searchData = useDebounce(searchValue, 500);
@@ -242,7 +242,7 @@ const Navbar = () => {
           <div className="z-50 flex-center relative">
             <button onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}>
               <Image
-                src={userInfo.avatar ? (userInfo.avatar.includes('https') ? userInfo.avatar : `http://localhost:8080/${userInfo.avatar}`) : '/assets/images/avatar.svg'}
+                src={userInfo.avatar ? (userInfo.avatar.includes('https') ? userInfo.avatar : `${SERVER_URL}/${userInfo.avatar}`) : '/assets/images/avatar.svg'}
                 alt="Avatar"
                 width={40}
                 height={40}

@@ -3,9 +3,8 @@
 import CourseCard from "@components/CourseCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import Carousel from "@components/Carousel";
+import LoadingState from "@components/LoadingState";
 
 const HomePage = () => {
   const [courses, setCourses] = useState([]);
@@ -15,6 +14,7 @@ const HomePage = () => {
     axios
       .get("http://localhost:8080" + "/api/v1/course")
       .then((response) => {
+        console.log(response)
         if (response.statusText === "OK") {
           setCourses(response.data.courses);
           setDone(true);
@@ -26,9 +26,9 @@ const HomePage = () => {
   }, []);
 
   return !done ? (
-    <Skeleton />
+    <LoadingState title="Đang tải" width={40} height={40} />
   ) : (
-    <div className="flex-center flex-col min-h-[535px]">
+    <div className="flex-center flex-col min-h-[535px] w-full">
       <Carousel/>
 
       <div className="flex-start flex-col gap-6 mt-16 w-full">
@@ -42,6 +42,7 @@ const HomePage = () => {
               imageUrl={course.imageUrl}
               price={course.price}
               desc={course.description}
+              rating={course.rating}
             />
           ))}
         </div>

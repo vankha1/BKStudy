@@ -1,7 +1,8 @@
 import Link from "next/link"
 import Image from "next/image";
+import StarRating from "./StarRating";
 
-const CourseCard = ({ courseId, title, imageUrl, price, desc }) => {
+const CourseCard = ({ courseId, title, imageUrl, price, desc, rating }) => {
   const priceFormat = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
 
   return (
@@ -22,8 +23,7 @@ const CourseCard = ({ courseId, title, imageUrl, price, desc }) => {
             <p className="text-sm mt-2 font-semibold text-orange-400">{priceFormat.format(price)}</p>
           </div>
           <div>
-            <span className="text-yellow-500 font-bold w-1/5">4.5</span>/
-            <span>5</span>
+            {(rating===0) ? (<p className="text-orange-700">NEW!</p>) : (<StarRating rating={rating} />)}
           </div>
         </div>
         <div className="w-full max-h-16 truncate p-2">
