@@ -38,11 +38,9 @@ const approveCourse = async (req, res, next) => {
         message: "Course is already approved !!!",
       });
     } else {
-      
       course.isApproved = true;
       await course.save();
 
-      
       const user = await User.findById(course.createdBy.toString());
       user.courses.push({
         courseId: course._id,
@@ -65,7 +63,9 @@ const approveCourse = async (req, res, next) => {
 // GET /users
 const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find({ isAdmin: false }).select("fullname username joinedDate");
+    const users = await User.find({ isAdmin: false }).select(
+      "fullname username joinedDate"
+    );
 
     res.status(200).json({ users });
   } catch (err) {
@@ -81,42 +81,50 @@ const getDetailUser = async (req, res, next) => {
   try {
     const userId = req.params.userId;
 
-    const user = await User.findById(userId).populate('courses.courseId', 'title');
+    const user = await User.findById(userId).populate(
+      "courses.courseId",
+      "title"
+    );
     if (!user) {
       const error = new Error("User not found");
       error.statusCode = 404;
       throw error;
     }
 
-    res.status(200).json({ user })
+    res.status(200).json({ user });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-}
+};
 
-// GET /statistic/:month 
+// GET /statistic/:month
 const statisticsByMonth = async (req, res, next) => {
   try {
-    const users = await User.find({ isAdmin: false }).select("fullname username joinedDate");
+    const users = await User.find({ isAdmin: false }).select(
+      "fullname username joinedDate"
+    );
 
-    const filteredUsers = users.filter(user => user.joinedDate.toISOString().substring(5, 7) === req.params.month)
+    const filteredUsers = users.filter(
+      (user) =>
+        user.joinedDate.toISOString().substring(5, 7) === req.params.month
+    );
 
     // console.log(filteredUsers);
     // console.log(filteredUsers.length / users.length);
 
     res.status(200).json({
-      byMonth: filteredUsers.length / users.length * 100
-    })
+      byMonth: (filteredUsers.length / users.length) * 100,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-}
+};
 
 // GET /statistic of user
 const getStatUser = async (req, res, next) => {
@@ -130,41 +138,69 @@ const getStatUser = async (req, res, next) => {
       isAdmin: false,
       createdAt: {
         // greater than - first day of the current month
-        $gt: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1, 0, 0, 0),
-        // less than - last day of the current month  
-        $lt: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 24, 0, 0)
-      }
-    })
+        $gt: new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          1,
+          0,
+          0,
+          0
+        ),
+        // less than - last day of the current month
+        $lt: new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth() + 1,
+          0,
+          24,
+          0,
+          0
+        ),
+      },
+    });
 
     const prevCount = await User.countDocuments({
       isAdmin: false,
       createdAt: {
-        // greater than - first day of the previous month  
-        $gt: new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1, 0, 0, 0),
-        // less than - last day of the previous month  
-        $lt: new Date(currentDate.getFullYear(), currentDate.getMonth() - 0, 0, 24, 0, 0)
-      }
-    })
+        // greater than - first day of the previous month
+        $gt: new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth() - 1,
+          1,
+          0,
+          0,
+          0
+        ),
+        // less than - last day of the previous month
+        $lt: new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth() - 0,
+          0,
+          24,
+          0,
+          0
+        ),
+      },
+    });
 
     res.status(200).json({
       allUserCount: allCount,
       newUserThisMonth: currCount,
-      newUserLastMonth: prevCount
-    })
+      newUserLastMonth: prevCount,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-}
+};
 
 const getStatCourse = async (req, res, next) => {
   try {
     const allCount = await Course.countDocuments({});
 
     const approvedCount = await Course.countDocuments({
-      isApproved: true
+      isApproved: true,
     });
 
     const currentDate = new Date();
@@ -173,25 +209,53 @@ const getStatCourse = async (req, res, next) => {
       isApproved: true,
       createdAt: {
         // greater than - first day of the current month
-        $gt: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1, 0, 0, 0),
-        // less than - last day of the current month  
-        $lt: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 24, 0, 0)
-      }
-    })
+        $gt: new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          1,
+          0,
+          0,
+          0
+        ),
+        // less than - last day of the current month
+        $lt: new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth() + 1,
+          0,
+          24,
+          0,
+          0
+        ),
+      },
+    });
 
     const prevCount = await Course.countDocuments({
       isApproved: true,
       createdAt: {
-        // greater than - first day of the previous month  
-        $gt: new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1, 0, 0, 0),
-        // less than - last day of the previous month  
-        $lt: new Date(currentDate.getFullYear(), currentDate.getMonth() - 0, 0, 24, 0, 0)
-      }
-    })
+        // greater than - first day of the previous month
+        $gt: new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth() - 1,
+          1,
+          0,
+          0,
+          0
+        ),
+        // less than - last day of the previous month
+        $lt: new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth() - 0,
+          0,
+          24,
+          0,
+          0
+        ),
+      },
+    });
 
     // find course with the most student enrolled in
     const popCourse = await Course.findOne({
-      isApproved: true
+      isApproved: true,
     })
       .sort("-numberOfStudent")
       .exec();
@@ -200,24 +264,24 @@ const getStatCourse = async (req, res, next) => {
     //pie 2: <4 && >=3
     //pie 3: <3
     const pie1Tier = await Rating.countDocuments({
-      'courseId': popCourse.id,
+      courseId: popCourse.id,
       rate: {
-        $gte: 4
-      }
-    })
+        $gte: 4,
+      },
+    });
     const pie2Tier = await Rating.countDocuments({
-      'courseId': popCourse.id,
+      courseId: popCourse.id,
       rate: {
         $gte: 3,
-        $lt: 4
-      }
-    })
+        $lt: 4,
+      },
+    });
     const pie3Tier = await Rating.countDocuments({
-      'courseId': popCourse.id,
+      courseId: popCourse.id,
       rate: {
-        $lt: 3
-      }
-    })
+        $lt: 3,
+      },
+    });
 
     const ratingCount = await Rating.countDocuments({});
 
@@ -229,15 +293,15 @@ const getStatCourse = async (req, res, next) => {
       ratingCount: ratingCount,
       piePortion1: pie1Tier,
       piePortion2: pie2Tier,
-      piePortion3: pie3Tier
-    })
+      piePortion3: pie3Tier,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-}
+};
 
 // DELETE /user/delete/:userId
 const deleteUser = async (req, res, next) => {
@@ -259,18 +323,15 @@ const deleteUser = async (req, res, next) => {
     await user.deleteOne();
 
     res.status(200).json({
-      message: 'User deleted successfully'
-    })
-
-
+      message: "User deleted successfully",
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-}
-
+};
 
 module.exports = {
   getApprovedCourses,
@@ -280,5 +341,5 @@ module.exports = {
   deleteUser,
   statisticsByMonth,
   getStatUser,
-  getStatCourse
+  getStatCourse,
 };
