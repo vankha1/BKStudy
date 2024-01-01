@@ -26,7 +26,7 @@ const AddCourse = () => {
         },
         {
             title: 'Hình ảnh kèm theo',
-            value: 'Hình ảnh nè',
+            value: '',
             placeholders: 'Đường dẫn hình ảnh',
             button_title: 'Tải lên',
             fileType: 'image',

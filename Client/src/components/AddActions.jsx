@@ -54,7 +54,6 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
         const updatedInfo = [...infos];
         updatedInfo[index].data = fileData;
         setNewData(updatedInfo);
-        console.log(fileData, updatedInfo);
     }
 
 
@@ -79,7 +78,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
                                         />
                                         {
                                             isSettingFile ? (
-                                                <div className='absolute right-48 bottom-52 bg-slate-100 rounded-lg'>
+                                                <div className='absolute right-48 bottom-60 bg-slate-100 rounded-lg'>
                                                     <UploadFiles
                                                         title={info.button_title}
                                                         className='w-32 py-1 flex items-center justify-center hover:cursor-pointer hover:bg-slate-200 px-4 rounded-lg'
@@ -90,7 +89,6 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
                                                         }}
                                                         type={info.type}
                                                     />
-                                                    <div className='w-32 py-1 flex items-center justify-center hover:cursor-pointer hover:bg-slate-200 px-4 rounded-lg'>Xóa tất cả</div>
                                                 </div>
                                             ) : (
                                                 <></>
@@ -141,7 +139,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
                                         type='text'
                                         className={`${info.input_className} resize-none`}
                                         placeholder={info.placeholders}
-                                        defaultValue={image ? info.data.name : info.data}
+                                        defaultValue={image ? info.value.name : info.value}
                                         disabled
                                     />
                                     <UploadFiles
