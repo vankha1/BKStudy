@@ -80,7 +80,7 @@ const Profile = () => {
       const newDataInfo = [...userInfo];
       newDataInfo[0].data = user.email;
       newDataInfo[1].data = user.fullname;
-      newDataInfo[2].data = user.dateOfBirth;
+      newDataInfo[2].data = user.dateOfBirth ? user.dateOfBirth : '';
       newDataInfo[3].data = user.joinedDate.slice(0, 10);
       newDataInfo[4].data = user.phoneNumber;
       setUserInfo(newDataInfo);
@@ -91,14 +91,19 @@ const Profile = () => {
     const token = localStorage.getItem("JWT");
     const data = {
       fullname: infos[1].data,
-      phoneNumber: infos[3].data,
+      dateOfBirth: infos[2].data,
+      phoneNumber: infos[4].data,
     }
+    console.log(data);
     axios
       .put("http://localhost:8080/api/v1/user/update-profile", data, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          "Content-Type": `application/json`,
+      },
       })
       .then((reponse) => {
-        successNotifi('Đổi thông tin thành công!.')
+        successNotifi('Đổi thông tin thành công!.');
       })
       .catch(error => {
         errorNotifi('Đổi thông tin thất bại!.')
@@ -106,7 +111,7 @@ const Profile = () => {
   }
 
   const openExternalImage = (imageURL) => {
-    const externalImagePath = `http://localhost:8080/${imageURL}`;
+    const externalImagePath = imageURL.includes('https') ? imageURL : `http://localhost:8080/${imageURL}`;
     const newWindow = window.open();
     newWindow.location.href = externalImagePath;
   };
@@ -125,7 +130,7 @@ const Profile = () => {
                 <div className='w-40 h-40 relative rounded-full flex-center bg-white cursor-pointer'>
                   <Image
                     className="w-32 h-32 rounded-full"
-                    src={'http://localhost:8080/' + userProfile.avatar}
+                    src={userProfile.avatar ? (userProfile.avatar.includes('https') ? userProfile.avatar : `http://localhost:8080/${userProfile.avatar}`) : '/assets/images/avatar.svg'}
                     alt="Profile Picture"
                     width={130}
                     height={130}
@@ -138,7 +143,7 @@ const Profile = () => {
                         <ul className="py-2 text-base text-gray-700 w-full">
                           <li>
                             <div
-                              onClick={() => openExternalImage(userProfile.avatar)}
+                              onClick={() => userProfile.avatar && openExternalImage(userProfile.avatar)}
                               className="px-4 py-2 hover:bg-gray-100 block text-center cursor-pointer"
                             >
                               Xem ảnh đại diện
@@ -204,8 +209,8 @@ const Profile = () => {
                     userProfile.userType === "STUDENT" ? "Các khóa học đang học" : " "
                   )}
                 </h4>
-                {userProfile && userProfile.courses && userProfile.courses.slice(0, 3).filter((course) => (course.courseId != null)).map((course, index) => (
-                  <Link href='/coursepage' key={index} className='flex-between px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action'>
+                {userProfile && userProfile.courses && userProfile.courses.filter((course) => (course.courseId != null)).slice(0, 3).map((course, index) => (
+                  <Link href={`/coursepage/${course?.courseId?._id}`} key={course?.courseId?._id} className='flex-between px-8 py-4 rounded-lg shadow-lg mb-8 cursor-pointer transfrom-action'>
                     <div className='w-[200px] relative h-[160px]'>
                       <Image
                         className="rounded-2xl py-2"

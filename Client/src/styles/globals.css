@@ -86,6 +86,7 @@
   @apply transform rotate-[0deg] duration-300;
 }
 
+
 .hidden-action {
   @apply hidden transition duration-300 delay-300;
 }

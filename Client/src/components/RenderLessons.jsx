@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import _ from 'lodash';
 
 const RenderLessons =
     ({
@@ -18,7 +19,6 @@ const RenderLessons =
         const [isAddChapter, setIsAddChapter] = useState(false);
         const [newChapter, setNewChapter] = useState('');
         const [isEditChapter, setIsEditChapter] = useState([]);
-
         useEffect(() => {
             const initialOldNameArray = new Array(course.length).fill('');
             const initialDisplayArray = new Array(course.length).fill(false);
@@ -69,7 +69,7 @@ const RenderLessons =
             const editTitleChapter = [...isEditChapter];
 
             newData[index] = prevChapterName[index];
-            setCourse(newData);
+            setCourse(_.cloneDeep(newData));
             editTitleChapter[index] = false;
             setIsEditChapter(editTitleChapter);
         }
