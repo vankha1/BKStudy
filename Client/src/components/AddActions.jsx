@@ -139,7 +139,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
                                         type='text'
                                         className={`${info.input_className} resize-none`}
                                         placeholder={info.placeholders}
-                                        defaultValue={image ? info.value.name : info.value}
+                                        defaultValue={image && info.data ? info.data.name : info.data}
                                         disabled
                                     />
                                     <UploadFiles
@@ -149,6 +149,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
                                         onFileSelected={(fileUrl, selectedFile, type) => {
                                             handleImage(fileUrl, selectedFile, type);
                                             handleInputChange(selectedFile, index);
+                                            console.log(info);
                                         }}
                                         type={info.type}
                                     />
