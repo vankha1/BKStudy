@@ -384,7 +384,7 @@ const updateLesson = async (req, res, next) => {
       });
     }
 
-    let attachedFiles = lesson.attachedFiles;
+    let attachedFiles = oldFiles.length ? lesson.attachedFiles : [];
 
     if (req.files.length) {
       for (let prop in req.files) {

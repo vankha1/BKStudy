@@ -8,6 +8,7 @@ import YouTube from "react-youtube";
 import { useRouter } from "next/navigation";
 import Notification, { warningNotifi, errorNotifi, successNotifi } from "@components/Notification";
 import LoadingState from "@components/LoadingState";
+import format from "date-fns/format";
 
 const LessonPage = ({ params }) => {
   const { SERVER_URL } = useAuthContext();
@@ -176,7 +177,7 @@ const LessonPage = ({ params }) => {
           ></iframe>
           <div className="flex-between flex-row w-full py-1 px-3">
             <p className="font-light text-sm">
-              Cập nhật lần cuối: {curLesson.updatedAt}
+              Cập nhật lần cuối: {format(new Date(curLesson.updatedAt), "HH:mm:ss dd-MM-yyyy")}
             </p>
             <div className="flex-center flex-row gap-2">
               <button

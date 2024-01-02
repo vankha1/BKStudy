@@ -283,6 +283,7 @@ const Navbar = () => {
                   <li>
                     <div
                       onClick={() => {
+                        setShowAvatarDropdown(!showAvatarDropdown);
                         router.push("/profile");
                       }}
                       className="px-4 py-2 hover:bg-gray-100 block text-center cursor-pointer"
@@ -290,18 +291,11 @@ const Navbar = () => {
                       Trang cá nhân
                     </div>
                   </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="px-4 py-2 hover:bg-gray-100 w-full block text-center"
-                    >
-                      Đổi mật khẩu
-                    </a>
-                  </li>
+                  
                 </ul>
                 <div className="py-1 w-full">
                   <button
-                    onClick={handleLogout}
+                    onClick={() => {setShowAvatarDropdown(!showAvatarDropdown); handleLogout()}}
                     className="px-4 py-2 text-sm hover:bg-gray-100 w-full block text-center"
                   >
                     Đăng xuất

@@ -71,7 +71,8 @@ const CoursePage = ({ params }) => {
       const data = JSON.parse(localStorage.getItem("userInfo"));
       let flag = false;
       data.courses.map((course) => {if (course.courseId==params?.id) flag = true;});
-      if (flag) {errorNotifi("Bạn đã đăng ký khóa này rồi!")}
+      if (data.userType==="LECTURER") {errorNotifi("Bạn không thể thực hiện hành động này!")}
+      else if (flag) {errorNotifi("Bạn đã đăng ký khóa này rồi!")}
       else {
         axios
         .post(
@@ -90,7 +91,8 @@ const CoursePage = ({ params }) => {
           }
         })
         .catch((error) => alert(error));
-    } else {
+    }}
+    else {
       router.push('/login');
     }
   };
