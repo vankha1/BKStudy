@@ -67,28 +67,31 @@ const CoursePage = ({ params }) => {
 
   const handleRegister = () => {
     const token = localStorage.getItem("JWT");
-    const data = JSON.parse(localStorage.getItem("userInfo"));
-    let flag = false;
-    data.courses.map((course) => {if (course.courseId==params?.id) flag = true;});
-    if (flag) {errorNotifi("Bạn đã đăng ký khóa này rồi!")}
-    else {
-      axios
-      .post(
-        SERVER_URL + `/api/v1/user/register/${params?.id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        if (response.statusText === "OK") {
-          console.log(response.data);
-          router.push(`/pay/${params?.id}`);
-        }
-      })
-      .catch((error) => alert(error));
+    if (token) {
+      const data = JSON.parse(localStorage.getItem("userInfo"));
+      let flag = false;
+      data.courses.map((course) => {if (course.courseId==params?.id) flag = true;});
+      if (flag) {errorNotifi("Bạn đã đăng ký khóa này rồi!")}
+      else {
+        axios
+        .post(
+          SERVER_URL + `/api/v1/user/register/${params?.id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          if (response.statusText === "OK") {
+            console.log(response.data);
+            router.push(`/pay/${params?.id}`);
+          }
+        })
+        .catch((error) => alert(error));
+    } else {
+      router.push('/login');
     }
   };
 
@@ -263,7 +266,7 @@ const CoursePage = ({ params }) => {
                   width={30}
                   height={30}
                   priority
-                />
+                 />
                 <h3 className="text-xl font-medium p-1">{chapter.name}</h3>
               </div>
               <div className={isDropdown[indexChapter] ? "hidden-action" : ""}>

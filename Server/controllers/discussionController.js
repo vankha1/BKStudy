@@ -47,6 +47,7 @@ const createDiscussion = async (req, res, next) => {
 
     res.status(200).json({
       message: "Discussion created successfully",
+      discussion
     });
   } catch (err) {
     if (!err.statusCode) {
