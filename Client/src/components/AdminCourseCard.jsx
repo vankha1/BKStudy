@@ -1,10 +1,38 @@
 "use client";
 import Image from "next/image";
+import axios from "axios";
+import Link from "next/link";
+import { useEffect } from "react";
 import { useState } from "react";
+import Notification, { errorNotifi, successNotifi, warningNotifi } from '@components/Notification';
+import { useRouter } from "next/navigation"
 
-const AdminCourseCard = ({ tittle, author, image, price, description }) => {
+const AdminCourseCard = ({ _id, tittle, author, image, price, description }) => {
   const [showAccept, setShowAccept] = useState(false);
-  const [showReject, setShowReject] = useState(false);
+  const router = useRouter();
+
+  const approveCourse = (courseId) => {
+    const token = localStorage.getItem("JWT");
+
+    axios
+      .post(`http://localhost:8080/api/v1/admin/course-approve/${courseId}`, [] ,{
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+      }).then((response) => {
+      if (response.statusText === 'OK') {
+        successNotifi('Chấp nhận thành công!.');
+      }
+      else {
+          warningNotifi('Có lỗi xảy ra, thử lại sau!.')
+      }
+      setTimeout(() => {
+          router.push('/admin-manage-course');
+      }, 1000);
+      }).catch((error) => {
+        errorNotifi('Gửi yêu cầu thất bại!.');
+      })
+  }
 
   return (
     <div className="w-full px-8 py-4 rounded-lg shadow-lg mb-8 transfrom-action">
@@ -23,33 +51,19 @@ const AdminCourseCard = ({ tittle, author, image, price, description }) => {
             <p className="text-sm">Giá tiền: {price}.000đ</p>
             <p className="text-sm">Mô tả: {description}</p>
           </div>
-          {!showAccept && !showReject && (
+          {!showAccept && (
             <div className="flex justify-end">
               <button
                 className="small-blue-button mx-5"
-                onClick={() => setShowAccept(!showAccept)}
+                onClick={() => {setShowAccept(!showAccept); approveCourse(_id)}}
               >
                 Phê duyệt
-              </button>
-              <button
-                className="small-gray-button"
-                onClick={() => setShowReject(!showReject)}
-              >
-                Từ chối
               </button>
             </div>
           )}
           {showAccept && (
             <Image
               src="/assets/icons/accept_icon.svg"
-              width={70}
-              height={70}
-              className="mr-14"
-            ></Image>
-          )}
-          {showReject && (
-            <Image
-              src="/assets/icons/reject_icon.svg"
               width={70}
               height={70}
               className="mr-14"

@@ -55,9 +55,9 @@ const getCourse = async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
 
-    const course = await Course.findById(courseId).populate(
+    const course = await Course.findById(courseId).populate('createdBy', 'fullname').populate(
       "chapters.lessons.lessonId",
-      "title -_id"
+      "title -_id",
     );
     if (!course) {
       const error = new Error("No course found !!!");
@@ -279,7 +279,8 @@ const deleteCourse = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    if (course.createdBy.toString() !== req.userId) {
+    console.log(req.userType);
+    if (course.createdBy.toString() !== req.userId && req.userType == 'LECTURER') {
       const error = new Error("Not authenticated");
       error.statusCode = 403;
       throw error;

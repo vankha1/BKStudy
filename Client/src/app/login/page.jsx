@@ -27,7 +27,8 @@ const LogInPage = () => {
           localStorage.setItem("JWT", response.data.token)
           localStorage.setItem("userInfo", JSON.stringify(response.data.userInfo))
           setIsLogin(true);
-          router.push('/')
+          if (response.data.userInfo.isAdmin) router.push('/admin-manage-course')
+          else router.push('/')
         }
       }
       else alert("Something wrong is happening")
