@@ -61,8 +61,8 @@ const User = ({ params }) => {
       const newDataInfo = [...userInfo];
       newDataInfo[0].data = user.email;
       newDataInfo[1].data = user.fullname;
-      newDataInfo[2].data = user.dateOfBirth.slice(0, 10);
-      newDataInfo[3].data = user.joinedDate.slice(0, 10);
+      newDataInfo[2].data = user.dateOfBirth?.slice(0, 10);
+      newDataInfo[3].data = user.joinedDate?.slice(0, 10);
       newDataInfo[4].data = user.phoneNumber;
       setUserInfo(newDataInfo);
     }

@@ -83,11 +83,9 @@ const getCourse = async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
 
-    const course = await Course.findById(courseId)
-    .populate('createdBy', 'fullname')  
-    .populate(
+    const course = await Course.findById(courseId).populate(
       "chapters.lessons.lessonId",
-      "title -_id"
+      "title -_id",
     );
     if (!course) {
       const error = new Error("No course found !!!");

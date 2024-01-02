@@ -28,6 +28,8 @@ const AdminPage = () => {
       });
   }, []);
 
+  console.log(courses)
+
   return (
     <div className="w-full">
       <div>

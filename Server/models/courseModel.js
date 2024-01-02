@@ -18,7 +18,7 @@ const courseSchema = new Schema(
     rating: {
       type: Number,
       enum: [0, 1, 2, 3, 4, 5],
-      default: 1
+      default: 0,
     },
     numberOfStudent: {
       type: Number

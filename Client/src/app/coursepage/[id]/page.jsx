@@ -6,9 +6,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@app/contexts/auth";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import format from "date-fns/format";
+import RatingCourses from "@components/RatingCourses";
+import StarRating from "@components/StarRating";
+import LoadingState from "@components/LoadingState";
 
 const CoursePage = ({ params }) => {
   const [course, setCourse] = useState({});
@@ -16,15 +17,17 @@ const CoursePage = ({ params }) => {
   const router = useRouter();
   const { SERVER_URL } = useAuthContext();
   const [isDropdown, setIsDropdown] = useState([]);
+  const [ratingCourse, setRatingCourse] = useState();
 
   useEffect(() => {
     const fetchCourse = async () => {
+      const token = localStorage.getItem("JWT");
       await axios
         .get(SERVER_URL + `/api/v1/course/course-detail/${params?.id}`)
         .then((response) => {
           if (response.statusText === "OK") {
+            console.log(response);
             setCourse(response.data.course);
-            setDone(true);
           }
           setIsDropdown(
             new Array(response.data.course.chapters.length).fill(false)
@@ -33,9 +36,26 @@ const CoursePage = ({ params }) => {
         .catch((error) => {
           alert(error);
         });
+      await axios
+        .get(
+          SERVER_URL +
+            `/api/v1/course/rating-statistics/${params?.id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .then((responses) => {
+          console.log(responses)
+          if (responses.data.message=="Course not rated") setRatingCourse(0);
+          else setRatingCourse(responses.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+        setDone(true);
     };
     fetchCourse();
-  }, [params.id]);
+  }, [params?.id]);
 
   const handleToggleClick = (index) => {
     const newData = [...isDropdown];
@@ -65,7 +85,7 @@ const CoursePage = ({ params }) => {
   };
 
   return !done ? (
-    <Skeleton />
+    <LoadingState title="Đang tải" width={40} height={40} />
   ) : (
     <div className="w-[1519px]">
       <div className="w-full h-48 bg-footer text-white px-32 py-3">
@@ -75,21 +95,18 @@ const CoursePage = ({ params }) => {
           <div className="flex mb-1">
             <span className="mr-28">
               <span className="font-medium">Đánh giá: </span>
-              <span className="font-semibold text-yellow-500">
-                {course.rate}
-              </span>
-              <span>/5</span>
+              {(ratingCourse===0) ? (<p className="text-orange-500">Chưa có đánh giá</p>) : (<StarRating rating={ratingCourse.avgRating} />)}
             </span>
           </div>
           <div className="mb-1">
             <span className="font-light">Giáo viên: </span>
-            <Link href="\" className="font-semibold underline ">
-              {course.createdBy}
-            </Link>
+            <Link href={`/profile/` + course.createdBy._id} className="text-blue-500">{course.createdBy.fullname}</Link>
           </div>
           <div className="font-light">
             <span>Cập nhật lần cuối vào: </span>
-            <span>{format(new Date(course.updatedAt), "HH:mm:ss dd-MM-yyyy")}</span>
+            <span>
+              {format(new Date(course.updatedAt), "HH:mm:ss dd-MM-yyyy")}
+            </span>
           </div>
         </div>
 
@@ -216,16 +233,19 @@ const CoursePage = ({ params }) => {
               ></Image>
               <p className="ml-2">Giao tiếp với giảng viên</p>
             </div>
-            </div>
+          </div>
         </div>
       </div>
 
       <div className="text-black mt-16 ml-32">
         <h2 className="text-2xl font-semibold mb-5">Nội dung khóa học</h2>
-        <div className="w-2/5 border border-border rounded-lg flex-start flex-col shadow-lg">
+        <div className="w-2/5 border border-border rounded-lg flex-start flex-col shadow-lg mb-10">
           {course.chapters.map((chapter, indexChapter) => (
             <div key={indexChapter} className="w-full">
-              <div className="w-7/8 flex cursor-pointer p-2 hover:bg-slate-100" onClick={() => handleToggleClick(indexChapter)}>
+              <div
+                className="w-7/8 flex cursor-pointer p-2 hover:bg-slate-100"
+                onClick={() => handleToggleClick(indexChapter)}
+              >
                 <Image
                   className={
                     isDropdown[indexChapter]
@@ -237,55 +257,27 @@ const CoursePage = ({ params }) => {
                   width={30}
                   height={30}
                   priority
-                  
                 />
                 <h3 className="text-xl font-medium p-1">{chapter.name}</h3>
               </div>
-              <div
-                  className={
-                    isDropdown[indexChapter] ? "hidden-action" : ""
-                  }
-                >
-                  {chapter.lessons.map((lesson) => (
-                    <div className="flex-start flex-row p-1">
-                      <Image 
-                        className="ml-5 mr-2 mt-1"
-                        src="/assets/icons/video_icon.svg"
-                        width={22}
-                        height={22}
-                      />
-                      <p className="text-lg">{lesson.lessonId.title}</p>
-                    </div>
-                  ))}
-                </div>
+              <div className={isDropdown[indexChapter] ? "hidden-action" : ""}>
+                {chapter.lessons.map((lesson) => (
+                  <div key={lesson._id} className="flex-start flex-row p-1">
+                    <Image
+                      className="ml-5 mr-2 mt-1"
+                      src="/assets/icons/video_icon.svg"
+                      width={22}
+                      height={22}
+                    />
+                    <p className="text-lg">{lesson.lessonId.title}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
+        <RatingCourses ratingCourse={ratingCourse} />
       </div>
-
-      {/* <div className="othercourse w-1/3 text-black mt-16 ml-32">
-              <h2 className="text-2xl font-semibold mb-5">Các khóa học khác</h2>
-              <div className="w-11/12 flex flex-col justify-around">
-            {COURSES.map((course, index) => (
-              <Link href={course.href} className="mb-5 transfrom-action">
-                <div className="flex course rounded-2xl">
-                  <Image src={course.image} alt="Course" width={200} height={200} className="w-32 mr-5 rounded-xl border border-border"/>
-                    <div  className="flex justify-between w-72">
-                      <div>
-                        <h3 className="font-semibold mb-4">{course.course_name}</h3>
-                        <h2>{course.price}</h2>
-                      </div>
-                      <div>
-                        <span className="text-yellow-500 font-bold">{course.rate}</span>
-                        /
-                        <span>5</span>
-                      </div>
-                    </div>
-                  </div>
-              </Link>
-            ))}
-          </div>
-          </div> */}
     </div>
   );
 };
