@@ -86,6 +86,7 @@ const AddActions = ({ infos, infoCourse, setInfoCourse, handlGetDataForAPI, path
                                                         onFileSelected={(fileUrl, selectedFile, type) => {
                                                             handleImage(fileUrl, selectedFile, type);
                                                             handleInputChange([...image, selectedFile], index);
+                                                            setIsSettingFile(false);
                                                         }}
                                                         type={info.type}
                                                     />
