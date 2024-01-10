@@ -8,54 +8,72 @@ import axios from "axios";
 import { useAuthContext } from "@app/contexts/auth";
 
 const AddProfile = () => {
+
+  const user =  JSON.parse(localStorage.getItem("userInfo"))
+  // console.log(user)
+
   const [userInfo, setUserInfo] = useState({
     filename: "",
     phoneNumber: "",
     fullname: "",
     dateOfBirth: "",
+    userType: user?.userType ? user?.userType : ''
   });
   const [imageUrl, setImageUrl] = useState("/assets/images/avatar.svg");
-  const [submitting, setSubmitting] = useState(false)
-  const [imageFile, setImageFile] = useState(null)
-  const router = useRouter()
-  const { setIsLogin } = useAuthContext()
-  
+  const [submitting, setSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const router = useRouter();
+  const { setIsLogin } = useAuthContext();
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
 
-    const formData = new FormData()
+    const formData = new FormData();
 
-    const token = localStorage.getItem("JWT")
-    formData.append("image", imageFile, userInfo.filename)
-    formData.append("phoneNumber", userInfo.phoneNumber)
-    formData.append("fullname", userInfo.fullname)
-    formData.append("dateOfBirth", userInfo.dateOfBirth)
-
-    axios.post(`http://localhost:8080/api/v1/user/add-profile`, formData, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        "Content-Type": `multipart/form-data`
-      }
-    }).then((response) => {
-      console.log(response)
-      if (response.statusText === 'OK') {
-        localStorage.setItem("userInfo", JSON.stringify(response.data.user ? response.data.user : response.user));
-        setIsLogin(true);
-        router.push('/')
-      }
-      else console.log(response)
-    }).catch((error) => {alert(error)}).finally(() => {setSubmitting(false)})
-  }
-
-  const handleUploadImage = (fileUrl, file) => {
-    setUserInfo({...userInfo, filename: file.name})
-    setImageUrl(fileUrl);
-    setImageFile(file)
+    const token = user.token ? user.token : localStorage.getItem("JWT");
+    formData.append("image", imageFile, userInfo.filename);
+    formData.append("phoneNumber", userInfo.phoneNumber);
+    formData.append("fullname", userInfo.fullname);
+    formData.append("dateOfBirth", userInfo.dateOfBirth);
+    if (user?.googleId){
+      formData.append("userType", userInfo.userType);
+    }
+    axios
+      .post(`http://localhost:8080/api/v1/user/add-profile`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": `multipart/form-data`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        if (response.statusText === "OK") {
+          localStorage.setItem(
+            "userInfo",
+            JSON.stringify(
+              response.data.user ? response.data.user : response.user
+            )
+          );
+          setIsLogin(true);
+          router.push("/");
+        } else console.log(response);
+      })
+      .catch((error) => {
+        alert(error);
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   };
 
-  console.log(userInfo.user)
+  const handleUploadImage = (fileUrl, file) => {
+    setUserInfo({ ...userInfo, filename: file.name });
+    setImageUrl(fileUrl);
+    setImageFile(file);
+  };
+
+  // console.log(userInfo);
 
   return (
     <section className="w-full flex-center flex-col gap-4">
@@ -119,21 +137,32 @@ const AddProfile = () => {
             placeholder="xxxxxxxxxx"
           />
         </div>
-        {userInfo.googleId ? <div className="w-full flex-start flex-col mt-1 mb-3">
-          <label className="text-xs font-semibold mb-1">Vai trò</label>
-          <select
-            id="role"
-            onChange={(e) => {
-              setUserInfo({ ...userInfo, userType: e.target.value });
-            }}
-            className="input min-w-[20rem] text-sm text-slate-500"
-          >
-            <option>Chọn vai trò của bạn</option>
-            <option value="STUDENT">Sinh viên</option>
-            <option value="LECTURER">Giáo viên</option>
-          </select>
-        </div> : ''}
-        <button type="submit" disabled={submitting} className="big-blue-button mt-6">Xác nhận</button>
+        {console.log(user?.googleId)}
+        {user?.googleId ? (
+          <div className="w-full flex-start flex-col mt-1 mb-3">
+            <label className="text-xs font-semibold mb-1">Vai trò</label>
+            <select
+              id="role"
+              onChange={(e) => {
+                setUserInfo({ ...userInfo, userType: e.target.value });
+              }}
+              className="input min-w-[20rem] text-sm text-slate-500"
+            >
+              <option>Chọn vai trò của bạn</option>
+              <option value="STUDENT">Sinh viên</option>
+              <option value="LECTURER">Giáo viên</option>
+            </select>
+          </div>
+        ) : (
+          ""
+        )}
+        <button
+          type="submit"
+          disabled={submitting}
+          className="big-blue-button mt-6"
+        >
+          Xác nhận
+        </button>
       </form>
     </section>
   );

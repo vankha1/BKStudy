@@ -4,6 +4,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
+
 // const configGoogleAuth = () => {
 passport.use(
   new GoogleStrategy(
@@ -28,7 +29,9 @@ passport.use(
         let user = await User.findOne({ googleId: profile.id });
 
         if (user) {
-          done(null, user)
+          done(null, user, {
+            message: "User already exists"
+          })
         } else {
           user = await User.create(newUser);
 
@@ -54,6 +57,25 @@ passport.use(
     }
   )
 );
+
+const loginByGoogle = async (req, res, next) => {
+  try {
+    // console.log(req)
+    // const user = await User.findOne({ googleId: req.user.googleId })
+    // console.log(user)
+    if (!req.authInfo.message){
+      res.redirect('http://localhost:3000/add-profile')
+    }
+    else{
+      res.redirect('http://localhost:3000/')
+    }
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
 
 // passport.use(
 //   new FacebookStrategy(
@@ -106,3 +128,6 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
+module.exports = {
+  loginByGoogle
+}

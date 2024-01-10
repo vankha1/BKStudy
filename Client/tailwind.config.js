@@ -14,6 +14,9 @@ module.exports = {
         'borderline': '#cacaca',
         'footer': '#001453',
         'border': '#cacaca'
+      },
+      boxShadow: {
+        'custom': '0 0 0 0.2rem rgba(15,108,191,.75)',
       }
     },
   },

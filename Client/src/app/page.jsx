@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Carousel from "@components/Carousel";
 import LoadingState from "@components/LoadingState";
+import Message from "@components/Conversation/Messages/Message";
 
 const HomePage = () => {
   const [courses, setCourses] = useState([]);

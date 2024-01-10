@@ -70,7 +70,8 @@ const addProfile = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
+  
+    user.userType = user.userType ? user.userType : req.body.userType;
     user.avatar = imageUrl;
     user.fullname = fullname;
     user.dateOfBirth = dateOfBirth;

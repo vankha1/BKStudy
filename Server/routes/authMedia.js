@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
+const authMediaController = require("../controllers/authMediaController");
 
 router.get("/auth/login/success", (req, res) => {
   if (req.user) {
     res.status(200).json({
       success: true,
       message: "successfull",
-      user: req.user
+      user: req.user,
     });
   } else {
     res.status(401).json({
@@ -23,9 +24,13 @@ router.get("/auth/login/failed", (req, res) => {
   });
 });
 
-router.get("/logout", (req, res) => {
-  res.clearCookie('bkstudy', { path: '/' });
-  res.redirect('http://localhost:3000/')
+router.post("/logout", function (req, res) {
+  console.log(123)
+  res.clearCookie('session');
+  return res.status(200).json({
+    message: "Logout successful"
+  })
+  // res.redirect('http://localhost:3000')
 });
 
 router.get(
@@ -36,9 +41,9 @@ router.get(
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    successRedirect: "http://localhost:3000/add-profile",
     failureRedirect: "/auth/login/failed",
-  })
+  }),
+  authMediaController.loginByGoogle
 );
 
 router.get(

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import { useState } from "react";
@@ -20,31 +20,43 @@ const LogInPage = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    axios.post('http://localhost:8080/api/v1/auth/login', account).then((response) => {
-      if (response.statusText == 'OK') {
-        if (response.data.message == "Wrong password") alert("Wrong password")
-        else {
-          localStorage.setItem("JWT", response.data.token)
-          localStorage.setItem("userInfo", JSON.stringify(response.data.userInfo))
-          setIsLogin(true);
-          router.push('/')
-        }
-      }
-      else alert("Something wrong is happening")
-    }).catch((error) => { alert(error) }).finally(() => { setSubmitting(false) })
-  }
+    axios
+      .post("http://localhost:8080/api/v1/auth/login", account)
+      .then((response) => {
+        console.log(response)
+        if (response.statusText == "OK") {
+          if (response.data.message == "Wrong password")
+            alert("Wrong password");
+          else {
+            localStorage.setItem("JWT", response.data.token);
+            localStorage.setItem(
+              "userInfo",
+              JSON.stringify(response.data.userInfo)
+            );
+            setIsLogin(true);
+            router.push("/");
+          }
+        } else alert("Something wrong is happening");
+      })
+      .catch((error) => {
+        alert(error);
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
+  };
 
   const handleGoogle = () => {
-    window.open('http://localhost:8080/auth/google', '_self')
-  }
+    window.open("http://localhost:8080/auth/google", "_self");
+  };
 
   const handleFacebook = () => {
-    window.open('http://localhost:8080/auth/facebook', '_self')
-  }
+    window.open("http://localhost:8080/auth/facebook", "_self");
+  };
 
   return (
     <section className="flex-center flex-col drop-shadow-md mt-3 px-8 py-5 bg-white rounded-md">
-      {console.log('re-render')}
+      {console.log("re-render")}
       <h1 className="text-3xl font-bold">Đăng nhập</h1>
       <form onSubmit={logIn} className="flex-center flex-col w-full">
         <div className="w-full flex-start flex-col mt-5 mb-3"></div>
@@ -89,7 +101,10 @@ const LogInPage = () => {
         <div className="text-slate-400 text-xs px-2">or</div>
         <span className="w-full border bg-slate-400" />
       </div>
-      <button onClick={handleGoogle} className="big-white-button mb-4 inline-flex items-center">
+      <button
+        onClick={handleGoogle}
+        className="big-white-button mb-4 inline-flex items-center"
+      >
         <Image
           src="/assets/icons/google_icon.svg"
           alt="google icon"
@@ -99,7 +114,10 @@ const LogInPage = () => {
         />
         <span>Đăng nhập bằng Google</span>
       </button>
-      <button onClick={handleFacebook} className="big-white-button inline-flex items-center">
+      <button
+        onClick={handleFacebook}
+        className="big-white-button inline-flex items-center"
+      >
         <Image
           src="/assets/icons/fb_icon.svg"
           alt="facebook icon"
