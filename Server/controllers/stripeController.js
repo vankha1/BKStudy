@@ -45,7 +45,7 @@ const confirmPayment = async (req, res, next) => {
     );
     const userId = order.userId.toString();
     const courseId = order.courseId.toString();
-    console.log(userId, courseId);
+    // console.log(userId, courseId);
 
     const course = await Course.findById(courseId);
     if (!course) {
@@ -65,8 +65,8 @@ const confirmPayment = async (req, res, next) => {
       courseId: course._id,
       enrolledDate: new Date(),
     });
-    course.numberOfStudent++;
     await user.save();
+    course.numberOfStudent++;
     await course.save();
 
     res.status(200).json({

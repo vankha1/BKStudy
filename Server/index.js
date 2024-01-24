@@ -21,8 +21,9 @@ const lessonFileMulter = require("./middleware/lessonFileMulter");
 const stripe = require("./routes/stripe");
 const admin = require("./routes/admin");
 const conversation = require("./routes/conversation");
+const message = require("./routes/message");
 const authMedia1 = require("./routes/authMedia");
-const authMedia2 = require("./controllers/authMediaController");
+
 
 const user = require("./routes/user");
 
@@ -65,6 +66,7 @@ app.use("/api/v1/chapter", chapter);
 app.use("/api/v1/lesson", lesson);
 app.use("/api/v1/user", user);
 app.use("/api/v1/conversation", conversation);
+app.use("/api/v1/message", message);
 
 app.use(errorHandlingMiddleware);
 

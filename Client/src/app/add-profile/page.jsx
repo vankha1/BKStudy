@@ -31,7 +31,7 @@ const AddProfile = () => {
 
     const formData = new FormData();
 
-    const token = user.token ? user.token : localStorage.getItem("JWT");
+    const token = user?.token ? user?.token : localStorage.getItem("JWT");
     formData.append("image", imageFile, userInfo.filename);
     formData.append("phoneNumber", userInfo.phoneNumber);
     formData.append("fullname", userInfo.fullname);

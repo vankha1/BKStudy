@@ -123,7 +123,7 @@ const Profile = () => {
         ) : (
           <>
             <div className='relative w-full h-80 mt-4'>
-              <div className='h-72 mx-8 rounded-3xl bg-blue-300'>
+              <div className='h-72 mx-8 mt-[55px] rounded-3xl bg-blue-300'>
               </div>
               <div className='absolute bottom-0 left-40 flex justify-between'>
                 <div className='w-40 h-40 relative rounded-full flex-center bg-white cursor-pointer'>

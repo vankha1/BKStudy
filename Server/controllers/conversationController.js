@@ -3,8 +3,21 @@ const Conversation = require("../models/conversationModel");
 // POST /
 const createConversation = async (req, res, next) => {
   try {
+    const conversations = await Conversation.find({
+      senderId: req.body.senderId,
+      receiverId: req.body.receiverId,
+    });
+
+    if (conversations.length !== 0) {
+      res.status(201).json({
+        message: "Have created",
+      });
+      return;
+    }
+
     const conversation = new Conversation({
-      members: [req.body.senderId, req.body.receiverId],
+      senderId: req.body.senderId,
+      receiverId: req.body.receiverId,
     });
 
     await conversation.save();
@@ -21,11 +34,13 @@ const createConversation = async (req, res, next) => {
 // GET /:userId
 const getUserConversation = async (req, res, next) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.userId;
 
     const conversations = await Conversation.find({
-      members: { $in: [userId] },
-    });
+      $or: [{ senderId: userId }, { receiverId: userId }],
+    })
+      .populate("receiverId", "fullname avatar")
+      .populate("senderId", "fullname avatar");
 
     res.status(200).json(conversations);
   } catch (err) {

@@ -13,9 +13,9 @@ const RootLayout = ({ children }) => {
     <html lang="vi">
       <body>
         <AuthProvider>
-            <Navbar />
+          <Navbar />
             <main className="app min-h-[27rem]">{children}</main>
-            <Footer />
+          <Footer />
         </AuthProvider>
       </body>
     </html>

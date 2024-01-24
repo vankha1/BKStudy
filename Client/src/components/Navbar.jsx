@@ -13,10 +13,16 @@ import ConverDeatil from "./Conversation/ConverDeatil";
 
 const Navbar = () => {
   const [showMessage, setShowMessage] = useState(false);
+
   const [showConversation, setShowConversation] = useState(false);
+  const [conversation, setConversation] = useState({});
+  const [conversations, setConversations] = useState([]);
+
   const [showNotification, setShowNotification] = useState(false);
+
   const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+
   const { isLogin, setIsLogin } = useAuthContext();
   const [coursesFounded, setCoursesFounded] = useState([]);
   const [searchValue, setSearchValue] = useState("");
@@ -31,19 +37,16 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("JWT");
     localStorage.removeItem("userInfo");
-    axios
-      .post("http://localhost:8080/logout")
-      .then((response) => {
-        console.log(response);
-        router.push("/");
-      })
-      .catch((err) => console.log(err));
-    // localStorage.removeItem("JWT");
-    // localStorage.removeItem("userInfo");
-
-    // setIsLogin(false);
-    // setUserInfo(null);
-    // router.push("/");
+    // axios
+    //   .post("http://localhost:8080/logout")
+    //   .then((response) => {
+    //     console.log(response);
+    //     router.push("/");
+    //   })
+    //   .catch((err) => console.log(err));
+    setIsLogin(false);
+    setUserInfo(null);
+    router.push("/");
   };
 
   useEffect(() => {
@@ -74,15 +77,43 @@ const Navbar = () => {
     getUser();
   }, []);
 
-  const handlClickConver = () => {
+  const handleShowOneConversation = (conversation) => {
     setShowMessage(false);
     setShowConversation(true);
-  }
+    setConversation(conversation);
+  };
 
   const handleClickBackward = () => {
     setShowMessage(true);
     setShowConversation(false);
-  }
+  };
+
+  const handleShowConversations = () => {
+    setShowMessage(!showMessage);
+    setShowConversation(false);
+    const token = localStorage.getItem("JWT");
+    const userId = JSON.parse(localStorage.getItem("userInfo"))._id;
+
+    axios
+      .get(`http://localhost:8080/api/v1/conversation/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((conversations) => {
+        // dispatch(
+        //   conversationInfo({
+        //     id: conversations.data._id,
+        //     senderId: conversations.data.senderId,
+        //     receiverId: conversations.data.receiverId,
+        //   })
+        // );
+
+        console.log(conversations);
+        setConversations(conversations.data);
+      })
+      .catch((error) => console.error(error));
+  };
 
   return (
     <nav className="fixed z-50 w-full bg-white px-8 py-1 flex-between flex-row border-b border-borderline">
@@ -147,7 +178,7 @@ const Navbar = () => {
         )}
       </div>
 
-      {userInfo ? (
+      {userInfo?.userType !== "ADMIN" ? (
         <div className="flex-center flex-row gap-4">
           <div>
             {userInfo?.userType === "STUDENT" ? (
@@ -171,10 +202,7 @@ const Navbar = () => {
             )}
           </div>
           <div className="flex-center">
-            <button onClick={() => {
-              setShowMessage(!showMessage)
-              setShowConversation(false)
-            }}>
+            <button onClick={handleShowConversations}>
               <Image
                 src="/assets/icons/msg_icon.svg"
                 alt="Message"
@@ -183,11 +211,36 @@ const Navbar = () => {
               />
             </button>
             {showMessage && (
-              <Conversation onClick={handlClickConver} />
+              <div className="absolute right-[80px] top-[55px] w-[300px] border border-borderline rounded-[5px] overflow-hidden z-20 bg-white">
+                <h2 className="text-[24px] text-center my-[10px] mx-0 font-medium">
+                  Tin nhắn
+                </h2>
+                {conversations?.map((conversation, index) => {
+                  return (
+                    <Conversation
+                      key={index}
+                      avatar={
+                        conversation.senderId._id === userInfo?._id
+                          ? conversation.receiverId.avatar
+                          : conversation.senderId.avatar
+                      }
+                      fullname={
+                        conversation.senderId._id === userInfo?._id
+                          ? conversation.receiverId.fullname
+                          : conversation.senderId.fullname
+                      }
+                      onclick={() => handleShowOneConversation(conversation)}
+                    />
+                  );
+                })}
+              </div>
             )}
 
             {showConversation && (
-              <ConverDeatil onClick={handleClickBackward}/>
+              <ConverDeatil
+                onClick={handleClickBackward}
+                conversation={conversation}
+              />
             )}
           </div>
           <div className="flex-center">
@@ -237,9 +290,9 @@ const Navbar = () => {
             <button onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}>
               <Image
                 src={
-                  userInfo.avatar
-                    ? userInfo.avatar.includes("https")
-                      ? userInfo.avatar
+                  userInfo?.avatar
+                    ? userInfo?.avatar.includes("https")
+                      ? userInfo?.avatar
                       : `http://localhost:8080/${userInfo.avatar}`
                     : "/assets/images/avatar.svg"
                 }
@@ -286,6 +339,21 @@ const Navbar = () => {
             )}
           </div>
         </div>
+      ) : userInfo?.userType === "ADMIN" ? (
+        <div className="items-center">
+          <Link
+            href="/admin-manage-user"
+            className="font-semibold text-lg mr-5"
+          >
+            Người dùng
+          </Link>
+          <Link
+            href="admin-manage-course"
+            className="font-semibold text-lg mr-5"
+          >
+            Phê duyệt
+          </Link>
+        </div>
       ) : (
         <div className="log">
           <Link href="/login">
@@ -300,24 +368,6 @@ const Navbar = () => {
           </Link>
         </div>
       )}
-
-      <div className="items-center hidden">
-        <Link href="/admin-manage-user" className="font-semibold text-lg mr-5">
-          Người dùng
-        </Link>
-        <Link href="admin-manage-course" className="font-semibold text-lg mr-5">
-          Phê duyệt
-        </Link>
-        <div>
-          <Image
-            src="/assets/avatar.png"
-            alt="Avatar"
-            width={48}
-            height={48}
-            className="w-[40px] my-0 mx-[10px] rounded-full"
-          />
-        </div>
-      </div>
     </nav>
   );
 };

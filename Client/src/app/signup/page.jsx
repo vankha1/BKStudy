@@ -55,7 +55,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <section className="flex-center flex-col drop-shadow-md mt-3 px-8 py-5 bg-white rounded-md">
+    <section className="flex-center flex-col drop-shadow-md mt-3 px-8 py-5 bg-white rounded-md mt-[55px]">
       <h1 className="text-3xl font-bold">Đăng ký</h1>
       <form onSubmit={signUp} className="flex-center flex-col w-full">
         <div className="w-full flex-start flex-col mt-5 mb-3">

@@ -55,7 +55,7 @@ const LogInPage = () => {
   };
 
   return (
-    <section className="flex-center flex-col drop-shadow-md mt-3 px-8 py-5 bg-white rounded-md">
+    <section className="flex-center flex-col drop-shadow-md mt-3 px-8 py-5 bg-white rounded-md mt-[55px]">
       {console.log("re-render")}
       <h1 className="text-3xl font-bold">Đăng nhập</h1>
       <form onSubmit={logIn} className="flex-center flex-col w-full">

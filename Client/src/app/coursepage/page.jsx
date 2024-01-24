@@ -59,19 +59,19 @@ const CoursePage = () => {
         e.preventDefault();
         setRegistering(true);
         
-        
-        const token = localStorage.getItem("JWT");
+        router.push('/pay');
+        // const token = localStorage.getItem("JWT");
 
-        axios.post(`http://localhost:8080/api/v1/user/register/${course.id}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        }).then((response) => {
-            if(response.statusText === 'OK') {
-                console.log(response);
-                router.push('/pay');
-            } else console.log(response);
-        }).catch((error) => {alert(error)}).finally(() => {setRegistering(false)});
+        // axios.post(`http://localhost:8080/api/v1/user/register/${course.id}`, {
+        //     headers: {
+        //         'Authorization': `Bearer ${token}`
+        //     }
+        // }).then((response) => {
+        //     if(response.statusText === 'OK') {
+        //         console.log(response);
+        //         
+        //     } else console.log(response);
+        // }).catch((error) => {alert(error)}).finally(() => {setRegistering(false)});
     }
   
     return (

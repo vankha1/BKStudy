@@ -36,7 +36,7 @@ const StudentCourses = () => {
             setCourses(
               response.data.courses.filter(
                 (course) =>
-                  course.courseId != null && course.courseId.createdBy != null
+                  course.courseId !== null && course.courseId.createdBy !== null
               )
             );
             setLoading(false);
@@ -49,7 +49,7 @@ const StudentCourses = () => {
 
   console.log(courses);
   return (
-    <section className="w-full">
+    <section className="w-full mt-[55px]">
       <FilterSearch title="KHÓA HỌC ĐÃ ĐĂNG KÝ" />
       {!loading ? (
         courses.length > 0 ? (

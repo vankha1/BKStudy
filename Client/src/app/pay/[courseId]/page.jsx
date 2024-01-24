@@ -54,7 +54,7 @@ export default function Pay() {
   };
 
   return (
-    <div className="w-full flex">
+    <div className="w-full flex mt-[55px]">
       <div className="w-[28rem] h-[36rem] mx-auto mt-8 bg-gray-100 rounded-2xl">
         <div className="mx-8 mt-4 font-medium text-lg">THANH TOÁN KHÓA HỌC</div>
         <div className="mx-8 my-12">

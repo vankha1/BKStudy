@@ -29,7 +29,7 @@ const ManageCourses = () => {
     }, []);
 
     return (
-        <div className='relative w-full mt-4'>
+        <div className='relative w-full mt-[55px]'>
             {
                 loading ? (
                     <LoadingState title='Đang tải khóa học...' />

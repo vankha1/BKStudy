@@ -39,7 +39,7 @@ const RatingCourses = ({ ratingCourse }) => {
                                             <h2 className='text-xl font-medium'>Đánh giá</h2>
                                             <div className='flex'>
                                                 <h3 className='text-base'>bởi</h3>
-                                                <h3 className='text-base text-blue-600 pl-1'> {user.userId.fullname}</h3>
+                                                <h3 className='text-base text-blue-600 pl-1'> {user.userId?.fullname}</h3>
                                             </div>
                                             <div>
                                                 <StarRating rating={user.rate} />

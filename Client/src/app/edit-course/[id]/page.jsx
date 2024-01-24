@@ -239,7 +239,7 @@ const EditCourse = ({ params }) => {
 
 
     return (
-        <div className="w-full">
+        <div className="w-full mt-[55px]">
             {
                 loading ? (
                     <LoadingState title='Đang tải...' />
@@ -248,7 +248,7 @@ const EditCourse = ({ params }) => {
                         <div className='relative w-full mt-4 flex-between border-b border-solid border-black'>
                             <div className='w-1/2'>
                                 <h1 className='text-3xl font-semibold'>{titelCourse && titelCourse.toUpperCase()}</h1>
-                                <p className='text-lg font-medium'>Tổng quan khóa học</p>
+                                <p className='text-lg font-medium mb-2'>Tổng quan khóa học</p>
                             </div>
                             <div className='w-1/2'>
                                 {
@@ -260,9 +260,9 @@ const EditCourse = ({ params }) => {
                                 }
                             </div>
                         </div>
-                        <div className='w-full mt-2 border-b border-solid border-black'>
+                        <div className='w-full border-b border-solid border-black'>
                             <button
-                                className={`px-4 font-medium ${buttonStates[0] ? 'text-blue-500' : ''}`}
+                                className={`px-4 py-4 font-medium ${buttonStates[0] ? 'text-blue-500' : ''}`}
                                 onClick={() => {
                                     handleButtonClick(0)
                                 }}
@@ -270,7 +270,7 @@ const EditCourse = ({ params }) => {
                                 Khóa học
                             </button>
                             <button
-                                className={`px-4 font-medium ${buttonStates[1] ? 'text-blue-500' : ''}`}
+                                className={`px-4 py-4 font-medium ${buttonStates[1] ? 'text-blue-500' : ''}`}
                                 onClick={() => {
                                     handleButtonClick(1);
                                 }}
@@ -278,7 +278,7 @@ const EditCourse = ({ params }) => {
                                 Danh sách học viên
                             </button>
                             <button
-                                className={`px-4 font-medium ${buttonStates[2] ? 'text-blue-500' : ''}`}
+                                className={`px-4 py-4 font-medium ${buttonStates[2] ? 'text-blue-500' : ''}`}
                                 onClick={() => {
                                     handleButtonClick(2);
                                 }}
@@ -286,7 +286,7 @@ const EditCourse = ({ params }) => {
                                 Diễn đàn khóa học
                             </button>
                             <button
-                                className={`px-4 font-medium ${buttonStates[3] ? 'text-blue-500' : ''}`}
+                                className={`px-4 py-4 font-medium ${buttonStates[3] ? 'text-blue-500' : ''}`}
                                 onClick={() => {
                                     handleButtonClick(3)
                                 }}

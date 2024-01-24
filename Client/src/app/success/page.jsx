@@ -12,7 +12,7 @@ const Success = () => {
   const params = useSearchParams();
   const payment_intent = params.get("payment_intent");
 
-  const token = localStorage.getItem("JWT");
+  const token = localStorage.getItem("JWT"); 
 
   useEffect(() => {
     const makeRequest = async () => {
@@ -30,7 +30,7 @@ const Success = () => {
         );
         setTimeout(() => {
           router.push("/student-courses");
-        }, 5000);
+        }, 2000);
       } catch (err) {
         console.log(err);
       }

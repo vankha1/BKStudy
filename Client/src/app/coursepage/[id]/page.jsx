@@ -87,7 +87,7 @@ const CoursePage = ({ params }) => {
   return !done ? (
     <LoadingState title="Đang tải" width={40} height={40} />
   ) : (
-    <div className="w-[1519px]">
+    <div className="w-[1519px] mt-[55px]">
       <div className="w-full h-48 bg-footer text-white px-32 py-3">
         <div className="description w-3/5">
           <h1 className="text-4xl font-bold mb-3">{course.title}</h1>
@@ -110,7 +110,7 @@ const CoursePage = ({ params }) => {
           </div>
         </div>
 
-        <div className="absolute bg-white right-10 top-4 shadow-lg border border-border rounded-2xl text-black">
+        <div className="absolute bg-white right-10 top-[55px] shadow-lg border border-border rounded-2xl text-black">
           <Image
             width={560}
             height={315}

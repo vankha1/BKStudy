@@ -85,7 +85,7 @@ const AddCourse = () => {
     }
 
     return (
-        <div className='relative w-full mt-4'>
+        <div className='relative w-full mt-[55px]'>
             <div className='w-full flex flex-col'>
                 <FilterSearch title="KHÓA HỌC ĐANG GIẢNG DẠY" />
             </div>

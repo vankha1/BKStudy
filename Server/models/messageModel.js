@@ -13,6 +13,11 @@ const messageSchema = new Schema(
             ref: "User",
             require: true
         },
+        sendTo: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            require: true
+        },
         message: {
             type: String,
             require: true
