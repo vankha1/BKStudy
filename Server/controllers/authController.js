@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
 const User = require("../models/userModel");
 
@@ -85,7 +86,91 @@ const login = async (req, res, next) => {
   }
 };
 
+const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      const error = new Error("User not found !!!");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const token = jwt.sign(
+      {
+        email: email,
+        userId: user._id.toString(),
+        userType: user.userType,
+      },
+      process.env.TOKEN_SECRET_KEY,
+      { expiresIn: "1d" }
+    );
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: false,
+      auth: {
+        user: process.env.AUTH_NODEMAILER_USER,
+        pass: process.env.AUTH_NODEMAILER_PASS,
+      },
+    });
+  
+    const newPassword = Math.random().toString(36).substring(2,8);
+    const mailOptions = {
+      from: process.env.AUTH_NODEMAILER_USER,
+      to: email,
+      subject: "Reset Password Link",
+      text: 'New Password: ' + newPassword,
+    };
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword
+    await user.save();
+
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        throw err;
+      }
+      res.status(200).json({ Status: "Success", info });
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  try {
+    const { userId, token } = req.params;
+    const { password } = req.body;
+
+    const decodedPayload = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
+
+    if (!decodedPayload) {
+      const error = new Error("Error with token");
+      throw error;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await User.findByIdAndUpdate({ _id: userId }, { password: hashedPassword });
+
+    res.status(200).json({ Status: "Success" });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
 module.exports = {
   signup,
   login,
+  forgotPassword,
+  resetPassword,
 };

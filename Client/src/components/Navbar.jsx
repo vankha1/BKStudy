@@ -12,6 +12,7 @@ import Conversation from "./Conversation/Conversation";
 import ConverDeatil from "./Conversation/ConverDeatil";
 
 const Navbar = () => {
+  const token = localStorage.getItem("JWT")
   const [showMessage, setShowMessage] = useState(false);
 
   const [showConversation, setShowConversation] = useState(false);
@@ -37,13 +38,6 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("JWT");
     localStorage.removeItem("userInfo");
-    // axios
-    //   .post("http://localhost:8080/logout")
-    //   .then((response) => {
-    //     console.log(response);
-    //     router.push("/");
-    //   })
-    //   .catch((err) => console.log(err));
     setIsLogin(false);
     setUserInfo(null);
     router.push("/");
@@ -178,7 +172,7 @@ const Navbar = () => {
         )}
       </div>
 
-      {userInfo?.userType !== "ADMIN" ? (
+      {userInfo?.userType === "STUDENT" || userInfo?.userType === "LECTURER" ? (
         <div className="flex-center flex-row gap-4">
           <div>
             {userInfo?.userType === "STUDENT" ? (
@@ -307,7 +301,7 @@ const Navbar = () => {
                 id="userDropdown"
                 className="z-10 absolute right-0 top-12 border border-slate-200 bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-40 flex-center flex-col"
               >
-                <ul className="py-2 text-sm text-gray-700 w-full">
+                <ul className="py-2 text-sm text-gray-700 w-full" onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}>
                   <li>
                     <div
                       onClick={() => {
@@ -319,12 +313,12 @@ const Navbar = () => {
                     </div>
                   </li>
                   <li>
-                    <a
-                      href="#"
+                    <Link
+                      href={`/reset-password`}
                       className="px-4 py-2 hover:bg-gray-100 w-full block text-center"
                     >
                       Đổi mật khẩu
-                    </a>
+                    </Link>
                   </li>
                 </ul>
                 <div className="py-1 w-full">

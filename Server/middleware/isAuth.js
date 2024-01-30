@@ -29,7 +29,7 @@ const authToken = (req, res, next) => {
     // console.log(token);
     let decodedPayload;
     try {
-        // decode token and payload here is our payload sent from the server in jwt.sign()
+        // decode token and payload here are our payload sent from the server in jwt.sign()
         decodedPayload = jwt.verify(token, process.env.TOKEN_SECRET_KEY)
     }
     catch (err) {

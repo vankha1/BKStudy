@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useAuthContext } from "@app/contexts/auth";
+import Link from "next/link";
 
 const LogInPage = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const LogInPage = () => {
     axios
       .post("http://localhost:8080/api/v1/auth/login", account)
       .then((response) => {
-        console.log(response)
+        console.log(response);
         if (response.statusText == "OK") {
           if (response.data.message == "Wrong password")
             alert("Wrong password");
@@ -55,7 +56,7 @@ const LogInPage = () => {
   };
 
   return (
-    <section className="flex-center flex-col drop-shadow-md mt-3 px-8 py-5 bg-white rounded-md mt-[55px]">
+    <section className="flex-center flex-col drop-shadow-md px-8 py-5 bg-white rounded-md mt-[55px]">
       {console.log("re-render")}
       <h1 className="text-3xl font-bold">Đăng nhập</h1>
       <form onSubmit={logIn} className="flex-center flex-col w-full">
@@ -87,6 +88,10 @@ const LogInPage = () => {
             className="input min-w-[20rem]"
             placeholder="••••••••"
           />
+        </div>
+        <div className="-mb-[10px]">
+          <Link href={"/login/forgot-password"} className="text-blue-500 mr-10 ">Quên mật khẩu</Link>
+          <Link href={"/signup"} className="text-blue-500 ml-10">Chưa có tài khoản</Link>
         </div>
         <button
           type="submit"
