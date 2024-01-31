@@ -1,6 +1,7 @@
 "use client"; // This is a client component
 import React, { useState } from 'react';
 
+
 function EditData({ infos, onlyView, handleChangeInfoUser }) {
   const [isEditing, setIsEditing] = useState(false);
   const [newData, setNewData] = useState([infos]);

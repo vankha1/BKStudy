@@ -2,6 +2,7 @@ import Navbar from "@components/Navbar";
 import Footer from "@components/Footer";
 import { AuthProvider, ProtectedRoute } from "./contexts/auth";
 import "@/styles/globals.css";
+import StoreProvider from "./StoreProvider";
 
 export const metadata = {
   title: "BKStudy",
@@ -12,11 +13,13 @@ const RootLayout = ({ children }) => {
   return (
     <html lang="vi">
       <body>
-        <AuthProvider>
-          <Navbar />
+        <StoreProvider>
+          <AuthProvider>
+            <Navbar />
             <main className="app min-h-[27rem]">{children}</main>
-          <Footer />
-        </AuthProvider>
+            <Footer />
+          </AuthProvider>
+        </StoreProvider>
       </body>
     </html>
   );

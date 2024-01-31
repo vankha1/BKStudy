@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useAuthContext } from "@app/contexts/auth";
 import Link from "next/link";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { userInformation } from "@redux/features/userSlice";
 
 const LogInPage = () => {
   const router = useRouter();
@@ -16,6 +18,9 @@ const LogInPage = () => {
     email: "",
     password: "",
   });
+
+  const stateUser = useAppSelector((state) => state.user.value);
+  const dispatch = useAppDispatch();
 
   const logIn = async (e) => {
     e.preventDefault();
@@ -34,6 +39,7 @@ const LogInPage = () => {
               "userInfo",
               JSON.stringify(response.data.userInfo)
             );
+            dispatch(userInformation({ ...stateUser, avatar: response.data.userInfo.avatar }))
             setIsLogin(true);
             router.push("/");
           }
@@ -90,8 +96,15 @@ const LogInPage = () => {
           />
         </div>
         <div className="-mb-[10px]">
-          <Link href={"/login/forgot-password"} className="text-blue-500 mr-10 ">Quên mật khẩu</Link>
-          <Link href={"/signup"} className="text-blue-500 ml-10">Chưa có tài khoản</Link>
+          <Link
+            href={"/login/forgot-password"}
+            className="text-blue-500 mr-10 "
+          >
+            Quên mật khẩu
+          </Link>
+          <Link href={"/signup"} className="text-blue-500 ml-10">
+            Chưa có tài khoản
+          </Link>
         </div>
         <button
           type="submit"

@@ -10,9 +10,10 @@ import useDebounce from "@utilities/useDebounce";
 
 import Conversation from "./Conversation/Conversation";
 import ConverDeatil from "./Conversation/ConverDeatil";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
 
 const Navbar = () => {
-  const token = localStorage.getItem("JWT")
+  const token = localStorage.getItem("JWT");
   const [showMessage, setShowMessage] = useState(false);
 
   const [showConversation, setShowConversation] = useState(false);
@@ -30,10 +31,19 @@ const Navbar = () => {
   const searchData = useDebounce(searchValue, 500);
   const router = useRouter();
 
+  const stateUser = useAppSelector((state) => state.user.value);
+  const dispatch = useAppDispatch();
+
+  console.log( "Home: .........." ,stateUser)
+
   useEffect(() => {
-    if (localStorage.getItem("userInfo"))
-      setUserInfo(JSON.parse(localStorage.getItem("userInfo")));
+    if (localStorage.getItem("userInfo")) {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      setUserInfo({ ...userInfo });
+    }
   }, [isLogin]);
+
+  // userInfo?.avatar = stateUser?.avatar ? stateUser?.avatar : userInfo?.avatar
 
   const handleLogout = () => {
     localStorage.removeItem("JWT");
@@ -109,6 +119,7 @@ const Navbar = () => {
       .catch((error) => console.error(error));
   };
 
+  // console.log(stateUser)
   return (
     <nav className="fixed z-50 w-full bg-white px-8 py-1 flex-between flex-row border-b border-borderline">
       <Link href="/" className="flex-center flex-row gap-1">
@@ -284,10 +295,10 @@ const Navbar = () => {
             <button onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}>
               <Image
                 src={
-                  userInfo?.avatar
-                    ? userInfo?.avatar.includes("https")
-                      ? userInfo?.avatar
-                      : `http://localhost:8080/${userInfo.avatar}`
+                  stateUser?.avatar
+                    ? stateUser?.avatar.includes("https")
+                      ? stateUser?.avatar
+                      : `http://localhost:8080/${stateUser.avatar}`
                     : "/assets/images/avatar.svg"
                 }
                 alt="Avatar"
@@ -301,7 +312,10 @@ const Navbar = () => {
                 id="userDropdown"
                 className="z-10 absolute right-0 top-12 border border-slate-200 bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-40 flex-center flex-col"
               >
-                <ul className="py-2 text-sm text-gray-700 w-full" onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}>
+                <ul
+                  className="py-2 text-sm text-gray-700 w-full"
+                  onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}
+                >
                   <li>
                     <div
                       onClick={() => {
