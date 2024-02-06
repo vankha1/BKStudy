@@ -24,15 +24,18 @@ const ConverDeatil = ({ onClick, conversation }) => {
     socket.current = io("ws://localhost:8900");
     socket.current.on("getMessage", (data) => {
       console.log("This is from the socket", data.senderId);
-      setArrivalMessage({
-        conversationId: conversation._id,
-        sendFrom: data.senderId,
-        senderName: data.senderName,
-        senderAvatar: data.senderAvatar,
-        receiverName: data.receiverName,
-        receiverAvatar: data.receiverAvatar,
-        message: data.message,
-        createdAt: Date.now(),
+      setArrivalMessage((pre) =>  {
+        return {
+          ...pre,
+          conversationId: conversation._id,
+          sendFrom: data.senderId,
+          senderName: data.senderName,
+          senderAvatar: data.senderAvatar,
+          receiverName: data.receiverName,
+          receiverAvatar: data.receiverAvatar,
+          message: data.message,
+          createdAt: Date.now(),
+        }
       });
     });
   }, []);
@@ -74,7 +77,7 @@ const ConverDeatil = ({ onClick, conversation }) => {
           };
           newMessages.push(newMessage);
         });
-        console.log(newMessages, "stupid thing");
+        // console.log(newMessages, "stupid thing");
         setMessages(newMessages);
       })
       .catch((error) => console.error(error));

@@ -33,7 +33,10 @@ const getAnotherProfile = async (req, res, next) => {
   try {
     const userId = req.params.userId;
 
-    const user = await User.findById(userId).populate("courses.courseId", "title description imageUrl");
+    const user = await User.findById(userId).populate(
+      "courses.courseId",
+      "title description imageUrl"
+    );
 
     if (!user) {
       const err = new Error("User not found");
@@ -54,25 +57,27 @@ const addProfile = async (req, res, next) => {
   try {
     const userId = req.userId;
 
-    if (!req.file) {
-      const error = new Error("No image provided");
-      error.statusCode = 422;
-      throw error;
-    }
-    const temp = req.file.path.replace(/\\/g, "/").split("images");
-    const imageUrl = "images" + temp[1];
-
-    const { fullname, dateOfBirth, phoneNumber } = req.body;
-
     const user = await User.findById(userId);
     if (!user) {
       const error = new Error("User not found !!");
       error.statusCode = 404;
       throw error;
     }
-  
+
+    // if (!req.file) {
+    //   const error = new Error("No image provided");
+    //   error.statusCode = 422;
+    //   throw error;
+    // }
+    if (user.googleId){
+      const temp = req.file?.path.replace(/\\/g, "/").split("images");
+      const imageUrl = "images" + temp ? temp[1] : "";
+      user.avatar = imageUrl;
+    }
+
+    const { fullname, dateOfBirth, phoneNumber } = req.body;
+
     user.userType = user.userType ? user.userType : req.body.userType;
-    user.avatar = imageUrl;
     user.fullname = fullname;
     user.dateOfBirth = dateOfBirth;
     user.phoneNumber = phoneNumber;
@@ -96,13 +101,15 @@ const updateProfile = async (req, res, next) => {
 
     const { fullname, dateOfBirth, phoneNumber } = req.body;
     let avatar = req.body.image;
-    const temp = req.file ? req.file.path.replace(/\\/g, "/").split("images") : null;
+    const temp = req.file
+      ? req.file.path.replace(/\\/g, "/").split("images")
+      : null;
     const imageUrl = temp ? "images" + temp[1] : null;
 
     if (req.file) {
       // avatar = req.file.path.replace("\\", "/");
       const temp = req.file.path.replace(/\\/g, "/").split("images");
-      temp.length >= 2 ? avatar = "images" + temp[1] : null;
+      temp.length >= 2 ? (avatar = "images" + temp[1]) : null;
     }
     const user = await User.findById(userId);
 
@@ -176,9 +183,9 @@ const getCourses = async (req, res, next) => {
       .populate({
         path: "courses.courseId",
         populate: {
-          path: 'createdBy',
-          select: 'fullname'
-        }
+          path: "createdBy",
+          select: "fullname",
+        },
       })
       .exec();
 

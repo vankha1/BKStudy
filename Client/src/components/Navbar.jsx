@@ -11,6 +11,7 @@ import useDebounce from "@utilities/useDebounce";
 import Conversation from "./Conversation/Conversation";
 import ConverDeatil from "./Conversation/ConverDeatil";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { reset, userInformation } from "@redux/features/userSlice";
 
 const Navbar = () => {
   const token = localStorage.getItem("JWT");
@@ -34,7 +35,7 @@ const Navbar = () => {
   const stateUser = useAppSelector((state) => state.user.value);
   const dispatch = useAppDispatch();
 
-  console.log( "Home: .........." ,stateUser)
+  console.log("Home: ..........", stateUser);
 
   useEffect(() => {
     if (localStorage.getItem("userInfo")) {
@@ -48,6 +49,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("JWT");
     localStorage.removeItem("userInfo");
+    dispatch(reset())
     setIsLogin(false);
     setUserInfo(null);
     router.push("/");
@@ -182,7 +184,7 @@ const Navbar = () => {
           <></>
         )}
       </div>
-
+      {console.log(userInfo)}
       {userInfo?.userType === "STUDENT" || userInfo?.userType === "LECTURER" ? (
         <div className="flex-center flex-row gap-4">
           <div>
@@ -292,21 +294,20 @@ const Navbar = () => {
             )}
           </div>
           <div className="z-50 flex-center relative">
-            <button onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}>
-              <Image
-                src={
-                  stateUser?.avatar
-                    ? stateUser?.avatar.includes("https")
-                      ? stateUser?.avatar
-                      : `http://localhost:8080/${stateUser.avatar}`
-                    : "/assets/images/avatar.svg"
-                }
-                alt="Avatar"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-            </button>
+            <Image
+              onClick={() => setShowAvatarDropdown(!showAvatarDropdown)}
+              src={
+                stateUser?.avatar
+                  ? stateUser?.avatar.includes("https")
+                    ? stateUser?.avatar
+                    : `http://localhost:8080/${stateUser.avatar}`
+                  : (userInfo?.avatar.includes("https") ? userInfo?.avatar : "/assets/images/avatar.svg")
+              }
+              alt="Avatar"
+              width={40}
+              height={40}
+              className="rounded-full cursor-pointer h-[40px] object-cover"
+            />
             {showAvatarDropdown && (
               <div
                 id="userDropdown"

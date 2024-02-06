@@ -8,8 +8,7 @@ import axios from "axios";
 import { useAuthContext } from "@app/contexts/auth";
 
 const AddProfile = () => {
-
-  const user =  JSON.parse(localStorage.getItem("userInfo"))
+  const user = JSON.parse(localStorage.getItem("userInfo"));
   // console.log(user)
 
   const [userInfo, setUserInfo] = useState({
@@ -17,7 +16,7 @@ const AddProfile = () => {
     phoneNumber: "",
     fullname: "",
     dateOfBirth: "",
-    userType: user?.userType ? user?.userType : ''
+    userType: user?.userType ? user?.userType : "",
   });
   const [imageUrl, setImageUrl] = useState("/assets/images/avatar.svg");
   const [submitting, setSubmitting] = useState(false);
@@ -32,17 +31,20 @@ const AddProfile = () => {
     const formData = new FormData();
 
     const token = user?.token ? user?.token : localStorage.getItem("JWT");
-    formData.append("image", imageFile, userInfo.filename);
+    if (!user?.googleId){
+      console.log("check if have google identity")
+      formData.append("image", imageFile, userInfo.filename);
+    }
     formData.append("phoneNumber", userInfo.phoneNumber);
     formData.append("fullname", userInfo.fullname);
     formData.append("dateOfBirth", userInfo.dateOfBirth);
-    if (user?.googleId){
+    if (user?.googleId) {
       formData.append("userType", userInfo.userType);
     }
     axios
       .post(`http://localhost:8080/api/v1/user/add-profile`, formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
           "Content-Type": `multipart/form-data`,
         },
       })
