@@ -27,11 +27,14 @@ const ConverDeatil = ({ onClick, conversation }) => {
       setArrivalMessage({
         conversationId: conversation._id,
         sendFrom: data.senderId,
+        senderName: data.senderName,
+        senderAvatar: data.senderAvatar,
+        receiverName: data.receiverName,
+        receiverAvatar: data.receiverAvatar,
         message: data.message,
         createdAt: Date.now(),
       });
     });
-    console.log(111111);
   }, []);
 
   useEffect(() => {
@@ -40,7 +43,7 @@ const ConverDeatil = ({ onClick, conversation }) => {
   }, [arrivalMessage]);
 
   useEffect(() => {
-    socket.current.emit("addUser", new mongoose.Types.ObjectId(userId));
+    socket.current.emit("addUser", userId);
   }, [user]);
 
   // console.log(socket);
@@ -56,8 +59,23 @@ const ConverDeatil = ({ onClick, conversation }) => {
         }
       )
       .then((messages) => {
-        console.log(messages, "stupid thing");
-        setMessages(messages.data);
+        const newMessages = [];
+
+        messages.data.map((message) => {
+          const newMessage = {
+            conversationId: conversation._id,
+            sendFrom: message.sendFrom._id,
+            senderName: message.sendFrom.fullname,
+            senderAvatar: message.sendFrom.avatar,
+            receiverName: message.sendTo.fullname,
+            receiverAvatar: message.sendTo.avatar,
+            message: message.message,
+            createdAt: message.createdAt,
+          };
+          newMessages.push(newMessage);
+        });
+        console.log(newMessages, "stupid thing");
+        setMessages(newMessages);
       })
       .catch((error) => console.error(error));
   }, [conversation]);
@@ -76,7 +94,7 @@ const ConverDeatil = ({ onClick, conversation }) => {
       userId === conversation.senderId._id
         ? conversation.receiverId._id
         : conversation.senderId._id;
-    
+
     // console.log("Receiver: ", userId === conversation.senderId._id);
 
     const content = {
@@ -86,12 +104,6 @@ const ConverDeatil = ({ onClick, conversation }) => {
       message: chattingRef.current.value,
     };
 
-    socket.current.emit("sendMessage", {
-      senderId: new mongoose.Types.ObjectId(userId),
-      receiverId: new mongoose.Types.ObjectId(receiverId),
-      message: chattingRef.current.value,
-    });
-
     axios
       .post("http://localhost:8080/api/v1/message", content, {
         headers: {
@@ -100,8 +112,31 @@ const ConverDeatil = ({ onClick, conversation }) => {
         },
       })
       .then((message) => {
-        console.log(message);
-        setMessages([...messages, message.data]);
+        // console.log(message);
+        message = message.data;
+        const newMessage = {
+          conversationId: message.conversationId,
+          sendFrom: message.sendFrom._id,
+          senderName: message.sendFrom.fullname,
+          senderAvatar: message.sendFrom.avatar,
+          receiverName: message.sendTo.fullname,
+          receiverAvatar: message.sendTo.avatar,
+          message: message.message,
+          createdAt: message.createdAt,
+        };
+        setMessages([...messages, newMessage]);
+        const socketContent = {
+          senderId: userId,
+          receiverId: receiverId,
+          senderName: newMessage?.senderName,
+          senderAvatar: newMessage?.senderAvatar,
+          receiverName: newMessage?.receiverName,
+          receiverAvatar: newMessage?.receiverAvatar,
+          message: chattingRef.current.value,
+        };
+
+        // console.log("Content to socket: " + socketContent.senderName);
+        socket.current.emit("sendMessage", socketContent);
         chattingRef.current.value = "";
       })
       .catch((error) => console.error(error));
@@ -149,7 +184,7 @@ const ConverDeatil = ({ onClick, conversation }) => {
             return (
               <div ref={scrollRef}>
                 <Message
-                  own={message.sendFrom._id === userId}
+                  own={message.sendFrom === userId}
                   key={index}
                   message={message}
                 />

@@ -6,6 +6,8 @@ function Message({ className, message, own }) {
 
   const userId = JSON.parse(localStorage.getItem("userInfo"))._id;
 
+  // console.log("this is from message component", message);
+
   return (
     <div className="relative">
       <div
@@ -30,19 +32,15 @@ function Message({ className, message, own }) {
               width={32}
               height={32}
               src={
-                message.sendFrom.avatar
-                  ? message.sendFrom.avatar.includes("https")
-                    ? message.sendFrom.avatar
-                    : `http://localhost:8080/${message.sendFrom.avatar}`
+                message.senderAvatar
+                  ? message.senderAvatar.includes("https")
+                    ? message.senderAvatar
+                    : `http://localhost:8080/${message.senderAvatar}`
                   : "/assets/images/avatar.svg"
               }
               alt="avatar"
             />
-            <div>
-              {userId === message.sendFrom._id
-                ? "You"
-                : message.sendFrom.fullname}
-            </div>
+            <div>{own ? "You" : message.senderName}</div>
           </div>
           <div className="text-xs p-[10px] text-yellow-700">
             {format(message.createdAt)}

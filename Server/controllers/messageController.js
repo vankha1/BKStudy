@@ -15,14 +15,7 @@ const sendMessage = async (req, res, next) => {
 
     const goodMessage = await Message.findById(newMessage._id)
       .populate("sendFrom", "fullname avatar")
-      .populate({
-        path: "conversationId",
-        select: "receiverId",
-        populate: {
-          path: "receiverId",
-          select: "fullname",
-        },
-      });
+      .populate("sendTo", "fullname avatar");
 
     res.status(200).json(goodMessage);
   } catch (err) {
@@ -40,14 +33,7 @@ const getConversation = async (req, res, next) => {
       conversationId: req.params.conversationId,
     })
       .populate("sendFrom", "fullname avatar")
-      .populate({
-        path: "conversationId",
-        select: "receiverId",
-        populate: {
-          path: "receiverId",
-          select: "fullname",
-        },
-      });
+      .populate("sendTo", "fullname avatar");
 
     res.status(200).json(messages);
   } catch (err) {

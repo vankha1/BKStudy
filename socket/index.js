@@ -1,4 +1,3 @@
-
 const io = require("socket.io")(8900, {
   cors: {
     origin: "http://localhost:3000",
@@ -31,15 +30,39 @@ io.on("connection", (socket) => {
   });
 
   //send and get message
-  socket.on("sendMessage", ({ senderId, receiverId, message }) => {
-    const user = getUser(receiverId);
-    console.log(user);
-    console.log("sendMessage to ", receiverId);
-    io.to(user?.socketId).emit("getMessage", {
+  socket.on(
+    "sendMessage",
+    ({
       senderId,
+      receiverId,
+      senderName,
+      senderAvatar,
+      receiverName,
+      receiverAvatar,
       message,
-    });
-  });
+    }) => {
+      const user = getUser(receiverId);
+      // console.log(
+      //   user,
+      //   receiverId,
+      //   senderId,
+      //   senderName,
+      //   senderAvatar,
+      //   receiverName,
+      //   receiverAvatar,
+      //   message
+      // );
+      // console.log("sendMessage to ", receiverId);
+      io.to(user?.socketId).emit("getMessage", {
+        senderId,
+        senderName,
+        senderAvatar,
+        receiverName,
+        receiverAvatar,
+        message,
+      });
+    }
+  );
 
   //when disconnect
   socket.on("disconnect", () => {
