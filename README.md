@@ -3,6 +3,7 @@
 A learning platform in subject Programming Intergration Project - Information System (CO3105) at HCMUT which allows teachers create courses for students to learn
 
 More details will be found in our documents:
+
 - Reports: [Report.pdf](https://github.com/vankha1/BKStudy/blob/my-refactoring/Report.pdf)
 
 ## Tech Stack
@@ -72,12 +73,6 @@ git clone https://github.com/vankha1/BKStudy.git
     npm install
     npm start
 ```
-
-## Presentation
-
-Here is my presentation of this project, you will see in my channel. If you find it interesting, please give me a like for my efforts.
-
-Link youtube:
 
 ## Result
 

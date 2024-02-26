@@ -29,7 +29,7 @@ const AdminUserPage = () => {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full mt-[55px]">
       <div>
         <Link href='\admin-manage-course' className="absolute right-16 text-footer font-semibold text-xl hover:text-primary">Phê duyệt khóa học</Link>
         <FilterSearch title="TẤT CẢ NGƯỜI DÙNG" />

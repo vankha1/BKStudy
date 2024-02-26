@@ -28,9 +28,9 @@ function Message({ className, message, own }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Image
-              className="rounded-full object-cover"
-              width={32}
-              height={32}
+              className="object-cover h-8 rounded-full"
+              width={30}
+              height={20}
               src={
                 message.senderAvatar
                   ? message.senderAvatar.includes("https")

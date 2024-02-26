@@ -31,7 +31,7 @@ const AdminPage = () => {
   console.log(courses)
 
   return (
-    <div className="w-full">
+    <div className="w-full mt-[55px]">
       <div>
         <div className="absolute right-16">
           <Link href='\admin-manage-user' className="text-footer font-semibold text-xl hover:text-primary mr-10">Quản lý người dùng</Link>

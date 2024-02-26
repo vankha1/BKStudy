@@ -5,10 +5,11 @@ import EmojiPicker from "emoji-picker-react";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
-import mongoose from "mongoose";
 
 const ConverDeatil = ({ onClick, conversation }) => {
   const socket = useRef();
+  const scrollRef = useRef();
+  const chattingRef = useRef(null);
 
   const token = localStorage.getItem("JWT");
   const user = JSON.parse(localStorage.getItem("userInfo"));
@@ -17,40 +18,46 @@ const ConverDeatil = ({ onClick, conversation }) => {
   const [messages, setMessages] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [isOpenEmoji, setIsOpenEmoji] = useState(false);
-  const chattingRef = useRef(null);
-  const scrollRef = useRef();
-  console.log("clientId", userId);
+
+  console.log("client id >>>>>", userId, new Date().getTime());
+  console.log("Messages >>>>>>", messages, new Date().getTime());
+
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
     socket.current.on("getMessage", (data) => {
-      console.log("This is from the socket", data.senderId);
-      setArrivalMessage((pre) =>  {
-        return {
-          ...pre,
-          conversationId: conversation._id,
-          sendFrom: data.senderId,
-          senderName: data.senderName,
-          senderAvatar: data.senderAvatar,
-          receiverName: data.receiverName,
-          receiverAvatar: data.receiverAvatar,
-          message: data.message,
-          createdAt: Date.now(),
-        }
-      });
+
+      console.log("This is from the socket!!!", data, "1235433534");
+      const newMessage = {
+        conversationId: conversation._id,
+        sendFrom: data.senderId,
+        senderName: data.senderName,
+        senderAvatar: data.senderAvatar,
+        receiverName: data.receiverName,
+        receiverAvatar: data.receiverAvatar,
+        message: data.message,
+        createdAt: Date.now(),
+      }
+      // setMessages((prev) => {
+      //   console.log(prev)
+      //   return [...prev, newMessage]
+      // });
+      setMessages((prev) => [...prev, newMessage]);
     });
   }, []);
 
+  // Add new message into message list
   useEffect(() => {
-    arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
+    // arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
     console.log(arrivalMessage, "-------------------");
   }, [arrivalMessage]);
 
+  // Add user to user list in socket server
   useEffect(() => {
     socket.current.emit("addUser", userId);
   }, [user]);
 
-  // console.log(socket);
 
+  // Get all messages from a conversation
   useEffect(() => {
     axios
       .get(
@@ -148,8 +155,8 @@ const ConverDeatil = ({ onClick, conversation }) => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-  // console.log(messages);
-
+  console.log("Rerender >>");
+  
   return (
     <div className="fixed top-[55px] w-[300px] z-30 max-h-full">
       <div className="absolute bottom-[100px] right-[20px] z-50">

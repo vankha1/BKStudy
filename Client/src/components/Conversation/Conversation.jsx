@@ -1,6 +1,4 @@
-import axios from "axios";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 
 const Conversation = ({ avatar, fullname, onclick }) => {
   return (
@@ -19,9 +17,9 @@ const Conversation = ({ avatar, fullname, onclick }) => {
                 : "/assets/images/avatar.svg"
             }
             alt="Avatar"
-            width={48}
+            width={30}
             height={48}
-            className="w-[40px] my-0 mx-[10px] rounded-full"
+            className="w-[40px] my-0 mx-[10px] h-10 rounded-full"
           />
         </div>
         <div className="my-0 mx-[10px]">

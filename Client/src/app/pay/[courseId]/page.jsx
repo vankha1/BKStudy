@@ -35,7 +35,7 @@ export default function Pay() {
             },
           }
         );
-        console.log(res, courseId);
+        console.log("Check here", res, courseId);
         setClientSecret(res.data.clientSecret);
       } catch (error) {
         console.log(error);
