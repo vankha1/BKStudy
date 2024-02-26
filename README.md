@@ -3,7 +3,7 @@
 A learning platform in subject Programming Intergration Project - Information System (CO3105) at HCMUT which allows teachers create courses for students to learn
 
 More details will be found in our documents:
-- Reports: 
+- Reports: [Report.pdf](https://github.com/vankha1/BKStudy/blob/my-refactoring/Report.pdf)
 
 ## Tech Stack
 
@@ -14,7 +14,7 @@ More details will be found in our documents:
 
 ## Use case
 
-![](https://drive.google.com/file/d/1pOUBxw1094mu9qU2xlU0cb9OgqpsHcjS/view?usp=sharing)
+![Use-case diagram](https://github.com/vankha1/BKStudy/assets/90501249/19d0673a-6483-4794-aa05-045edea58349)
 
 ## User Interface
 
@@ -25,6 +25,8 @@ Here is some main UI of this projects, more details you can experience in demo v
 ### Teacher
 
 ### Student
+
+![Student page](https://github.com/vankha1/BKStudy/assets/90501249/ce9b59f5-3ce2-4cd2-90ab-ddca5bd3a3c7)
 
 ## Guideline
 
