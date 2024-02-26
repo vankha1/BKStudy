@@ -14,7 +14,7 @@ More details will be found in our documents:
 
 ## Use case
 
-![](https://drive.google.com/file/d/1pOUBxw1094mu9qU2xlU0cb9OgqpsHcjS/view?usp=sharing)
+![Use-case diagram](https://github.com/vankha1/BKStudy/assets/90501249/19d0673a-6483-4794-aa05-045edea58349)
 
 ## User Interface
 
