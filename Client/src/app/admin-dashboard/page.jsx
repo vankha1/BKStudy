@@ -54,10 +54,10 @@ const Dashboard = () => {
     }, []);
 
   return (
-    <div className='w-full'>
+    <div className='w-full mt-[55px]'>
         <div className='flex justify-between'>
             <h1 className='pl-2 ml-16 font-semibold text-2xl text-primary mt-8'>Thống kê nổi bật</h1>
-            <Link href='/admin-manage-course' className="absolute right-20 top-9 text-white font-semibold text-xl bg-primary hover:bg-footer w-24 h-8 rounded-xl text-center">Trở lại</Link>
+            <Link href='/admin-manage-course' className="absolute right-20 top-9 text-white font-semibold text-xl bg-primary hover:bg-footer w-24 h-8 rounded-xl text-center mt-[55px]">Trở lại</Link>
         </div>
         <div className='w-full flex justify-evenly mt-8'>
             <div className='w-1/4 h-56 border border-primary rounded-2xl pt-5 text-center'>

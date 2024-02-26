@@ -41,7 +41,10 @@ const LogInPage = () => {
             );
             dispatch(userInformation({ ...stateUser, avatar: response.data.userInfo.avatar }))
             setIsLogin(true);
-            router.push("/");
+            if (response.data.userInfo?.userType === "ADMIN"){
+              router.push("/admin-dashboard")
+            }
+            else router.push("/");
           }
         } else alert("Something wrong is happening");
       })

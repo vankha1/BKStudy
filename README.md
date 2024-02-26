@@ -22,7 +22,11 @@ Here is some main UI of this projects, more details you can experience in demo v
 
 ### Admin
 
+![Admin page](https://github.com/vankha1/BKStudy/assets/90501249/5ba161fa-495b-4fdd-8eea-934f4664746a)
+
 ### Teacher
+
+![Teacher page](https://github.com/vankha1/BKStudy/assets/90501249/61bb907b-8445-4631-8e6e-ee7a1d1a740b)
 
 ### Student
 

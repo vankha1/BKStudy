@@ -197,16 +197,16 @@ const RenderLessons =
                                 <div className="w-full flex-between">
                                     <div className='w-3/4 flex mb-4 cursor-pointer'>
                                         <Image
-                                            className='rotate-left-action'
+                                            className='rotate-left-action mr-2'
                                             src='/assets/icons/downward.svg'
                                             alt="Downward"
-                                            width={30}
-                                            height={30}
+                                            width={25}
+                                            height={20}
                                             priority
                                         />
                                         <input
                                             type='text'
-                                            className='w-[600px] text-xl font-medium border px-1'
+                                            className='w-[800px] text-lg font-sm border-b-2 p-1 px-2 focus:outline-none'
                                             value={newChapter}
                                             onChange={(e) => handleInputChange(e.target.value)}
                                         />

@@ -49,7 +49,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("JWT");
     localStorage.removeItem("userInfo");
-    dispatch(reset())
+    dispatch(reset());
     setIsLogin(false);
     setUserInfo(null);
     router.push("/");
@@ -301,7 +301,9 @@ const Navbar = () => {
                   ? stateUser?.avatar.includes("https")
                     ? stateUser?.avatar
                     : `http://localhost:8080/${stateUser.avatar}`
-                  : (userInfo?.avatar.includes("https") ? userInfo?.avatar : "/assets/images/avatar.svg")
+                  : userInfo?.avatar.includes("https")
+                  ? userInfo?.avatar
+                  : "/assets/images/avatar.svg"
               }
               alt="Avatar"
               width={40}
@@ -349,19 +351,28 @@ const Navbar = () => {
           </div>
         </div>
       ) : userInfo?.userType === "ADMIN" ? (
-        <div className="items-center">
+        <div className="flex justify-center items-center">
           <Link
             href="/admin-manage-user"
-            className="font-semibold text-lg mr-5"
+            className="font-semibold text-lg mr-5 bg-primary px-2 py-1 text-white rounded-md"
           >
             Người dùng
           </Link>
           <Link
             href="admin-manage-course"
-            className="font-semibold text-lg mr-5"
+            className="font-semibold text-lg mr-5 bg-primary px-2 py-1 text-white rounded-md"
           >
             Phê duyệt
           </Link>
+          <div>
+            <Image
+              src="/assets/avatar.png"
+              alt="Avatar"
+              width={48}
+              height={48}
+              className="w-[40px] my-0 mx-[10px] rounded-full"
+            />
+          </div>
         </div>
       ) : (
         <div className="log">
